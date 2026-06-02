@@ -528,7 +528,11 @@
 
       roastPrompt = getStylePrompt(style);
 
-      console.log('Calling Grok API with model: grok-2-vision, style:', style, 'has image base64:', !!imageBase64);
+      if (!imageBase64 || typeof imageBase64 !== 'string' || imageBase64.length < 100) {
+        throw new Error('Invalid or missing base64 image data for vision API.');
+      }
+
+      console.log('Calling Grok API with model: grok-4.3, style:', style, 'has image base64 length:', imageBase64.length);
 
       const response = await fetch('https://api.x.ai/v1/chat/completions', {
         method: 'POST',
@@ -537,7 +541,7 @@
           'Authorization': `Bearer ${xaiApiKey}`
         },
         body: JSON.stringify({
-          model: 'grok-2-vision',
+          model: 'grok-4.3',
           messages: [
             {
               role: 'user',
@@ -555,7 +559,7 @@
               ]
             }
           ],
-          max_tokens: 450,
+          max_completion_tokens: 450,
           temperature: 0.85
         })
       });
