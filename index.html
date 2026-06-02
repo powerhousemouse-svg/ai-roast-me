@@ -394,9 +394,10 @@
         </div>
         
         <div class="text-[10px] text-white/50 leading-tight">
-          Get your key at <a href="https://x.ai/api" target="_blank" class="underline hover:text-white">https://x.ai/api</a>. 
+          Get your key at <a href="https://console.x.ai/" target="_blank" class="underline hover:text-white">https://console.x.ai/</a>. 
+          Ensure the key/team has permission for chat completions + vision (Grok 4.3), and has billing/credits. 
           Your key is stored only in your browser (localStorage) and sent directly to xAI. 
-          Never share your key.
+          Never share your key. 403 errors usually mean no permission or no credits.
         </div>
 
         <div class="flex gap-3 pt-2">
@@ -516,7 +517,7 @@
 
       if (!xaiApiKey) {
         key = prompt(
-          "Enter your xAI API key to use real Grok vision:\n\n(Get a free key at https://x.ai/api — keys are stored only in your browser localStorage for this demo)"
+          "Enter your xAI API key to use real Grok vision:\n\n(Get a free key at https://console.x.ai/ — make sure it has chat + vision permissions and credits. Keys stored only in browser localStorage for this demo)"
         );
         if (!key) {
           throw new Error("API key is required for real AI roasts.");
@@ -568,10 +569,13 @@
         const errorData = await response.json().catch(() => ({}));
         console.error('Grok API Error:', response.status, errorData);
         const msg = errorData.error?.message || `API error: ${response.status}`;
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
           localStorage.removeItem('xai_api_key');
           xaiApiKey = '';
           updateApiKeyUI();
+          if (response.status === 403) {
+            throw new Error("API key forbidden (403). Your key or team doesn't have permission for this model/endpoint (e.g. Grok 4.3 vision). Check billing, credits, and team permissions at https://console.x.ai/. Ask team admin if needed. Get a new key there.");
+          }
           throw new Error("Invalid API key. Please try again.");
         }
         throw new Error(`API ${response.status}: ${msg}`);
@@ -782,7 +786,8 @@
 
       } catch (error) {
         console.error('Roast generation failed:', error);
-        alert('Roast failed: ' + error.message + '\n\nFalling back to demo roast.');
+        const isAuthError = error.message.includes('403') || error.message.includes('401') || error.message.includes('key');
+        alert('Roast failed: ' + error.message + (isAuthError ? '\n\nCheck your xAI API key permissions and credits at console.x.ai' : '') + '\n\nFalling back to demo roast.');
         currentRoast = getFallbackRoast(currentStyle);
         
         document.getElementById('result-photo').src = currentPhotoURL || '';
@@ -843,7 +848,8 @@
 
           } catch (e) {
             console.error('Re-roast from style pill failed:', e);
-            alert('Failed to re-roast: ' + e.message);
+            const isAuth = e.message.includes('403') || e.message.includes('401') || e.message.includes('key');
+            alert('Failed to re-roast: ' + e.message + (isAuth ? ' (Check API key at console.x.ai)' : ''));
           } finally {
             resultScreen.style.opacity = '1';
             resultScreen.style.pointerEvents = 'auto';
@@ -866,6 +872,14 @@
         document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
       } catch (e) {
         console.error('Roast Again failed:', e);
+        const isAuth = e.message.includes('403') || e.message.includes('401') || e.message.includes('key');
+        if (isAuth) {
+          alert('Roast Again failed due to API key issue: ' + e.message + '. Please update your key via the 🔑 button.');
+          // optionally clear
+          localStorage.removeItem('xai_api_key');
+          xaiApiKey = '';
+          updateApiKeyUI();
+        }
         currentRoast = getFallbackRoast(currentStyle);
         document.getElementById('roast-text').innerHTML = currentRoast;
       }
@@ -895,7 +909,15 @@
         setupResultStylePills();
       } catch (e) {
         console.error('Make it Meaner failed:', e);
-        alert("Couldn't make it meaner: " + e.message);
+        const isAuth = e.message.includes('403') || e.message.includes('401') || e.message.includes('key');
+        if (isAuth) {
+          alert("Couldn't make it meaner due to API key issue: " + e.message + ". Update key via 🔑 button at console.x.ai.");
+          localStorage.removeItem('xai_api_key');
+          xaiApiKey = '';
+          updateApiKeyUI();
+        } else {
+          alert("Couldn't make it meaner: " + e.message);
+        }
         currentStyle = originalStyle;
       }
     }
