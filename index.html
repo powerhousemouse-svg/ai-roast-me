@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Upload a selfie. Get absolutely cooked. Brutal, hilarious AI roasts.">
+  <title>AI Roast Me 🔥</title>
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+    
+    :root {
+      --neon-green: #22ff88;
+      --neon-pink: #ff2e63;
+      --neon-cyan: #00f0ff;
+    }
+
+    body {
+      font-family: 'Inter', system_ui, sans-serif;
+    }
+
+    .font-display {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .neon-text {
+      text-shadow: 0 0 10px rgb(34 255 136 / 0.5);
+    }
+
+    .roast-card {
+      background: #111111;
+      border: 1px solid #222;
+    }
+
+    .neon-border {
+      box-shadow: 0 0 0 1px #222,
+                  0 0 20px rgb(34 255 136 / 0.15);
+    }
+
+    .savage-text {
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .meme-btn {
+      transition: all 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .meme-btn:active {
+      transform: scale(0.94);
+    }
+
+    .roast-text {
+      font-size: 1.05rem;
+      line-height: 1.4;
+    }
+
+    .loading-text {
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    .section {
+      display: none;
+    }
+    
+    .section.active {
+      display: block;
+    }
+
+    .neon-green { color: #22ff88; }
+    .neon-pink { color: #ff2e63; }
+    .neon-cyan { color: #00f0ff; }
+
+    .glass {
+      background: rgba(17, 17, 17, 0.85);
+      backdrop-filter: blur(20px);
+    }
+
+    .roast-line {
+      transition: all 0.3s ease;
+    }
+
+    .upload-zone {
+      transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .upload-zone.dragover {
+      background: #1a1a1a;
+      border-color: #22ff88;
+      transform: scale(1.01);
+    }
+
+    .roast-container {
+      font-feature-settings: "tnum";
+    }
+
+    .fake-stat {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .roast-card-export {
+      width: 1080px;
+      height: 1080px;
+      font-size: 42px;
+      line-height: 1.25;
+    }
+
+    .style-pill {
+      transition: all 0.15s ease;
+    }
+
+    .style-pill.active {
+      background: #22ff88;
+      color: black;
+      font-weight: 700;
+    }
+
+    .funny-loading {
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen overflow-x-hidden">
+  <!-- Top nav / brand -->
+  <div class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-lg">
+    <div class="max-w-xl mx-auto px-5 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-x-3">
+        <div class="w-8 h-8 bg-white rounded-xl flex items-center justify-center">
+          <span class="text-black text-xl font-black tracking-tighter">🔥</span>
+        </div>
+        <div>
+          <span class="font-black text-2xl tracking-[-2px]">AI ROAST ME</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-x-2 text-xs">
+        <div class="px-3 py-1 rounded-full bg-white/5 text-white/60 flex items-center gap-x-1.5">
+          <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+          <span class="font-mono" id="roast-counter">2.4M</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LANDING ==================== -->
+  <div id="landing" class="section active pt-14">
+    <div class="max-w-xl mx-auto px-5 pt-10 pb-20">
+      
+      <!-- Hero -->
+      <div class="text-center pt-8 pb-6">
+        <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-2xl bg-white/5 mb-6 border border-white/10">
+          <span class="text-emerald-400">●</span>
+          <span class="text-sm font-medium tracking-wider">VIRAL IN 47 COUNTRIES</span>
+        </div>
+
+        <h1 class="font-black text-[72px] leading-[0.92] tracking-[-5.5px] mb-3">
+          GET<br>ABSOLUTELY<br><span class="neon-green">COOKED.</span>
+        </h1>
+        
+        <p class="text-2xl text-white/70 font-medium tracking-tight">
+          Upload a photo.<br>
+          Get absolutely roasted by AI.
+        </p>
+      </div>
+
+      <!-- Style Selector -->
+      <div class="mb-8">
+        <div class="text-center mb-3">
+          <span class="text-xs font-bold tracking-[2px] text-white/50">PICK YOUR POISON</span>
+        </div>
+        <div class="flex flex-wrap gap-2 justify-center" id="style-pills-landing">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Upload Zone -->
+      <div 
+        id="upload-zone"
+        class="upload-zone mx-auto max-w-md border-2 border-dashed border-white/20 hover:border-white/40 bg-zinc-950 rounded-3xl p-9 text-center cursor-pointer active:scale-[0.985] transition-all"
+        onclick="document.getElementById('photo-input').click()">
+        
+        <div class="mx-auto w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-9 h-9 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 01-2-2M3 9a2 2 0 012-2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 01-2-2M3 9a2 2 0 012-2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 01-2-2" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618V17.382a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </div>
+        
+        <div class="text-2xl font-black tracking-[-1px]">UPLOAD YOUR SELFIE</div>
+        <div class="text-white/60 mt-1.5">or drag &amp; drop a photo</div>
+        
+        <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+      </div>
+
+      <div class="text-center mt-4">
+        <p class="text-xs text-white/40">We don't store your photos. This is just for the roast.</p>
+      </div>
+
+      <!-- Social Proof -->
+      <div class="mt-12 text-center">
+        <div class="flex justify-center gap-x-6 text-sm">
+          <div>
+            <div class="font-mono text-3xl font-black tracking-tighter" id="total-roasts">2,487,392</div>
+            <div class="text-[10px] text-white/50 tracking-widest -mt-1">ROASTS SERVED</div>
+          </div>
+          <div class="w-px bg-white/10"></div>
+          <div>
+            <div class="font-mono text-3xl font-black tracking-tighter">148k</div>
+            <div class="text-[10px] text-white/50 tracking-widest -mt-1">TODAY</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Example roasts -->
+      <div class="mt-16">
+        <div class="text-xs font-bold tracking-[1.5px] text-white/40 text-center mb-4">RECENT VICTIMS</div>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-3">
+            <div class="flex gap-3">
+              <img src="https://picsum.photos/id/1011/64/64" class="w-10 h-10 rounded-xl object-cover ring-1 ring-white/10" alt="">
+              <div class="flex-1 min-w-0">
+                <div class="text-xs text-white/50">Sarah K • Gen Z</div>
+                <div class="text-sm leading-tight text-white/90 mt-0.5">"Your aura is giving 'I peaked in high school and it was downhill from there' energy."</div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-3">
+            <div class="flex gap-3">
+              <img src="https://picsum.photos/id/1005/64/64" class="w-10 h-10 rounded-xl object-cover ring-1 ring-white/10" alt="">
+              <div class="flex-1 min-w-0">
+                <div class="text-xs text-white/50">Marcus T • Brutal</div>
+                <div class="text-sm leading-tight text-white/90 mt-0.5">"Brother you look like you were designed in a group project by people who hate each other."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PROCESSING ==================== -->
+  <div id="processing" class="section pt-14">
+    <div class="max-w-xl mx-auto px-5 pt-20 text-center">
+      <div class="mx-auto w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-8">
+        <div class="w-9 h-9 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+      </div>
+
+      <div id="loading-title" class="font-black text-4xl tracking-[-1.5px]">Analyzing your vibe...</div>
+      <div id="loading-subtitle" class="funny-loading mt-3 text-xl text-white/70"></div>
+
+      <div class="mt-12 text-xs text-white/40 tracking-widest">THE AI IS CURRENTLY JUDGING YOU</div>
+    </div>
+  </div>
+
+  <!-- ==================== RESULT ==================== -->
+  <div id="result" class="section pt-14 pb-16">
+    <div class="max-w-xl mx-auto px-5">
+      
+      <!-- Photo -->
+      <div class="flex justify-center mb-6">
+        <div class="relative">
+          <div class="w-56 h-56 rounded-[2.25rem] overflow-hidden ring-1 ring-white/10 shadow-2xl neon-border">
+            <img id="result-photo" class="w-full h-full object-cover" alt="Your photo">
+          </div>
+          <div class="absolute -bottom-1 -right-1 bg-black px-3 py-1 rounded-2xl text-xs font-bold border border-white/10 flex items-center gap-x-1">
+            <span>YOU</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Roast Text -->
+      <div class="roast-card rounded-3xl p-7 border border-white/10 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <span id="roast-style-badge" 
+                  class="inline-block text-xs font-black tracking-wider px-3 py-1 rounded-xl bg-white text-black"></span>
+          </div>
+          <div class="text-[10px] text-white/40">ROASTED BY AI</div>
+        </div>
+
+        <div id="roast-text" 
+             class="roast-text text-[17px] leading-snug font-semibold tracking-[-0.2px] text-white">
+        </div>
+      </div>
+
+      <!-- Style Switcher -->
+      <div class="mb-5">
+        <div class="text-xs text-white/50 mb-2 px-1 font-bold tracking-wider">CHANGE THE VIBE</div>
+        <div class="flex flex-wrap gap-2" id="style-pills-result">
+          <!-- JS populated -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="roastAgain()" 
+                class="meme-btn col-span-1 bg-white text-black font-bold py-4 rounded-2xl active:bg-white/90">
+          ROAST ME AGAIN
+        </button>
+        
+        <button onclick="makeItMeaner()" 
+                class="meme-btn col-span-1 bg-zinc-900 hover:bg-zinc-800 border border-white/10 font-bold py-4 rounded-2xl">
+          MAKE IT MEANER 🔥
+        </button>
+        
+        <button onclick="copyRoast()" 
+                class="meme-btn col-span-1 flex items-center justify-center gap-x-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 font-semibold py-4 rounded-2xl text-sm">
+          <span>COPY ROAST</span>
+        </button>
+        
+        <button onclick="downloadRoastImage()" 
+                class="meme-btn col-span-1 flex items-center justify-center gap-x-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 font-semibold py-4 rounded-2xl text-sm">
+          <span>DOWNLOAD CARD</span>
+        </button>
+      </div>
+
+      <div class="mt-6 text-center">
+        <button onclick="shareRoast()" 
+                class="text-sm font-medium text-white/70 hover:text-white flex items-center gap-x-2 mx-auto">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 01-5.367 2.684m0-2.684a3 3 0 015.367 2.684m0 2.684a3 3 0 01-5.367-2.684m0 2.684a3 3 0 015.367-2.684m0-2.684a3 3 0 01-5.367 2.684" />
+          </svg>
+          SHARE THIS ROAST
+        </button>
+      </div>
+
+      <div class="text-center mt-8">
+        <button onclick="resetToLanding()" 
+                class="text-xs text-white/50 hover:text-white/70 underline underline-offset-2">
+          Start over with a new victim
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Card (hidden, used for export) -->
+  <div id="share-card" class="hidden fixed left-[-9999px] top-0">
+    <div class="roast-card-export bg-[#0a0a0a] text-white p-16 flex flex-col items-center justify-center" 
+         style="font-family: 'Space Grotesk', system_ui, sans-serif;">
+      
+      <div class="text-center mb-8">
+        <div class="flex items-center justify-center gap-x-3 mb-1">
+          <span class="text-6xl">🔥</span>
+          <span class="font-black text-6xl tracking-[-3.5px]">AI ROAST ME</span>
+        </div>
+        <div class="text-emerald-400 text-xl font-bold tracking-widest">ROASTED</div>
+      </div>
+
+      <div class="w-[460px] h-[460px] rounded-3xl overflow-hidden mb-8 ring-4 ring-white/10" id="share-photo-wrapper">
+        <!-- Image injected by JS -->
+      </div>
+
+      <div id="share-roast-text" 
+           class="text-center text-3xl leading-tight font-semibold tracking-[-0.5px] max-w-[820px]">
+        <!-- Text injected by JS -->
+      </div>
+
+      <div class="mt-auto pt-8 text-sm text-white/40 tracking-[3px]">AIROAST.ME</div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== CONFIG & DATA ====================
+    const STYLES = [
+      { id: 'savage', label: 'Savage', color: '#22ff88' },
+      { id: 'genz', label: 'Gen Z', color: '#ff2e63' },
+      { id: 'british', label: 'British', color: '#00f0ff' },
+      { id: 'brutal', label: 'Brutal', color: '#ff9500' },
+      { id: 'dad', label: 'Dad Mode', color: '#a78bfa' },
+      { id: 'sigma', label: 'Sigma', color: '#fb923c' }
+    ];
+
+    const ROASTS = {
+      savage: [
+        "Your face looks like it was designed by someone who was paid to make you look average.",
+        "I’ve seen more life in a forgotten gym sock.",
+        "You have the energy of someone who peaked in middle school and never recovered.",
+        "You look like you were raised by Wi-Fi and bad decisions.",
+        "Your vibe is giving ‘I tell people I’m an entrepreneur but I sell essential oils’."
+      ],
+      genz: [
+        "Bestie… the rizz is nonexistent. Like actually zero aura.",
+        "You look like you say ‘no cap’ after every sentence and still manage to be lying.",
+        "This is giving ‘I was the funny one in the group chat but irl I’m mid’ energy.",
+        "You look like you’d call a 2019 TikTok trend ‘vintage’.",
+        "The fit is giving ‘I watched one Andrew Tate video and made it my personality’."
+      ],
+      british: [
+        "You absolute weapon. You look like you’ve never had a thought you didn’t immediately say out loud.",
+        "You’ve got a face only a mother could love… and she’s currently filing for emotional damages.",
+        "You look like you were raised on beige food and emotional repression.",
+        "Charming. In the same way a parking fine is charming.",
+        "You are the human equivalent of a disappointing Sunday roast."
+      ],
+      brutal: [
+        "I’ve seen better bone structure on a chicken.",
+        "You are genuinely the reason God stopped making people in person.",
+        "You look like you were the ‘before’ photo in every ad.",
+        "Your existence is the strongest argument for selective breeding I’ve ever seen.",
+        "If ugly was a sport, you’d be in the hall of fame with a lifetime achievement award."
+      ],
+      dad: [
+        "I’m not saying you’re ugly, but you make onions cry.",
+        "You look like you were put together during a company team-building exercise.",
+        "You remind me of my golf swing — lots of effort, zero results.",
+        "You’ve got a face for radio… and even then the radio would file a complaint.",
+        "You look like you peaked when you learned how to use the TV remote."
+      ],
+      sigma: [
+        "You’re not mysterious. You’re just socially awkward with good lighting.",
+        "The lone wolf act is crazy when you’re clearly the one who gets left behind at the function.",
+        "You look like you read one Andrew Tate tweet and made it your entire identity.",
+        "Sigma energy? More like ‘I got left on read by the group chat’ energy.",
+        "You’re not a lone wolf. You’re the guy who sits alone at the party and calls it ‘networking’."
+      ]
+    };
+
+    let currentPhotoURL = null;
+    let currentPhotoFile = null;
+    let currentStyle = 'savage';
+    let currentRoast = '';
+    let currentIntensity = 1;
+
+    // ==================== TAILWIND CONFIG ====================
+    function initTailwind() {
+      document.querySelector('script[src*="tailwindcss"]').addEventListener('load', () => {
+        // Already loaded via CDN
+      });
+    }
+
+    // ==================== PWA ====================
+    function registerPWA() {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('[PWA] Service worker registered'))
+            .catch(err => console.log('[PWA] SW registration failed', err));
+        });
+      }
+
+      // Show install prompt hint on mobile
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Could show custom install button if wanted
+      });
+    }
+
+    // ==================== ROAST GENERATOR ====================
+    function generateRoast(style, intensity = 1) {
+      const lines = ROASTS[style] || ROASTS.savage;
+      const numLines = Math.min(4 + Math.floor(intensity / 1.5), 5);
+      
+      // Shuffle and pick
+      let shuffled = [...lines].sort(() => 0.5 - Math.random());
+      let selected = shuffled.slice(0, numLines);
+
+      // Add a little "analysis" flavor
+      const intros = [
+        "After careful consideration of your entire existence...",
+        "I ran the numbers and honestly...",
+        "The algorithm took one look and said...",
+        "My circuits are still recovering from this one..."
+      ];
+      
+      const outro = intensity > 2 
+        ? " And that’s me being nice." 
+        : "";
+
+      let roast = selected.join(' ');
+      
+      // Occasionally add an intro for longer roasts
+      if (Math.random() > 0.6) {
+        roast = intros[Math.floor(Math.random() * intros.length)] + ' ' + roast;
+      }
+      
+      roast += outro;
+
+      return roast;
+    }
+
+    function getRoastWithIntensity(style, intensity) {
+      let base = generateRoast(style, intensity);
+      
+      // Make it progressively meaner
+      if (intensity >= 2) {
+        base = base.replace(/\./g, '…');
+      }
+      if (intensity >= 3) {
+        base += " Honestly, therapy might be cheaper than whatever this is.";
+      }
+      
+      return base;
+    }
+
+    // ==================== UI HELPERS ====================
+    function showScreen(screen) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(screen).classList.add('active');
+    }
+
+    function updateRoastCounter() {
+      const counter = document.getElementById('roast-counter');
+      const total = document.getElementById('total-roasts');
+      
+      if (counter) counter.textContent = (2487392 + Math.floor(Math.random() * 400)).toLocaleString();
+      if (total) total.textContent = (2487392 + Math.floor(Math.random() * 900)).toLocaleString();
+    }
+
+
+
+    // ==================== UPLOAD ====================
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      processUploadedPhoto(file);
+    }
+
+    function processUploadedPhoto(file) {
+      currentPhotoFile = file;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentPhotoURL = e.target.result;
+        
+        // Start processing immediately for speed
+        showProcessingScreen();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Drag and drop
+    function setupDragAndDrop() {
+      const zone = document.getElementById('upload-zone');
+      if (!zone) return;
+
+      ['dragenter', 'dragover'].forEach(evt => {
+        zone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          zone.classList.add('dragover');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(evt => {
+        zone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          zone.classList.remove('dragover');
+        });
+      });
+
+      zone.addEventListener('drop', (e) => {
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+          processUploadedPhoto(file);
+        }
+      });
+    }
+
+    // ==================== PROCESSING ====================
+    const funnyLoadingLines = [
+      "Scanning for emotional damage...",
+      "Consulting the council of mean friends...",
+      "Charging the disrespect capacitor...",
+      "Running your face through the judgment matrix...",
+      "Calculating how many bad decisions led to this photo...",
+      "Downloading fresh insults from the cloud...",
+      "Analyzing bone structure (it’s not great)...",
+      "Cross-referencing with every group chat you’ve ever been in..."
+    ];
+
+    function showProcessingScreen() {
+      showScreen('processing');
+      
+      const titleEl = document.getElementById('loading-title');
+      const subEl = document.getElementById('loading-subtitle');
+      
+      let index = 0;
+      subEl.textContent = funnyLoadingLines[index];
+      
+      const interval = setInterval(() => {
+        index = (index + 1) % funnyLoadingLines.length;
+        subEl.style.opacity = 0;
+        
+        setTimeout(() => {
+          subEl.textContent = funnyLoadingLines[index];
+          subEl.style.opacity = 1;
+        }, 120);
+      }, 620);
+
+      // Fake AI thinking time
+      setTimeout(() => {
+        clearInterval(interval);
+        generateAndShowRoast();
+      }, 1650);
+    }
+
+    function generateAndShowRoast(intensity = 1) {
+      currentIntensity = intensity;
+      currentRoast = getRoastWithIntensity(currentStyle, intensity);
+      
+      // Render result
+      document.getElementById('result-photo').src = currentPhotoURL;
+      
+      const styleInfo = STYLES.find(s => s.id === currentStyle) || STYLES[0];
+      document.getElementById('roast-style-badge').textContent = styleInfo.label.toUpperCase();
+      document.getElementById('roast-style-badge').style.background = styleInfo.color;
+      document.getElementById('roast-style-badge').style.color = (styleInfo.id === 'savage') ? 'black' : 'white';
+      
+      document.getElementById('roast-text').innerHTML = currentRoast;
+      
+      // Setup style pills in result
+      setupResultStylePills();
+      
+      showScreen('result');
+    }
+
+    function setupResultStylePills() {
+      const container = document.getElementById('style-pills-result');
+      container.innerHTML = '';
+      
+      STYLES.forEach(style => {
+        const pill = document.createElement('button');
+        pill.className = `px-4 py-1 text-xs font-bold rounded-2xl border transition-all 
+          ${currentStyle === style.id 
+            ? 'bg-white text-black border-white' 
+            : 'bg-zinc-900 border-white/10 hover:border-white/30'}`;
+        
+        pill.textContent = style.label;
+        
+        pill.onclick = () => {
+          currentStyle = style.id;
+          const newRoast = getRoastWithIntensity(currentStyle, currentIntensity);
+          currentRoast = newRoast;
+          
+          document.getElementById('roast-text').innerHTML = currentRoast;
+          
+          const styleInfo = STYLES.find(s => s.id === currentStyle);
+          document.getElementById('roast-style-badge').textContent = styleInfo.label.toUpperCase();
+          document.getElementById('roast-style-badge').style.background = styleInfo.color;
+          document.getElementById('roast-style-badge').style.color = (styleInfo.id === 'savage') ? 'black' : 'white';
+          
+          // Update active pill
+          container.querySelectorAll('button').forEach(b => {
+            b.classList.remove('bg-white', 'text-black', 'border-white');
+            b.classList.add('bg-zinc-900', 'border-white/10');
+          });
+          pill.classList.remove('bg-zinc-900', 'border-white/10');
+          pill.classList.add('bg-white', 'text-black', 'border-white');
+        };
+        
+        container.appendChild(pill);
+      });
+    }
+
+    // ==================== ACTIONS ====================
+    function roastAgain() {
+      const newRoast = getRoastWithIntensity(currentStyle, currentIntensity);
+      currentRoast = newRoast;
+      document.getElementById('roast-text').innerHTML = currentRoast;
+    }
+
+    function makeItMeaner() {
+      currentIntensity = Math.min(currentIntensity + 1, 4);
+      
+      const newRoast = getRoastWithIntensity(currentStyle, currentIntensity);
+      currentRoast = newRoast;
+      
+      document.getElementById('roast-text').innerHTML = currentRoast;
+      
+      // Visual feedback
+      const textEl = document.getElementById('roast-text');
+      textEl.style.transition = 'all 0.1s';
+      textEl.style.transform = 'scale(0.96)';
+      setTimeout(() => {
+        textEl.style.transform = 'scale(1)';
+      }, 80);
+    }
+
+    function copyRoast() {
+      const text = document.getElementById('roast-text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = event.currentTarget?.innerText || '';
+        const btns = document.querySelectorAll('button');
+        // Find the copy button and flash it
+        const copyBtn = Array.from(btns).find(b => b.textContent.includes('COPY'));
+        if (copyBtn) {
+          const orig = copyBtn.innerHTML;
+          copyBtn.innerHTML = 'COPIED!';
+          setTimeout(() => {
+            copyBtn.innerHTML = orig;
+          }, 1400);
+        }
+      });
+    }
+
+    async function downloadRoastImage() {
+      const card = document.getElementById('share-card');
+      const wrapper = document.getElementById('share-photo-wrapper');
+      const textContainer = document.getElementById('share-roast-text');
+      
+      // Clone the photo
+      wrapper.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = currentPhotoURL;
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      wrapper.appendChild(img);
+      
+      textContainer.innerHTML = currentRoast;
+      
+      card.style.display = 'block';
+      
+      try {
+        const canvas = await html2canvas(card.querySelector('.roast-card-export'), {
+          scale: 1.6,
+          backgroundColor: '#0a0a0a'
+        });
+        
+        const link = document.createElement('a');
+        link.download = `ai-roast-me-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (err) {
+        alert("Couldn't generate image. Try again or screenshot the roast instead.");
+      }
+      
+      card.style.display = 'none';
+    }
+
+    async function shareRoast() {
+      const text = document.getElementById('roast-text').innerText;
+      
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'AI Roast Me',
+            text: `I just got cooked by AI Roast Me:\n\n${text}\n\nTry it: https://airoast.me`
+          });
+        } catch (e) {}
+      } else {
+        // Fallback: copy + alert
+        await navigator.clipboard.writeText(text);
+        alert("Roast copied! Now go post it and tag your friends.");
+      }
+    }
+
+    function resetToLanding() {
+      currentPhotoURL = null;
+      currentPhotoFile = null;
+      currentIntensity = 1;
+      
+      // Reset file input
+      const input = document.getElementById('photo-input');
+      if (input) input.value = '';
+      
+      showScreen('landing');
+    }
+
+    // ==================== INITIALIZATION ====================
+    function initStylePillsLanding() {
+      const container = document.getElementById('style-pills-landing');
+      container.innerHTML = '';
+      
+      STYLES.forEach(style => {
+        const pill = document.createElement('button');
+        pill.className = `px-4 py-1 text-sm font-bold rounded-2xl border transition-all
+          ${style.id === 'savage' ? 'bg-white text-black border-white' : 'bg-zinc-950 border-white/20 hover:border-white/40'}`;
+        
+        pill.textContent = style.label;
+        
+        pill.onclick = () => {
+          currentStyle = style.id;
+          
+          // Update visual state
+          container.querySelectorAll('button').forEach(b => {
+            b.classList.remove('bg-white', 'text-black', 'border-white');
+            b.classList.add('bg-zinc-950', 'border-white/20');
+          });
+          pill.classList.remove('bg-zinc-950', 'border-white/20');
+          pill.classList.add('bg-white', 'text-black', 'border-white');
+        };
+        
+        container.appendChild(pill);
+      });
+    }
+
+    function initFakeStats() {
+      // Increment roast counter occasionally for engagement
+      setInterval(() => {
+        const el = document.getElementById('roast-counter');
+        if (el && Math.random() > 0.7) {
+          let num = parseInt(el.textContent.replace(/,/g, ''));
+          num += Math.floor(Math.random() * 3) + 1;
+          el.textContent = num.toLocaleString();
+        }
+      }, 22000);
+    }
+
+    function initUpload() {
+      const input = document.getElementById('photo-input');
+      const zone = document.getElementById('upload-zone');
+      
+      // Keyboard support
+      zone.setAttribute('tabindex', '0');
+      zone.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          input.click();
+        }
+      });
+    }
+
+    function init() {
+      initTailwind();
+      registerPWA();
+      
+      // Landing setup
+      initStylePillsLanding();
+      setupDragAndDrop();
+      initUpload();
+      initFakeStats();
+      updateRoastCounter();
+      
+      // Default style
+      currentStyle = 'savage';
+      
+      // Keyboard escape to go back
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const result = document.getElementById('result');
+          if (result.classList.contains('active')) {
+            resetToLanding();
+          }
+        }
+      });
+      
+      // Fun: random roast counter boost on load
+      setTimeout(() => {
+        const el = document.getElementById('total-roasts');
+        if (el) el.textContent = (parseInt(el.textContent.replace(/,/g, '')) + 17).toLocaleString();
+      }, 4000);
+      
+      // Make sure landing is shown
+      showScreen('landing');
+      
+      console.log('%c[AI Roast Me] App initialized. Ready to cook people.', 'color:#22ff88');
+    }
+
+    // Boot the app
+    window.onload = init;
+  </script>
+</body>
+</html>
