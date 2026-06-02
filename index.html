@@ -143,6 +143,12 @@
           <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
           <span class="font-mono" id="roast-counter">2.4M</span>
         </div>
+        <!-- API Key status -->
+        <button onclick="showApiKeyModal()" 
+                class="px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-white/70 flex items-center gap-x-1.5 text-[10px] font-medium"
+                id="api-key-btn" title="Manage xAI API Key for real roasts">
+          <span id="api-key-status">🔑 KEY</span>
+        </button>
       </div>
     </div>
   </div>
@@ -168,10 +174,10 @@
         </p>
       </div>
 
-      <!-- Style Selector -->
+      <!-- Style Selector - Prominent Buttons -->
       <div class="mb-8">
         <div class="text-center mb-3">
-          <span class="text-xs font-bold tracking-[2px] text-white/50">PICK YOUR POISON</span>
+          <span class="text-xs font-bold tracking-[2px] text-white/50">CHOOSE YOUR ROAST STYLE</span>
         </div>
         <div class="flex flex-wrap gap-2 justify-center" id="style-pills-landing">
           <!-- Populated by JS -->
@@ -265,7 +271,7 @@
       <!-- Photo -->
       <div class="flex justify-center mb-6">
         <div class="relative">
-          <div class="w-56 h-56 rounded-[2.25rem] overflow-hidden ring-1 ring-white/10 shadow-2xl neon-border">
+          <div class="w-64 h-64 md:w-72 md:h-72 rounded-[2.5rem] overflow-hidden ring-1 ring-white/10 shadow-2xl neon-border">
             <img id="result-photo" class="w-full h-full object-cover" alt="Your photo">
           </div>
           <div class="absolute -bottom-1 -right-1 bg-black px-3 py-1 rounded-2xl text-xs font-bold border border-white/10 flex items-center gap-x-1">
@@ -297,15 +303,15 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
+      <!-- Action Buttons - Viral Edition -->
       <div class="grid grid-cols-2 gap-3">
         <button onclick="roastAgain()" 
-                class="meme-btn col-span-1 bg-white text-black font-bold py-4 rounded-2xl active:bg-white/90">
+                class="meme-btn col-span-1 bg-white text-black font-bold py-4 rounded-2xl active:bg-white/90 text-sm">
           ROAST ME AGAIN
         </button>
         
         <button onclick="makeItMeaner()" 
-                class="meme-btn col-span-1 bg-zinc-900 hover:bg-zinc-800 border border-white/10 font-bold py-4 rounded-2xl">
+                class="meme-btn col-span-1 bg-zinc-900 hover:bg-zinc-800 border border-white/10 font-bold py-4 rounded-2xl text-sm">
           MAKE IT MEANER 🔥
         </button>
         
@@ -320,14 +326,15 @@
         </button>
       </div>
 
-      <div class="mt-6 text-center">
-        <button onclick="shareRoast()" 
-                class="text-sm font-medium text-white/70 hover:text-white flex items-center gap-x-2 mx-auto">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 01-5.367 2.684m0-2.684a3 3 0 015.367 2.684m0 2.684a3 3 0 01-5.367-2.684m0 2.684a3 3 0 015.367-2.684m0-2.684a3 3 0 01-5.367 2.684" />
-          </svg>
-          SHARE THIS ROAST
-        </button>
+      <!-- One-click Social Shares -->
+      <div class="mt-4">
+        <div class="text-xs text-white/50 mb-2 px-1 font-bold tracking-wider">SPREAD THE ROAST</div>
+        <div class="grid grid-cols-4 gap-2">
+          <button onclick="shareToX()" class="meme-btn text-xs py-2.5 rounded-2xl bg-[#000] border border-white/20 hover:bg-white/5 font-semibold">𝕏 / Twitter</button>
+          <button onclick="shareToInstagram()" class="meme-btn text-xs py-2.5 rounded-2xl bg-zinc-900 border border-white/20 hover:bg-white/5 font-semibold">Instagram</button>
+          <button onclick="shareToTikTok()" class="meme-btn text-xs py-2.5 rounded-2xl bg-zinc-900 border border-white/20 hover:bg-white/5 font-semibold">TikTok</button>
+          <button onclick="shareCard()" class="meme-btn text-xs py-2.5 rounded-2xl bg-[#22ff88] text-black font-bold">SHARE CARD</button>
+        </div>
       </div>
 
       <div class="text-center mt-8">
@@ -361,71 +368,75 @@
         <!-- Text injected by JS -->
       </div>
 
-      <div class="mt-auto pt-8 text-sm text-white/40 tracking-[3px]">AIROAST.ME</div>
+      <div class="mt-auto pt-6 text-center">
+        <div class="text-[#22ff88] text-sm font-black tracking-[2px]">AI ROAST ME 🔥</div>
+        <div class="text-[10px] text-white/40">ai-roast.me • try it yourself</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Key Modal -->
+  <div id="api-modal" class="hidden fixed inset-0 z-[200] items-center justify-center" style="background: rgba(0,0,0,0.85);">
+    <div class="bg-zinc-950 border border-white/10 rounded-3xl p-8 max-w-md w-full mx-4">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <div class="font-black text-xl">xAI API Key</div>
+          <div class="text-xs text-white/50">Required for real Grok vision roasts</div>
+        </div>
+        <button onclick="hideApiKeyModal()" class="text-white/60 hover:text-white text-2xl leading-none">&times;</button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs font-bold text-white/60">YOUR XAI API KEY</label>
+          <input id="api-key-input" type="password" class="w-full mt-1 bg-black border border-white/20 rounded-2xl px-4 py-3 text-sm font-mono focus:outline-none focus:border-[#22ff88]" 
+                 placeholder="xai-..." />
+        </div>
+        
+        <div class="text-[10px] text-white/50 leading-tight">
+          Get your key at <a href="https://x.ai/api" target="_blank" class="underline hover:text-white">https://x.ai/api</a>. 
+          Your key is stored only in your browser (localStorage) and sent directly to xAI. 
+          Never share your key.
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button onclick="saveApiKey()" class="flex-1 bg-[#22ff88] text-black font-bold py-3 rounded-2xl text-sm">SAVE KEY</button>
+          <button onclick="clearApiKey()" class="flex-1 bg-white/5 hover:bg-white/10 font-bold py-3 rounded-2xl text-sm border border-white/10">CLEAR KEY</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     // ==================== CONFIG & DATA ====================
     const STYLES = [
-      { id: 'savage', label: 'Savage', color: '#22ff88' },
-      { id: 'genz', label: 'Gen Z', color: '#ff2e63' },
-      { id: 'british', label: 'British', color: '#00f0ff' },
-      { id: 'brutal', label: 'Brutal', color: '#ff9500' },
-      { id: 'dad', label: 'Dad Mode', color: '#a78bfa' },
-      { id: 'sigma', label: 'Sigma', color: '#fb923c' }
+      { id: 'normal', label: 'Normal Roast', color: '#22ff88' },
+      { id: 'brutal', label: 'Brutal Mode 🔥', color: '#ff2e63' },
+      { id: 'british', label: 'British Roast', color: '#00f0ff' },
+      { id: 'genz', label: 'Gen Z Roast', color: '#ff9500' },
+      { id: 'dad', label: 'Dad Joke Roast', color: '#a78bfa' }
     ];
-
-    const ROASTS = {
-      savage: [
-        "Your face looks like it was designed by someone who was paid to make you look average.",
-        "I’ve seen more life in a forgotten gym sock.",
-        "You have the energy of someone who peaked in middle school and never recovered.",
-        "You look like you were raised by Wi-Fi and bad decisions.",
-        "Your vibe is giving ‘I tell people I’m an entrepreneur but I sell essential oils’."
-      ],
-      genz: [
-        "Bestie… the rizz is nonexistent. Like actually zero aura.",
-        "You look like you say ‘no cap’ after every sentence and still manage to be lying.",
-        "This is giving ‘I was the funny one in the group chat but irl I’m mid’ energy.",
-        "You look like you’d call a 2019 TikTok trend ‘vintage’.",
-        "The fit is giving ‘I watched one Andrew Tate video and made it my personality’."
-      ],
-      british: [
-        "You absolute weapon. You look like you’ve never had a thought you didn’t immediately say out loud.",
-        "You’ve got a face only a mother could love… and she’s currently filing for emotional damages.",
-        "You look like you were raised on beige food and emotional repression.",
-        "Charming. In the same way a parking fine is charming.",
-        "You are the human equivalent of a disappointing Sunday roast."
-      ],
-      brutal: [
-        "I’ve seen better bone structure on a chicken.",
-        "You are genuinely the reason God stopped making people in person.",
-        "You look like you were the ‘before’ photo in every ad.",
-        "Your existence is the strongest argument for selective breeding I’ve ever seen.",
-        "If ugly was a sport, you’d be in the hall of fame with a lifetime achievement award."
-      ],
-      dad: [
-        "I’m not saying you’re ugly, but you make onions cry.",
-        "You look like you were put together during a company team-building exercise.",
-        "You remind me of my golf swing — lots of effort, zero results.",
-        "You’ve got a face for radio… and even then the radio would file a complaint.",
-        "You look like you peaked when you learned how to use the TV remote."
-      ],
-      sigma: [
-        "You’re not mysterious. You’re just socially awkward with good lighting.",
-        "The lone wolf act is crazy when you’re clearly the one who gets left behind at the function.",
-        "You look like you read one Andrew Tate tweet and made it your entire identity.",
-        "Sigma energy? More like ‘I got left on read by the group chat’ energy.",
-        "You’re not a lone wolf. You’re the guy who sits alone at the party and calls it ‘networking’."
-      ]
-    };
 
     let currentPhotoURL = null;
     let currentPhotoFile = null;
-    let currentStyle = 'savage';
+    let currentPhotoBase64 = null; // for real AI vision
+    let currentStyle = 'normal';
     let currentRoast = '';
     let currentIntensity = 1;
+
+    // xAI API key (stored client-side for demo - use at your own risk)
+    let xaiApiKey = localStorage.getItem('xai_api_key') || '';
+
+    const funnyLoadingLines = [
+      "Scanning for emotional damage...",
+      "Consulting the council of mean friends...",
+      "Charging the disrespect capacitor...",
+      "Running your face through the judgment matrix...",
+      "Calculating how many bad decisions led to this photo...",
+      "Downloading fresh insults from the cloud...",
+      "Analyzing bone structure (it’s not great)...",
+      "Cross-referencing with every group chat you’ve ever been in..."
+    ];
 
     // ==================== TAILWIND CONFIG ====================
     function initTailwind() {
@@ -453,51 +464,177 @@
       });
     }
 
-    // ==================== ROAST GENERATOR ====================
-    function generateRoast(style, intensity = 1) {
-      const lines = ROASTS[style] || ROASTS.savage;
-      const numLines = Math.min(4 + Math.floor(intensity / 1.5), 5);
-      
-      // Shuffle and pick
-      let shuffled = [...lines].sort(() => 0.5 - Math.random());
-      let selected = shuffled.slice(0, numLines);
+    // ==================== REAL AI ROAST GENERATOR (xAI Grok Vision) ====================
+    function getStylePrompt(style) {
+      const base = `You are a legendary savage roast comedian with razor-sharp wit. 
+You are looking at a real photo of a person. Analyze it in detail: facial structure, expression, eyes, smile (or lack thereof), hair, skin, clothing style and fit, accessories, posture, vibe, any unique or roastable features (glasses, tattoos, fashion choices, background hints, etc.).
+Be extremely specific and observational — reference actual visual details you see.
+Craft a personalized, hilarious, biting roast that is witty and clever. Avoid generic insults. Make observations that only someone who saw the photo would make.
+Output ONLY the roast text itself (3-7 punchy sentences or short paragraphs). No introductions, no "here's your roast", no disclaimers, no explanations. Pure roast.`;
 
-      // Add a little "analysis" flavor
-      const intros = [
-        "After careful consideration of your entire existence...",
-        "I ran the numbers and honestly...",
-        "The algorithm took one look and said...",
-        "My circuits are still recovering from this one..."
-      ];
-      
-      const outro = intensity > 2 
-        ? " And that’s me being nice." 
-        : "";
+      const styleSpecific = {
+        normal: `Style: Normal Roast — Witty and savage but playful. Fun, shareable energy. Good for laughs among friends.`,
+        brutal: `Style: Brutal Mode — Maximum savagery. Pull no punches. Extremely direct, mean, and hilarious. Go hard but stay clever.`,
+        british: `Style: British Roast — Dry, posh, understated British sarcasm and passive-aggressive shade. Very eloquent insults. Think Taskmaster or roast battle UK style.`,
+        genz: `Style: Gen Z Roast — Heavy on current slang, "no cap", "rizz", "aura", "mid", "delulu", TikTok/brainrot references. Chaotic and unhinged in a fun way.`,
+        dad: `Style: Dad Joke Roast — Corny dad jokes mixed with actual roasts. Pun-heavy, "I'm not saying you're X but..." format, wholesome-but-savage dad energy.`
+      };
 
-      let roast = selected.join(' ');
-      
-      // Occasionally add an intro for longer roasts
-      if (Math.random() > 0.6) {
-        roast = intros[Math.floor(Math.random() * intros.length)] + ' ' + roast;
+      return base + '\n\n' + (styleSpecific[style] || styleSpecific.normal) + '\n\nBe specific to the image. Make it memorable and quotable.';
+    }
+
+    async function resizeImageToBase64(file, maxSize = 1024) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let { width, height } = img;
+            if (width > maxSize || height > maxSize) {
+              const ratio = Math.min(maxSize / width, maxSize / height);
+              width = Math.floor(width * ratio);
+              height = Math.floor(height * ratio);
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            // Use JPEG for smaller size
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            const base64 = dataUrl.split(',')[1];
+            resolve(base64);
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function callGrokVision(imageBase64, style) {
+      if (!xaiApiKey) {
+        const key = prompt(
+          "Enter your xAI API key to use real Grok vision:\n\n(Get a free key at https://x.ai/api — keys are stored only in your browser localStorage for this demo)"
+        );
+        if (!key) {
+          throw new Error("API key is required for real AI roasts.");
+        }
+        xaiApiKey = key.trim();
+        localStorage.setItem('xai_api_key', xaiApiKey);
+        updateApiKeyUI();
       }
-      
-      roast += outro;
+
+      const prompt = getStylePrompt(style);
+
+      const response = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${xaiApiKey}`
+        },
+        body: JSON.stringify({
+          model: 'grok-2-vision-latest',
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'text',
+                  text: prompt
+                },
+                {
+                  type: 'image_url',
+                  image_url: {
+                    url: `data:image/jpeg;base64,${imageBase64}`
+                  }
+                }
+              ]
+            }
+          ],
+          max_tokens: 450,
+          temperature: 0.85
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const msg = errorData.error?.message || `API error: ${response.status}`;
+        if (response.status === 401) {
+          localStorage.removeItem('xai_api_key');
+          xaiApiKey = '';
+          updateApiKeyUI();
+          throw new Error("Invalid API key. Please try again.");
+        }
+        throw new Error(msg);
+      }
+
+      const data = await response.json();
+      let roast = data.choices?.[0]?.message?.content?.trim();
+
+      if (!roast) {
+        throw new Error("Grok didn't return a roast. Try a different photo or style.");
+      }
 
       return roast;
     }
 
-    function getRoastWithIntensity(style, intensity) {
-      let base = generateRoast(style, intensity);
-      
-      // Make it progressively meaner
-      if (intensity >= 2) {
-        base = base.replace(/\./g, '…');
+    // Fallback in case of no key / error (kept for graceful degradation)
+    function getFallbackRoast(style) {
+      const fallbacks = {
+        normal: "Your vibe is giving 'I peaked three years ago and I'm still talking about it'.",
+        brutal: "I've seen more personality in a parking meter.",
+        british: "You look like the human embodiment of a disappointing cup of tea.",
+        genz: "Bestie the aura is actually negative. Like deeply in the red.",
+        dad: "I'm not saying you're mid, but your reflection filed for emotional support."
+      };
+      return fallbacks[style] || fallbacks.normal + " (fallback - add your xAI key for real roasts)";
+    }
+
+    function updateApiKeyUI() {
+      const btn = document.getElementById('api-key-status');
+      if (!btn) return;
+      if (xaiApiKey) {
+        btn.innerHTML = `🔑 ${xaiApiKey.slice(0,4)}...${xaiApiKey.slice(-3)}`;
+        btn.classList.add('text-[#22ff88]');
+      } else {
+        btn.innerHTML = `🔑 KEY`;
+        btn.classList.remove('text-[#22ff88]');
       }
-      if (intensity >= 3) {
-        base += " Honestly, therapy might be cheaper than whatever this is.";
+    }
+
+    function showApiKeyModal() {
+      const modal = document.getElementById('api-modal');
+      const input = document.getElementById('api-key-input');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      input.value = xaiApiKey || '';
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function hideApiKeyModal() {
+      const modal = document.getElementById('api-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    function saveApiKey() {
+      const input = document.getElementById('api-key-input');
+      const val = input.value.trim();
+      if (val) {
+        xaiApiKey = val;
+        localStorage.setItem('xai_api_key', val);
+        updateApiKeyUI();
+        hideApiKeyModal();
       }
-      
-      return base;
+    }
+
+    function clearApiKey() {
+      xaiApiKey = '';
+      localStorage.removeItem('xai_api_key');
+      updateApiKeyUI();
+      document.getElementById('api-key-input').value = '';
     }
 
     // ==================== UI HELPERS ====================
@@ -523,15 +660,40 @@
       processUploadedPhoto(file);
     }
 
-    function processUploadedPhoto(file) {
+    async function processUploadedPhoto(file) {
       currentPhotoFile = file;
       
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         currentPhotoURL = e.target.result;
         
-        // Start processing immediately for speed
-        showProcessingScreen();
+        // Prepare resized base64 for vision API
+        try {
+          currentPhotoBase64 = await resizeImageToBase64(file, 1024);
+        } catch (err) {
+          console.warn('Resize failed, using original', err);
+          currentPhotoBase64 = currentPhotoURL.split(',')[1];
+        }
+
+        // Show processing UI with funny lines
+        showScreen('processing');
+        
+        const subEl = document.getElementById('loading-subtitle');
+        let index = 0;
+        subEl.textContent = funnyLoadingLines[index];
+        
+        const interval = setInterval(() => {
+          index = (index + 1) % funnyLoadingLines.length;
+          subEl.style.opacity = 0;
+          setTimeout(() => {
+            subEl.textContent = funnyLoadingLines[index];
+            subEl.style.opacity = 1;
+          }, 80);
+        }, 480);
+
+        // Call real AI
+        await generateRealRoast();
+        clearInterval(interval);
       };
       reader.readAsDataURL(file);
     }
@@ -564,67 +726,62 @@
     }
 
     // ==================== PROCESSING ====================
-    const funnyLoadingLines = [
-      "Scanning for emotional damage...",
-      "Consulting the council of mean friends...",
-      "Charging the disrespect capacitor...",
-      "Running your face through the judgment matrix...",
-      "Calculating how many bad decisions led to this photo...",
-      "Downloading fresh insults from the cloud...",
-      "Analyzing bone structure (it’s not great)...",
-      "Cross-referencing with every group chat you’ve ever been in..."
-    ];
-
-    function showProcessingScreen() {
-      showScreen('processing');
-      
-      const titleEl = document.getElementById('loading-title');
+    async function generateRealRoast() {
+      const loadingTitle = document.getElementById('loading-title');
       const subEl = document.getElementById('loading-subtitle');
-      
-      let index = 0;
-      subEl.textContent = funnyLoadingLines[index];
-      
-      const interval = setInterval(() => {
-        index = (index + 1) % funnyLoadingLines.length;
-        subEl.style.opacity = 0;
+      const originalTitle = loadingTitle.textContent;
+
+      loadingTitle.textContent = 'Grok is analyzing the photo...';
+
+      try {
+        let roastText;
+        if (currentPhotoBase64 && xaiApiKey) {
+          roastText = await callGrokVision(currentPhotoBase64, currentStyle);
+        } else {
+          // graceful fallback
+          roastText = getFallbackRoast(currentStyle);
+        }
+
+        currentRoast = roastText;
+
+        // Render result screen
+        document.getElementById('result-photo').src = currentPhotoURL || '';
+
+        const styleInfo = STYLES.find(s => s.id === currentStyle) || STYLES[0];
+        const badge = document.getElementById('roast-style-badge');
+        badge.textContent = styleInfo.label.toUpperCase();
+        badge.style.background = styleInfo.color;
+        badge.style.color = '#000';
+
+        document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
+
+        setupResultStylePills();
+
+        // Clear loading interval if any
+        showScreen('result');
+
+      } catch (error) {
+        console.error('Roast generation failed:', error);
+        alert('Roast failed: ' + error.message + '\n\nFalling back to demo roast.');
+        currentRoast = getFallbackRoast(currentStyle);
         
-        setTimeout(() => {
-          subEl.textContent = funnyLoadingLines[index];
-          subEl.style.opacity = 1;
-        }, 120);
-      }, 620);
+        document.getElementById('result-photo').src = currentPhotoURL || '';
+        const styleInfo = STYLES.find(s => s.id === currentStyle) || STYLES[0];
+        document.getElementById('roast-style-badge').textContent = styleInfo.label.toUpperCase();
+        document.getElementById('roast-text').innerHTML = currentRoast;
 
-      // Fake AI thinking time
-      setTimeout(() => {
-        clearInterval(interval);
-        generateAndShowRoast();
-      }, 1650);
-    }
-
-    function generateAndShowRoast(intensity = 1) {
-      currentIntensity = intensity;
-      currentRoast = getRoastWithIntensity(currentStyle, intensity);
-      
-      // Render result
-      document.getElementById('result-photo').src = currentPhotoURL;
-      
-      const styleInfo = STYLES.find(s => s.id === currentStyle) || STYLES[0];
-      document.getElementById('roast-style-badge').textContent = styleInfo.label.toUpperCase();
-      document.getElementById('roast-style-badge').style.background = styleInfo.color;
-      document.getElementById('roast-style-badge').style.color = (styleInfo.id === 'savage') ? 'black' : 'white';
-      
-      document.getElementById('roast-text').innerHTML = currentRoast;
-      
-      // Setup style pills in result
-      setupResultStylePills();
-      
-      showScreen('result');
+        setupResultStylePills();
+        showScreen('result');
+      } finally {
+        loadingTitle.textContent = originalTitle;
+      }
     }
 
     function setupResultStylePills() {
       const container = document.getElementById('style-pills-result');
+      if (!container) return;
       container.innerHTML = '';
-      
+
       STYLES.forEach(style => {
         const pill = document.createElement('button');
         pill.className = `px-4 py-1 text-xs font-bold rounded-2xl border transition-all 
@@ -634,68 +791,102 @@
         
         pill.textContent = style.label;
         
-        pill.onclick = () => {
+        pill.onclick = async () => {
           currentStyle = style.id;
-          const newRoast = getRoastWithIntensity(currentStyle, currentIntensity);
-          currentRoast = newRoast;
           
-          document.getElementById('roast-text').innerHTML = currentRoast;
-          
-          const styleInfo = STYLES.find(s => s.id === currentStyle);
-          document.getElementById('roast-style-badge').textContent = styleInfo.label.toUpperCase();
-          document.getElementById('roast-style-badge').style.background = styleInfo.color;
-          document.getElementById('roast-style-badge').style.color = (styleInfo.id === 'savage') ? 'black' : 'white';
-          
-          // Update active pill
-          container.querySelectorAll('button').forEach(b => {
-            b.classList.remove('bg-white', 'text-black', 'border-white');
-            b.classList.add('bg-zinc-900', 'border-white/10');
-          });
-          pill.classList.remove('bg-zinc-900', 'border-white/10');
-          pill.classList.add('bg-white', 'text-black', 'border-white');
+          // Re-run with new style (real AI if possible)
+          const resultScreen = document.getElementById('result');
+          resultScreen.style.opacity = '0.6';
+          resultScreen.style.pointerEvents = 'none';
+
+          try {
+            let newRoast;
+            if (currentPhotoBase64) {
+              newRoast = await callGrokVision(currentPhotoBase64, currentStyle);
+            } else {
+              newRoast = getFallbackRoast(currentStyle);
+            }
+            currentRoast = newRoast;
+            document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
+
+            const styleInfo = STYLES.find(s => s.id === currentStyle);
+            const badge = document.getElementById('roast-style-badge');
+            badge.textContent = styleInfo.label.toUpperCase();
+            badge.style.background = styleInfo.color;
+
+            // refresh pills active state
+            container.querySelectorAll('button').forEach(b => {
+              b.classList.remove('bg-white', 'text-black', 'border-white');
+              b.classList.add('bg-zinc-900', 'border-white/10');
+            });
+            pill.classList.remove('bg-zinc-900', 'border-white/10');
+            pill.classList.add('bg-white', 'text-black', 'border-white');
+
+          } catch (e) {
+            alert('Failed to re-roast: ' + e.message);
+          } finally {
+            resultScreen.style.opacity = '1';
+            resultScreen.style.pointerEvents = 'auto';
+          }
         };
         
         container.appendChild(pill);
       });
     }
 
-    // ==================== ACTIONS ====================
-    function roastAgain() {
-      const newRoast = getRoastWithIntensity(currentStyle, currentIntensity);
-      currentRoast = newRoast;
-      document.getElementById('roast-text').innerHTML = currentRoast;
+    // ==================== ACTIONS (VIRAL + REAL AI) ====================
+    async function roastAgain() {
+      if (!currentPhotoBase64) {
+        alert("Upload a photo first!");
+        return;
+      }
+      try {
+        const newRoast = await callGrokVision(currentPhotoBase64, currentStyle);
+        currentRoast = newRoast;
+        document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
+      } catch (e) {
+        currentRoast = getFallbackRoast(currentStyle);
+        document.getElementById('roast-text').innerHTML = currentRoast;
+      }
     }
 
-    function makeItMeaner() {
-      currentIntensity = Math.min(currentIntensity + 1, 4);
+    async function makeItMeaner() {
+      if (!currentPhotoBase64) return;
       
-      const newRoast = getRoastWithIntensity(currentStyle, currentIntensity);
-      currentRoast = newRoast;
+      // Increase "intensity" by using a more brutal prompt variation
+      const brutalStyle = 'brutal';
+      const originalStyle = currentStyle;
       
-      document.getElementById('roast-text').innerHTML = currentRoast;
+      currentStyle = brutalStyle;
       
-      // Visual feedback
-      const textEl = document.getElementById('roast-text');
-      textEl.style.transition = 'all 0.1s';
-      textEl.style.transform = 'scale(0.96)';
-      setTimeout(() => {
-        textEl.style.transform = 'scale(1)';
-      }, 80);
+      try {
+        const meanerRoast = await callGrokVision(currentPhotoBase64, 'brutal');
+        currentRoast = meanerRoast;
+        document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
+
+        // update badge to show it got brutal
+        const badge = document.getElementById('roast-style-badge');
+        badge.textContent = 'BRUTAL MODE 🔥';
+        badge.style.background = '#ff2e63';
+        badge.style.color = '#fff';
+
+        // refresh pills
+        setupResultStylePills();
+      } catch (e) {
+        alert("Couldn't make it meaner: " + e.message);
+        currentStyle = originalStyle;
+      }
     }
 
     function copyRoast() {
       const text = document.getElementById('roast-text').innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const originalText = event.currentTarget?.innerText || '';
+      navigator.clipboard.writeText(text + "\n\n🔥 Roasted by AI Roast Me").then(() => {
         const btns = document.querySelectorAll('button');
-        // Find the copy button and flash it
         const copyBtn = Array.from(btns).find(b => b.textContent.includes('COPY'));
         if (copyBtn) {
           const orig = copyBtn.innerHTML;
           copyBtn.innerHTML = 'COPIED!';
-          setTimeout(() => {
-            copyBtn.innerHTML = orig;
-          }, 1400);
+          setTimeout(() => { copyBtn.innerHTML = orig; }, 1400);
         }
       });
     }
@@ -705,7 +896,6 @@
       const wrapper = document.getElementById('share-photo-wrapper');
       const textContainer = document.getElementById('share-roast-text');
       
-      // Clone the photo
       wrapper.innerHTML = '';
       const img = document.createElement('img');
       img.src = currentPhotoURL;
@@ -720,7 +910,7 @@
       
       try {
         const canvas = await html2canvas(card.querySelector('.roast-card-export'), {
-          scale: 1.6,
+          scale: 2,
           backgroundColor: '#0a0a0a'
         });
         
@@ -729,35 +919,93 @@
         link.href = canvas.toDataURL('image/png');
         link.click();
       } catch (err) {
-        alert("Couldn't generate image. Try again or screenshot the roast instead.");
+        alert("Couldn't generate image. Screenshot the roast instead.");
       }
       
       card.style.display = 'none';
     }
 
-    async function shareRoast() {
-      const text = document.getElementById('roast-text').innerText;
-      
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: 'AI Roast Me',
-            text: `I just got cooked by AI Roast Me:\n\n${text}\n\nTry it: https://airoast.me`
+    // Improved viral sharing
+    async function shareCard() {
+      try {
+        await downloadRoastImage(); // ensure latest card is generated (or user can download)
+        
+        const text = document.getElementById('roast-text').innerText;
+        
+        if (navigator.canShare && navigator.canShare({ files: [] })) {
+          // Generate blob for share
+          const card = document.getElementById('share-card');
+          const wrapper = document.getElementById('share-photo-wrapper');
+          wrapper.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = currentPhotoURL;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.objectFit = 'cover';
+          wrapper.appendChild(img);
+          document.getElementById('share-roast-text').innerHTML = currentRoast;
+          card.style.display = 'block';
+
+          const canvas = await html2canvas(card.querySelector('.roast-card-export'), { scale: 1.8 });
+          card.style.display = 'none';
+
+          canvas.toBlob(async (blob) => {
+            const file = new File([blob], 'ai-roast-me.png', { type: 'image/png' });
+            try {
+              await navigator.share({
+                title: 'AI Roast Me',
+                text: text + ' 🔥',
+                files: [file]
+              });
+            } catch (err) {
+              fallbackSocialShare(text);
+            }
           });
-        } catch (e) {}
-      } else {
-        // Fallback: copy + alert
-        await navigator.clipboard.writeText(text);
-        alert("Roast copied! Now go post it and tag your friends.");
+        } else {
+          fallbackSocialShare(text);
+        }
+      } catch (e) {
+        fallbackSocialShare(document.getElementById('roast-text').innerText);
       }
+    }
+
+    function fallbackSocialShare(roastText) {
+      const shareText = encodeURIComponent(roastText + "\n\n🔥 Roasted by AI Roast Me");
+      // X
+      window.open(`https://x.com/intent/tweet?text=${shareText}`, '_blank');
+      // Also trigger download so user has the image ready to attach
+      downloadRoastImage();
+    }
+
+    function shareToX() {
+      const text = document.getElementById('roast-text').innerText;
+      const tweet = encodeURIComponent(text + "\n\nRoasted by AI Roast Me 🔥 ai-roast.me");
+      window.open(`https://x.com/intent/tweet?text=${tweet}`, '_blank');
+      // Pro tip: download the card so they can attach it
+      setTimeout(() => downloadRoastImage(), 300);
+    }
+
+    function shareToInstagram() {
+      alert("Instagram doesn't support direct web shares well.\n\n1. Tap 'Download Card'\n2. Open Instagram and post the image with the roast text as caption!");
+      downloadRoastImage();
+    }
+
+    function shareToTikTok() {
+      alert("For TikTok:\n\n1. Download the roast card\n2. Use it as a video background or reaction + add the roast text on screen!");
+      downloadRoastImage();
+    }
+
+    async function shareRoast() {
+      // General share (prefers native with file if possible)
+      await shareCard();
     }
 
     function resetToLanding() {
       currentPhotoURL = null;
       currentPhotoFile = null;
+      currentPhotoBase64 = null;
       currentIntensity = 1;
       
-      // Reset file input
       const input = document.getElementById('photo-input');
       if (input) input.value = '';
       
@@ -772,7 +1020,7 @@
       STYLES.forEach(style => {
         const pill = document.createElement('button');
         pill.className = `px-4 py-1 text-sm font-bold rounded-2xl border transition-all
-          ${style.id === 'savage' ? 'bg-white text-black border-white' : 'bg-zinc-950 border-white/20 hover:border-white/40'}`;
+          ${style.id === 'normal' ? 'bg-white text-black border-white' : 'bg-zinc-950 border-white/20 hover:border-white/40'}`;
         
         pill.textContent = style.label;
         
@@ -789,6 +1037,11 @@
         };
         
         container.appendChild(pill);
+
+        if (style.id === 'normal') {
+          pill.classList.remove('bg-zinc-950', 'border-white/20');
+          pill.classList.add('bg-white', 'text-black', 'border-white');
+        }
       });
     }
 
@@ -828,9 +1081,10 @@
       initUpload();
       initFakeStats();
       updateRoastCounter();
+      updateApiKeyUI();
       
-      // Default style
-      currentStyle = 'savage';
+      // Default style (matches new buttons)
+      currentStyle = 'normal';
       
       // Keyboard escape to go back
       document.addEventListener('keydown', (e) => {
@@ -851,7 +1105,7 @@
       // Make sure landing is shown
       showScreen('landing');
       
-      console.log('%c[AI Roast Me] App initialized. Ready to cook people.', 'color:#22ff88');
+      console.log('%c[AI Roast Me] App initialized with real Grok vision support.', 'color:#22ff88');
     }
 
     // Boot the app
