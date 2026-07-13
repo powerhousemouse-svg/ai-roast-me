@@ -1,0 +1,51 @@
+{
+  "name": "roastlord",
+  "version": "1.0.0",
+  "description": "RoastLord — upload a selfie, get absolutely cooked",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-www.js",
+    "build:vercel": "node scripts/build-vercel.js",
+    "assets:source": "node scripts/generate-assets.js",
+    "assets:native": "npx capacitor-assets generate --iconBackgroundColor '#000000' --iconBackgroundColorDark '#000000' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000'",
+    "assets": "npm run assets:source && npm run assets:native",
+    "cap:sync": "npm run build && npx cap sync",
+    "cap:ios": "npm run cap:sync && npx cap open ios",
+    "cap:android": "npm run cap:sync && npx cap open android",
+    "cap:run:ios": "npm run cap:sync && npx cap run ios",
+    "cap:run:android": "npm run cap:sync && npx cap run android",
+    "analytics": "node scripts/analytics-collector.js",
+    "test:roasts": "node scripts/test-roast-format.js",
+    "test:videos": "node scripts/generate-test-videos.js",
+    "test:videos:music": "node scripts/generate-test-videos-music.js",
+    "vercel:dev": "vercel dev",
+    "vercel:deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@capacitor-community/media": "^8.0.1",
+    "@capacitor/android": "^7.2.0",
+    "@capacitor/app": "^7.0.1",
+    "@capacitor/camera": "^7.0.1",
+    "@capacitor/core": "^7.2.0",
+    "@capacitor/filesystem": "^7.1.1",
+    "@capacitor/ios": "^7.2.0",
+    "@capacitor/share": "^7.0.1",
+    "@capacitor/splash-screen": "^7.0.1",
+    "@capacitor/status-bar": "^7.0.1",
+    "@vercel/kv": "^3.0.0",
+    "ffmpeg-static": "^5.3.0",
+    "stripe": "^17.7.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.2.0",
+    "canvas": "^3.2.3",
+    "esbuild": "^0.25.0"
+  },
+  "capacitor": {
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  }
+}

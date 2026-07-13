@@ -1,6 +1,6 @@
-# 🔥 AI Roast Me
+# 🔥 RoastLord
 
-A brutal, hilarious, viral AI roast generator web app. Upload a selfie and get absolutely cooked.
+A brutal, hilarious, viral roast generator web app. Upload a selfie and get absolutely cooked.
 
 ## Features
 
@@ -21,7 +21,29 @@ A brutal, hilarious, viral AI roast generator web app. Upload a selfie and get a
 - Progressive Web App (manifest + service worker)
 - Works completely offline after first load
 
-## Quick Deploy
+## App Store & Google Play (Native Apps)
+
+RoastLord can be published to **Apple App Store** and **Google Play** as a native app using Capacitor.
+
+```bash
+# One-time setup (requires Node.js 18+)
+chmod +x scripts/setup-native.sh
+./scripts/setup-native.sh
+
+# Then open native IDEs
+npm run cap:ios       # Xcode → Archive → App Store Connect
+npm run cap:android   # Android Studio → Signed AAB → Play Console
+```
+
+Full submission checklist: see **[APP_STORE.md](APP_STORE.md)**
+
+Native app features:
+- Take Selfie / Gallery picker (camera permissions)
+- Native share sheet with roast card image attached
+- Save to Photos via share sheet
+- Safe area support for notched iPhones
+
+## Quick Deploy (Web / PWA)
 
 ### Vercel / Netlify / GitHub Pages
 
@@ -45,12 +67,12 @@ This version connects to the real **xAI Grok Vision API** (model: `grok-4.3`).
 1. Get an API key at https://console.x.ai/
 2. In the app, click the **🔑 KEY** button in the top right (or it will prompt on first use)
 3. Paste your key (stored only in your browser's localStorage)
-4. Upload a photo — Grok will actually look at it and generate a personalized savage roast
+4. Upload a photo — RoastLord will actually look at it and generate a personalized savage roast
 
 The prompt is carefully engineered for **specific, witty, observational roasts** based on real visual details (clothing, expression, hair, vibe, etc.).
 
 ### Troubleshooting API errors (e.g. 403):
-- 403 Forbidden: Your API key/team lacks permission for the model (Grok 4.3 + vision), or no billing/credits, or account blocked. 
+- 403 Forbidden: Your API key/team lacks permission for the model (advanced vision), or no billing/credits, or account blocked. 
   - Go to https://console.x.ai/ , check your team's API key permissions, add credits if needed, or create a new key.
   - Ask your team admin.
   - The app will clear the bad key and prompt again.
@@ -63,6 +85,6 @@ The prompt is carefully engineered for **specific, witty, observational roasts**
 
 Pure static site. Works great on Vercel, Netlify, GitHub Pages, or even just opening the HTML locally.
 
-## Made with Grok
+## Powered by advanced AI vision
 
-Upgraded with real vision + viral sharing features.
+Upgraded with real vision + viral sharing features. (Built with Grok under the hood for the demo.)

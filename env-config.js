@@ -1,0 +1,2 @@
+// Local dev stub — production build writes dist/env-config.js from env vars
+window.__ROASTLORD_ENV__ = { API_PROXY_ENABLED: false, RL_ANALYTICS_URL: '', STRIPE_ENABLED: false, STRIPE_PUBLISHABLE_KEY: '' };

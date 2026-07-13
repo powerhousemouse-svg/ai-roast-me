@@ -5,5 +5,32 @@
 .idea/
 .vscode/
 
-# Optional local testing
+# Dependencies
 node_modules/
+
+# Capacitor build output
+www/
+
+# Vercel production build
+dist/
+
+# Native projects (generated via `npx cap add`)
+ios/
+android/
+
+# Signing / secrets
+local-dev-key.js
+.env
+.env.*
+*.keystore
+*.jks
+google-services.json
+GoogleService-Info.plist
+
+# Optional local testing
+*.log
+
+# Local analytics collector output
+analytics-events.jsonl
+analytics-summary.json
+.vercel

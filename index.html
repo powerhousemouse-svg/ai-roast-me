@@ -3111,8 +3111,15 @@ Rules:
       return new Blob([out], { type: 'application/octet-stream' });
     }
 
+    const ROAST_BEAT_COUNT = 5;
+
+    function pickRandomBeatIndex() {
+      return 1 + Math.floor(Math.random() * ROAST_BEAT_COUNT);
+    }
+
     async function encodeVideoOnServer(blob, opts = {}) {
       const headers = { 'Content-Type': blob.type || 'application/octet-stream' };
+      headers['X-Beat-Index'] = String(opts.beatIndex ?? pickRandomBeatIndex());
       if (opts.mode === 'frames') {
         headers['X-Encode-Mode'] = 'frames';
         headers['X-Frame-Count'] = String(opts.frameCount);
@@ -3205,19 +3212,14 @@ Rules:
       return done;
     }
 
-    async function polishVideoForTikTok(videoBlob) {
+    async function polishVideoForTikTok(videoBlob, beatIndex) {
       setVideoEncodeStatus('ENCODING HD...');
-      try {
-        const mp4 = await encodeVideoOnServer(videoBlob);
-        if (mp4?.size > 1024) return mp4;
-      } catch (err) {
-        console.warn('[video] server polish failed, using captured video:', err);
-      }
-      const type = videoBlob.type || 'video/mp4';
-      return new Blob([videoBlob], { type: type.includes('mp4') ? 'video/mp4' : type });
+      const mp4 = await encodeVideoOnServer(videoBlob, { beatIndex });
+      if (mp4?.size > 1024) return mp4;
+      throw new Error('Server encode returned empty video');
     }
 
-    async function tryServerFrameEncode(jpegBlobs, fps = 30) {
+    async function tryServerFrameEncode(jpegBlobs, fps = 30, beatIndex) {
       const bundle = await packJpegFrameBundle(jpegBlobs);
       if (bundle.size > VIDEO_ENCODE_MAX_BODY) {
         throw new Error(`Frame bundle too large (${Math.round(bundle.size / 1024)}KB)`);
@@ -3226,7 +3228,8 @@ Rules:
       const mp4 = await encodeVideoOnServer(bundle, {
         mode: 'frames',
         frameCount: jpegBlobs.length,
-        fps
+        fps,
+        beatIndex
       });
       return mp4?.size > 1024 ? mp4 : null;
     }
@@ -3485,6 +3488,7 @@ visibleLines.forEach((ln, i) => {
       const exportCtx = exportCanvas.getContext('2d', { alpha: false });
       const layout = buildRoastVideoLayout(ctx, photo, currentRoast);
       const assets = { photo, logo };
+      const beatIndex = pickRandomBeatIndex();
 
       const drawAtFrame = (frame) => {
         const t = Math.min(DURATION_SEC, frame / FPS);
@@ -3496,39 +3500,31 @@ visibleLines.forEach((ln, i) => {
         exportCtx.drawImage(canvas, 0, 0, exportW, exportH);
       };
 
-      if (isSafari() && canCaptureCanvasVideo()) {
-        try {
-          setVideoEncodeStatus('CAPTURING VIDEO... 0%');
-          const captured = await captureCanvasAsVideo(exportCanvas, drawExportAtFrame, TOTAL_FRAMES, FPS);
-          if (captured?.size > 2048) {
-            return await polishVideoForTikTok(captured);
-          }
-        } catch (err) {
-          console.warn('[video] safari capture failed:', err);
-        }
-      }
-
       setVideoEncodeStatus('RENDERING FRAMES... 0%');
       let frames = await renderRoastVideoFramesOnce(canvas, exportCanvas, drawAtFrame, TOTAL_FRAMES);
 
       try {
-        const serverMp4 = await tryServerFrameEncode(frames, FPS);
+        const serverMp4 = await tryServerFrameEncode(frames, FPS, beatIndex);
         if (serverMp4) return serverMp4;
       } catch (err) {
         console.warn('[video] server frame encode failed:', err);
         if (err.message?.includes('too large')) {
           setVideoEncodeStatus('RENDERING FRAMES... 0%');
           frames = await renderRoastVideoFramesOnce(canvas, exportCanvas, drawAtFrame, TOTAL_FRAMES, 0.26);
-          const retryMp4 = await tryServerFrameEncode(frames, FPS);
+          const retryMp4 = await tryServerFrameEncode(frames, FPS, beatIndex);
           if (retryMp4) return retryMp4;
         }
       }
 
       if (canCaptureCanvasVideo()) {
-        setVideoEncodeStatus('CAPTURING VIDEO... 0%');
-        const captured = await captureCanvasAsVideo(exportCanvas, drawExportAtFrame, TOTAL_FRAMES, FPS);
-        if (captured?.size > 2048) {
-          return await polishVideoForTikTok(captured);
+        try {
+          setVideoEncodeStatus('CAPTURING VIDEO... 0%');
+          const captured = await captureCanvasAsVideo(exportCanvas, drawExportAtFrame, TOTAL_FRAMES, FPS);
+          if (captured?.size > 2048) {
+            return await polishVideoForTikTok(captured, beatIndex);
+          }
+        } catch (err) {
+          console.warn('[video] canvas capture + polish failed:', err);
         }
       }
 
