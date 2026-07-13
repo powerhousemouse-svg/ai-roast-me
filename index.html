@@ -3478,6 +3478,25 @@ Rules:
       return (mime || '').includes('webm') ? 'webm' : 'mp4';
     }
 
+    function getBlobExtension(blob, isVideo = false) {
+      if (isVideo) return getVideoExtension(blob?.type);
+      const t = (blob?.type || '').toLowerCase();
+      if (t.includes('jpeg') || t.includes('jpg')) return 'jpg';
+      if (t.includes('webp')) return 'webp';
+      return 'png';
+    }
+
+    /** roastlord-pic-brutal.png · roastlord-vid-genz.mp4 */
+    function getRoastDownloadFilename(kind, blob) {
+      const style = String(currentStyle || 'roast').toLowerCase();
+      const allowed = ['brutal', 'genz', 'normal', 'british', 'dad'];
+      const safeStyle = allowed.includes(style) ? style : 'roast';
+      const isVideo = kind === 'vid' || (blob?.type || '').startsWith('video/');
+      const prefix = isVideo ? 'roastlord-vid' : 'roastlord-pic';
+      const ext = getBlobExtension(blob, isVideo);
+      return `${prefix}-${safeStyle}.${ext}`;
+    }
+
     const VIDEO_ENCODE_API = '/api/video/encode';
     const VIDEO_ENCODE_MAX_BODY = 4.0 * 1024 * 1024;
 
@@ -3963,7 +3982,7 @@ visibleLines.forEach((ln, i) => {
         const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
         if (!blob) throw new Error('no blob');
 
-        await saveCardBlob(blob);
+        await saveCardBlob(blob, getRoastDownloadFilename('pic', blob));
         try { await navigator.clipboard.writeText(getViralShareText(text)); } catch (_) {}
         if (!isIOS() || !isMobileDevice()) {
           showToast(isPremium()
@@ -4057,8 +4076,7 @@ visibleLines.forEach((ln, i) => {
 
     async function saveCardBlob(blob, filename, opts = {}) {
       const isVideo = (blob.type || '').startsWith('video/');
-      const defaultExt = isVideo ? getVideoExtension(blob.type) : 'png';
-      const name = filename || `roastlord-${Date.now()}.${defaultExt}`;
+      const name = filename || getRoastDownloadFilename(isVideo ? 'vid' : 'pic', blob);
       const mime = isVideo
         ? (blob.type && blob.type.includes('mp4') ? 'video/mp4' : (blob.type || 'video/mp4'))
         : (blob.type || 'image/png');
@@ -4147,11 +4165,12 @@ visibleLines.forEach((ln, i) => {
         const caption = text || getViralShareText(roastText);
 
         if (isNativeApp() && window.RoastLordNative?.shareCard) {
-          await window.RoastLordNative.shareCard(blob, caption, extraTitle);
+          await window.RoastLordNative.shareCard(blob, caption, extraTitle, getRoastDownloadFilename('pic', blob));
           return true;
         }
 
-        const file = new File([blob], 'roastlord-roast.png', { type: 'image/png' });
+        const picName = getRoastDownloadFilename('pic', blob);
+        const file = new File([blob], picName, { type: blob.type || 'image/png' });
         const shareData = { title: extraTitle, text: caption, files: [file] };
 
         if (navigator.canShare && navigator.canShare(shareData)) {
@@ -4191,7 +4210,7 @@ visibleLines.forEach((ln, i) => {
         const { blob, text } = await prepareShareAssets();
         _pendingShareBlob = blob;
         _pendingShareText = text;
-        await saveCardBlob(blob);
+        await saveCardBlob(blob, getRoastDownloadFilename('pic', blob));
         await copyShareCaption(text);
         showToast('Card saved + caption copied to clipboard.');
         setTimeout(() => showShareInstructions('all', text), 650);
@@ -4327,12 +4346,21 @@ visibleLines.forEach((ln, i) => {
       try {
         const caption = _pendingShareText || '';
         if (isNativeApp() && window.RoastLordNative?.shareCard) {
-          await window.RoastLordNative.shareCard(_pendingShareBlob, caption, 'RoastLord');
+          const isVideo = _pendingShareIsVideo || (_pendingShareBlob.type || '').startsWith('video/');
+          await window.RoastLordNative.shareCard(
+            _pendingShareBlob,
+            caption,
+            'RoastLord',
+            getRoastDownloadFilename(isVideo ? 'vid' : 'pic', _pendingShareBlob)
+          );
         } else {
           const isVideo = _pendingShareIsVideo || (_pendingShareBlob.type || '').startsWith('video/');
-          const ext = isVideo ? getVideoExtension(_pendingShareBlob.type) : 'png';
           const mime = _pendingShareBlob.type || (isVideo ? 'video/webm' : 'image/png');
-          const file = new File([_pendingShareBlob], `roastlord-roast.${ext}`, { type: mime });
+          const file = new File(
+            [_pendingShareBlob],
+            getRoastDownloadFilename(isVideo ? 'vid' : 'pic', _pendingShareBlob),
+            { type: mime }
+          );
           const data = { files: [file], text: caption, title: 'RoastLord' };
           if (navigator.canShare && navigator.canShare(data)) {
             await navigator.share(data);
@@ -4363,9 +4391,11 @@ visibleLines.forEach((ln, i) => {
         _pendingShareText = text;
         _pendingShareIsVideo = isTikTok;
         const iosTikTokVideo = isTikTok && isIOS() && isMobileDevice();
-        await saveCardBlob(blob, isTikTok
-          ? `roastlord-video-${Date.now()}.${getVideoExtension(blob.type)}`
-          : undefined, { deferIosVideo: iosTikTokVideo });
+        await saveCardBlob(
+          blob,
+          getRoastDownloadFilename(isTikTok ? 'vid' : 'pic', blob),
+          { deferIosVideo: iosTikTokVideo }
+        );
         await copyShareCaption(text);
 
         if (!isMobileDevice()) {
@@ -4426,7 +4456,7 @@ visibleLines.forEach((ln, i) => {
 
       const onDesktop = !isMobileDevice();
       const cardWhere = onDesktop
-        ? '<span class="font-mono text-[#ffd700]">roastlord-....png</span> from <strong>Downloads</strong>'
+        ? '<span class="font-mono text-[#ffd700]">roastlord-pic-brutal.png</span> from <strong>Downloads</strong>'
         : '<span class="font-mono text-[#ffd700]">roastlord card</span> from <strong>Photos / Recents</strong>';
 
       const common = '<div class="text-xs text-white/60 mt-2">Caption copied to clipboard.</div>';
@@ -4444,7 +4474,7 @@ visibleLines.forEach((ln, i) => {
       } else if (platform === 'tiktok') {
         title = 'Post to TikTok';
         const videoWhere = onDesktop
-          ? '<span class="font-mono text-[#ffd700]">roastlord-video....mp4</span> from <strong>Downloads</strong>'
+          ? '<span class="font-mono text-[#ffd700]">roastlord-vid-brutal.mp4</span> from <strong>Downloads</strong>'
           : '<span class="font-mono text-[#ffd700]">5s roast video</span> from <strong>Photos / Recents</strong>';
         let videoEmbed = '';
         if (!onDesktop && isIOS() && _pendingShareIsVideo && _pendingShareBlob) {

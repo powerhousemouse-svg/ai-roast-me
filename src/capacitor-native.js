@@ -86,9 +86,10 @@ const RoastLordNative = {
     return new File([blob], `photo-${Date.now()}.jpg`, { type: blob.type || 'image/jpeg' });
   },
 
-  async shareCard(blob, text, title = 'RoastLord') {
-    const filename = `roastlord-${Date.now()}.png`;
-    const fileUri = await writeBlobToCache(blob, filename);
+  async shareCard(blob, text, title = 'RoastLord', filename) {
+    const isVideo = (blob?.type || '').startsWith('video/');
+    const safeName = filename || (isVideo ? 'roastlord-vid-roast.mp4' : 'roastlord-pic-roast.png');
+    const fileUri = await writeBlobToCache(blob, safeName);
 
     await Share.share({
       title,
