@@ -3407,7 +3407,7 @@ Rules:
         ctx.restore();
       }
 
-      // === UPDATED TEXT DRAWING (Force first line at 0s) ===
+      // === SMOOTH TEXT DRAWING ===
 const visibleLines = lines.filter(Boolean);
 const lineCount = Math.max(1, visibleLines.length);
 const lineStagger = getVideoLineStagger(lineCount);
@@ -3420,9 +3420,10 @@ let ty = textY0;
 visibleLines.forEach((ln, i) => {
   let anim;
   if (i === 0) {
-    anim = FIRST_LINE_STYLE;           // Force instant full visibility
+    anim = FIRST_LINE_STYLE;
   } else {
-    anim = getExtraLineProgress(timeSec, i, lineStagger);
+    // Start extra lines earlier and faster
+    anim = getExtraLineProgress(timeSec * 1.4, i, lineStagger * 0.7);
   }
 
   if (!anim || anim.alpha <= 0.001) return;
