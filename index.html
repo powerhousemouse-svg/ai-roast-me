@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="RoastLord — one tap, get crowned & cooked. Viral AI roast cards. Share on TikTok. Free daily roasts.">
+  <meta name="description" content="RoastLord — upload a selfie, get absolutely cooked. Savage AI roasts + 5 sec TikTok videos with music. Try free.">
   <meta property="og:title" content="RoastLord — Get Absolutely Cooked">
-  <meta property="og:description" content="Upload a selfie. Get roasted. Share the damage. #RoastLord">
+  <meta property="og:description" content="Upload a selfie. AI roasts you in 5 seconds. Share the damage on TikTok.">
   <title>RoastLord</title>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6295924311353359"
      crossorigin="anonymous"></script>
@@ -370,100 +370,536 @@
 
     .style-pill-locked { opacity: 0.55; }
 
+    /* ── Landing v2 ── */
+    .landing-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255, 46, 99, 0.18), transparent 55%),
+        radial-gradient(ellipse 60% 50% at 90% 20%, rgba(34, 255, 136, 0.12), transparent 50%),
+        linear-gradient(180deg, #0d0d10 0%, #050506 100%);
+      padding: 2rem 1.25rem 1.75rem;
+    }
+    .landing-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #22ff88;
+      background: rgba(34, 255, 136, 0.1);
+      border: 1px solid rgba(34, 255, 136, 0.28);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+    }
+    .hero-headline {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      font-size: clamp(2.25rem, 8vw, 3.25rem);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+    .hero-gradient-text {
+      background: linear-gradient(135deg, #fff 0%, #ffd700 45%, #22ff88 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .cta-primary {
+      display: block;
+      width: 100%;
+      max-width: 22rem;
+      margin: 0 auto;
+      padding: 1.15rem 1.5rem;
+      border-radius: 1.25rem;
+      font-size: 1.125rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      text-align: center;
+      background: linear-gradient(135deg, #ffd700 0%, #f5c518 50%, #22ff88 100%);
+      color: #000;
+      box-shadow: 0 6px 0 #b8860b, 0 16px 48px rgba(255, 215, 0, 0.35);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      animation: cta-glow 2.5s ease-in-out infinite;
+    }
+    .cta-primary:active { transform: scale(0.97) translateY(2px); box-shadow: 0 3px 0 #b8860b; }
+    @keyframes cta-glow {
+      0%, 100% { box-shadow: 0 6px 0 #b8860b, 0 16px 48px rgba(255, 215, 0, 0.35); }
+      50% { box-shadow: 0 6px 0 #b8860b, 0 20px 56px rgba(34, 255, 136, 0.25); }
+    }
+    .cta-secondary {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.55);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .cta-secondary:hover { color: #22ff88; }
+    .stat-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+      padding: 0.65rem 0.5rem;
+      text-align: center;
+    }
+    .step-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1.25rem;
+      padding: 1.1rem 1rem;
+      text-align: center;
+      transition: border-color 0.2s ease;
+    }
+    .step-card:hover { border-color: rgba(34, 255, 136, 0.25); }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 900;
+      background: rgba(255, 215, 0, 0.15);
+      color: #ffd700;
+      margin-bottom: 0.5rem;
+    }
+    .example-scroll {
+      display: flex;
+      gap: 0.85rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
+      margin: 0 -1.25rem;
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      scrollbar-width: none;
+    }
+    .example-scroll::-webkit-scrollbar { display: none; }
+    .example-card {
+      flex: 0 0 11.5rem;
+      scroll-snap-align: start;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      background: #0a0a0c;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+    .example-phone {
+      position: relative;
+      aspect-ratio: 9 / 16;
+      background: #050506;
+      overflow: hidden;
+    }
+    .example-phone video,
+    .example-phone img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .example-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.25);
+      font-size: 1.75rem;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .example-phone.playing .example-play { opacity: 0; }
+    .example-meta {
+      padding: 0.65rem 0.75rem 0.75rem;
+    }
+    .example-style {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.45rem;
+      border-radius: 999px;
+      margin-bottom: 0.35rem;
+    }
+    .example-style-brutal { background: rgba(255, 46, 99, 0.2); color: #ff2e63; }
+    .example-style-genz { background: rgba(255, 149, 0, 0.2); color: #ff9500; }
+    .example-roast {
+      font-size: 0.6875rem;
+      line-height: 1.35;
+      color: rgba(255, 255, 255, 0.88);
+      font-weight: 600;
+    }
+    .section-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.38);
+    }
+    .upload-panel {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1.5rem;
+      padding: 1.25rem 1rem 1.5rem;
+    }
+    .nav-logo-sm {
+      height: 1.75rem;
+      width: auto;
+      object-fit: contain;
+    }
+    .nav-cta {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ffd700, #22ff88);
+      color: #000;
+      white-space: nowrap;
+    }
+    .testimonial-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 1rem;
+      padding: 0.85rem 1rem;
+    }
+    @media (min-width: 640px) {
+      .example-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.85rem;
+      }
+      .example-grid .example-card { flex: none; }
+      .example-scroll { display: none; }
+    }
+    @media (max-width: 639px) {
+      .example-grid { display: none; }
+    }
+
   </style>
 </head>
 <body class="bg-black text-white min-h-screen overflow-x-hidden">
-  <!-- Top nav / game HUD -->
-  <div class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-lg">
-    <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-end gap-2">
-      <div class="flex items-center gap-1.5 text-[10px] shrink-0">
-        <button onclick="showLeaderboard()" class="hud-pill px-2 py-1 rounded-full font-bold flex items-center gap-1" title="Leaderboard">
+  <!-- Top nav + game HUD -->
+  <header class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-lg">
+    <div class="max-w-xl mx-auto px-4 h-12 flex items-center justify-between gap-2">
+      <a href="#" onclick="event.preventDefault(); showScreen('landing'); window.scrollTo({top:0,behavior:'smooth'})" class="flex items-center gap-2 shrink-0" aria-label="RoastLord home">
+        <img src="/assets/roastlord-logo.png" alt="" class="nav-logo-sm rl-logo" width="120" height="36" decoding="async">
+      </a>
+      <nav class="hidden sm:flex items-center gap-4 text-[11px] font-bold text-white/45">
+        <button type="button" onclick="scrollLandingTo('how-it-works')" class="hover:text-white transition-colors">How it works</button>
+        <button type="button" onclick="scrollLandingTo('examples')" class="hover:text-white transition-colors">Examples</button>
+      </nav>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" onclick="choosePhoto()" class="nav-cta meme-btn">Try Free</button>
+        <button onclick="showLeaderboard()" class="hud-pill px-2 py-1 rounded-full font-bold flex items-center gap-1 text-[10px]" title="Leaderboard">
           <span>🏆</span><span id="hud-rank">#—</span>
         </button>
-        <button onclick="showReferralModal()" class="hud-pill px-2 py-1 rounded-full font-bold flex items-center gap-1" title="Invite friends">
-          <span>👥</span><span id="hud-invites">0/3</span>
-        </button>
-        <button onclick="showUpgradeScreen('limit')" class="hud-pill px-2.5 py-1 rounded-full font-black text-[#ffd700] flex items-center gap-1" id="hud-roasts-left" title="Roasts remaining">
+        <button onclick="showUpgradeScreen('limit')" class="hud-pill px-2 py-1 rounded-full font-black text-[#ffd700] flex items-center gap-1 text-[10px]" id="hud-roasts-left" title="Roasts remaining">
           <span>5</span><img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true">
-        </button>
-        <button onclick="showUpgradeScreen()" id="hud-premium-btn" class="hidden hud-pill px-2 py-1 rounded-full font-black text-[10px] text-[#ffd700] border border-[#ffd700]/30">
-          GO PREMIUM
         </button>
         <button onclick="showApiKeyModal()" class="px-2 py-1 rounded-full bg-white/5 text-white/50 text-[9px]" id="api-key-btn" title="API Key">
           <span id="api-key-status">🔑</span>
         </button>
       </div>
     </div>
-    <!-- Streak bar -->
     <div class="max-w-xl mx-auto px-4 pb-2 flex items-center gap-3 text-[10px]">
-      <div class="flex items-center gap-1 text-orange-400 font-bold streak-fire">
-        <span>🔥</span><span id="hud-streak">0</span><span class="text-white/40 font-medium">day streak</span>
-      </div>
+      <button onclick="showReferralModal()" class="flex items-center gap-1 text-orange-400 font-bold streak-fire shrink-0">
+        <span>🔥</span><span id="hud-streak">0</span><span class="text-white/40 font-medium">streak</span>
+      </button>
       <div class="flex-1 progress-bar"><div class="progress-fill" id="daily-progress" style="width:0%"></div></div>
-      <div class="text-white/50 font-mono" id="hud-score">0 DMG</div>
+      <div class="text-white/50 font-mono shrink-0" id="hud-score">0 DMG</div>
+      <button onclick="showUpgradeScreen()" id="hud-premium-btn" class="hidden hud-pill px-2 py-0.5 rounded-full font-black text-[9px] text-[#ffd700]">PRO</button>
+      <button onclick="showReferralModal()" class="hud-pill px-2 py-0.5 rounded-full font-bold text-[9px] shrink-0" title="Invite friends">
+        <span id="hud-invites">0/3</span> 👥
+      </button>
     </div>
-  </div>
+  </header>
 
   <!-- ==================== LANDING ==================== -->
   <div id="landing" class="section active pt-[5.5rem]">
-    <div class="max-w-xl mx-auto px-5 pt-6 pb-32">
+    <div class="max-w-xl mx-auto px-5 pt-4 pb-36">
 
-      <!-- Simple onboarding: upload first -->
-      <div class="text-center mb-6">
-        <h1 class="mb-2">
-          <img src="/assets/roastlord-logo.png" alt="RoastLord" class="rl-logo rl-logo-hero" width="320" height="96" decoding="async">
+      <!-- Hero -->
+      <section class="landing-hero text-center mb-8 relative z-[1]">
+        <div class="hero-badge mb-4">🔥 TikTok · Reels · Stories</div>
+        <h1 class="hero-headline mb-3">
+          <span class="hero-gradient-text">Get Absolutely<br>Cooked.</span>
         </h1>
-        <p class="text-white/55 text-sm max-w-xs mx-auto">Upload a selfie. Get roasted. Share the damage.</p>
-      </div>
-
-      <div class="onboarding-steps mb-4">
-        <span class="active">① UPLOAD</span>
-        <span>→</span>
-        <span>② GET COOKED</span>
-        <span>→</span>
-        <span>③ GO VIRAL</span>
-      </div>
-
-      <button onclick="choosePhoto()"
-              class="meme-btn crown-btn upload-hero-btn w-full max-w-md mx-auto block py-6 rounded-3xl font-black text-2xl tracking-tight mb-3">
-        📷 UPLOAD PHOTO
-      </button>
-      <p class="text-center text-[11px] text-white/45 mb-6">Selfie, photo library, or any pic — free to try</p>
-
-      <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
-
-      <div 
-        id="upload-zone"
-        class="upload-zone mx-auto max-w-md border border-dashed border-white/15 hover:border-[#ffd700]/50 bg-zinc-950/60 rounded-2xl py-4 px-5 text-center cursor-pointer active:scale-[0.985] transition-all mb-5"
-        onclick="choosePhoto()">
-        <div class="text-xs font-semibold text-white/50">or drag &amp; drop here</div>
-      </div>
-
-      <div class="text-center mb-4">
-        <div class="inline-block px-4 py-2 rounded-full border border-[#ffd700]/30 bg-[#ffd700]/5">
-          <span class="text-[10px] font-bold tracking-[2px] text-[#ffd700]">TIKTOK VIRAL FORMAT</span>
-          <span class="block text-[10px] text-white/45 mt-0.5">max 18 words · text at 0s · 5 sec clip</span>
-        </div>
-      </div>
-
-      <details class="mb-6 group">
-        <summary class="text-center text-[10px] font-bold tracking-[2px] text-white/40 cursor-pointer list-none">
-          OPTIONAL: PICK ROAST STYLE ▾
-        </summary>
-        <div class="flex flex-wrap gap-2 justify-center mt-3" id="style-pills-landing"></div>
-      </details>
-
-      <div class="text-center">
-        <p class="text-xs text-white/40">Ages 11+ · Brutal Mode 16+ · Explicit language 18+ · Photos stay on your device</p>
-        <p class="text-xs text-white/30 mt-1">
-          <a href="privacy-policy.html" class="underline underline-offset-2 hover:text-white/50">Privacy Policy</a>
-          <span class="text-white/20"> · </span>
-          <button onclick="showRestoreModal()" class="underline underline-offset-2 hover:text-white/50">Restore purchases</button>
+        <p class="text-white/60 text-sm sm:text-base max-w-[18rem] mx-auto leading-relaxed mb-6">
+          Upload a selfie. AI roasts you in <strong class="text-white">5 seconds</strong> with music. Share the damage.
         </p>
+        <button type="button" onclick="choosePhoto()" class="meme-btn cta-primary mb-3">
+          Generate Roast — Try Free
+        </button>
+        <button type="button" onclick="scrollLandingTo('examples')" class="cta-secondary block mx-auto">
+          See example roasts ↓
+        </button>
+        <div class="grid grid-cols-3 gap-2 mt-6">
+          <div class="stat-pill">
+            <div class="font-mono text-base sm:text-lg font-black crown-glow" id="total-roasts">2.4M+</div>
+            <div class="text-[9px] text-white/45 mt-0.5">Roasted</div>
+          </div>
+          <div class="stat-pill">
+            <div class="font-mono text-base sm:text-lg font-black text-[#22ff88]">5 sec</div>
+            <div class="text-[9px] text-white/45 mt-0.5">HD + Music</div>
+          </div>
+          <div class="stat-pill">
+            <div class="font-mono text-base sm:text-lg font-black text-[#ff2e63]" id="live-today">148k</div>
+            <div class="text-[9px] text-white/45 mt-0.5">Today</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Social proof strip -->
+      <div class="flex flex-wrap justify-center gap-2 mb-10 text-[10px] font-semibold text-white/40">
+        <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">⭐ 4.9 app vibe</span>
+        <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">🎵 Beat included</span>
+        <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">📱 Share to TikTok</span>
+        <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">🆓 Free daily roasts</span>
+      </div>
+
+      <!-- How it works -->
+      <section id="how-it-works" class="mb-10 scroll-mt-24">
+        <h2 class="section-label text-center mb-4">How it works</h2>
+        <div class="grid grid-cols-3 gap-2 sm:gap-3">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="text-xs font-black text-white mb-1">Upload</div>
+            <div class="text-[10px] text-white/45 leading-snug">Selfie or any pic from your camera roll</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="text-xs font-black text-white mb-1">Get Cooked</div>
+            <div class="text-[10px] text-white/45 leading-snug">Savage AI roast + 5s video with music</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="text-xs font-black text-white mb-1">Go Viral</div>
+            <div class="text-[10px] text-white/45 leading-snug">Download &amp; post to TikTok or Stories</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Examples -->
+      <section id="examples" class="mb-10 scroll-mt-24">
+        <div class="flex items-end justify-between mb-4">
+          <div>
+            <h2 class="section-label">Real roast previews</h2>
+            <p class="text-sm font-bold text-white mt-1">Tap to play · Brutal &amp; Gen Z</p>
+          </div>
+          <span class="text-[10px] text-white/35 font-mono">6 clips</span>
+        </div>
+
+        <!-- Mobile: horizontal scroll -->
+        <div class="example-scroll" id="example-scroll-mobile">
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-genz-1.mp4" poster="/assets/examples/v6-genz-1.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-genz">Gen Z</span>
+              <p class="example-roast">"No cap your aura is cooked. That smile screams mid and zero rizz."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-brutal-1.mp4" poster="/assets/examples/v6-brutal-1.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-brutal">Brutal</span>
+              <p class="example-roast">"Bro your smirk is stupid ugly. That face ruins the whole photo, period."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-genz-2.mp4" poster="/assets/examples/v6-genz-2.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-genz">Gen Z</span>
+              <p class="example-roast">"Not you posting this delulu pic. Your face is mid and giving NPC."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-brutal-2.mp4" poster="/assets/examples/v6-brutal-2.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-brutal">Brutal</span>
+              <p class="example-roast">"Your face is genuinely embarrassing today. That grin makes you look even stupider."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-genz-3.mp4" poster="/assets/examples/v6-genz-3.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-genz">Gen Z</span>
+              <p class="example-roast">"Bro your rizz died on arrival. This fit is mid and you're cooked."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-brutal-3.mp4" poster="/assets/examples/v6-brutal-3.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-brutal">Brutal</span>
+              <p class="example-roast">"Bro you look tired and ugly. That dead stare killed whatever vibe you had."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop: grid -->
+        <div class="example-grid" id="example-grid-desktop">
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-genz-1.mp4" poster="/assets/examples/v6-genz-1.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-genz">Gen Z</span>
+              <p class="example-roast">"No cap your aura is cooked. That smile screams mid and zero rizz."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-brutal-1.mp4" poster="/assets/examples/v6-brutal-1.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-brutal">Brutal</span>
+              <p class="example-roast">"Bro your smirk is stupid ugly. That face ruins the whole photo, period."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-genz-2.mp4" poster="/assets/examples/v6-genz-2.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-genz">Gen Z</span>
+              <p class="example-roast">"Not you posting this delulu pic. Your face is mid and giving NPC."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-brutal-2.mp4" poster="/assets/examples/v6-brutal-2.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-brutal">Brutal</span>
+              <p class="example-roast">"Your face is genuinely embarrassing today. That grin makes you look even stupider."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-genz-3.mp4" poster="/assets/examples/v6-genz-3.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-genz">Gen Z</span>
+              <p class="example-roast">"Bro your rizz died on arrival. This fit is mid and you're cooked."</p>
+            </div>
+          </div>
+          <div class="example-card" data-example>
+            <div class="example-phone" onclick="playExampleVideo(this)">
+              <video src="/assets/examples/v6-brutal-3.mp4" poster="/assets/examples/v6-brutal-3.jpg" muted playsinline loop preload="metadata"></video>
+              <span class="example-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="example-meta">
+              <span class="example-style example-style-brutal">Brutal</span>
+              <p class="example-roast">"Bro you look tired and ugly. That dead stare killed whatever vibe you had."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text testimonials -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
+          <div class="testimonial-card">
+            <div class="text-[10px] text-[#22ff88] font-bold mb-1">@maya.roasts · TikTok</div>
+            <p class="text-xs text-white/75 leading-relaxed">"Posted my roast and it hit 40k views in a day. The Brutal mode is actually unhinged."</p>
+          </div>
+          <div class="testimonial-card">
+            <div class="text-[10px] text-[#ff9500] font-bold mb-1">@cooked.again · IG</div>
+            <p class="text-xs text-white/75 leading-relaxed">"Gen Z mode had me crying. 5 second clip + music = instant story content."</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Upload panel -->
+      <section id="upload" class="upload-panel mb-8 scroll-mt-24">
+        <h2 class="text-center font-black text-lg tracking-tight mb-1">Your turn.</h2>
+        <p class="text-center text-xs text-white/45 mb-4">Pick a style, upload a photo, get cooked in seconds.</p>
+
+        <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+
+        <div class="flex flex-wrap gap-2 justify-center mb-4" id="style-pills-landing"></div>
+
+        <button type="button" onclick="choosePhoto()"
+                class="meme-btn cta-primary mb-3 text-base">
+          📷 Upload Photo &amp; Generate
+        </button>
+
+        <div
+          id="upload-zone"
+          class="upload-zone border border-dashed border-white/15 hover:border-[#22ff88]/40 bg-black/40 rounded-xl py-5 px-4 text-center cursor-pointer active:scale-[0.985] transition-all"
+          onclick="choosePhoto()">
+          <div class="text-2xl mb-1 opacity-60">📁</div>
+          <div class="text-xs font-semibold text-white/55">or drag &amp; drop a photo here</div>
+          <div class="text-[10px] text-white/30 mt-1">Selfie · photo library · any pic</div>
+        </div>
+
+        <div class="text-center mt-4">
+          <div class="inline-block px-3 py-1.5 rounded-full border border-[#ffd700]/25 bg-[#ffd700]/5">
+            <span class="text-[9px] font-bold tracking-[0.12em] text-[#ffd700]">TIKTOK VIRAL FORMAT</span>
+            <span class="block text-[9px] text-white/40 mt-0.5">18 words max · text at 0s · 5 sec + music</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Referral -->
+      <div onclick="showReferralModal()" class="hud-pill rounded-2xl p-4 cursor-pointer active:scale-[0.98] transition-transform mb-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs font-black text-[#ffd700]">INVITE 3 FRIENDS → 10 FREE ROASTS</div>
+            <div class="text-[11px] text-white/60 mt-0.5 flex items-center gap-1 flex-wrap">Share your link · earn <img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true"> roasts</div>
+          </div>
+          <div class="text-xl text-[#ffd700]">→</div>
+        </div>
+        <div class="progress-bar mt-3"><div class="progress-fill" id="referral-progress-landing" style="width:0%"></div></div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-3">
+          <span class="section-label inline-flex items-center gap-1"><img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true"> Crown holders today</span>
+          <button type="button" onclick="showLeaderboard()" class="text-[10px] text-[#ffd700] font-bold">View all →</button>
+        </div>
+        <div id="mini-leaderboard" class="space-y-2"></div>
       </div>
 
       <!-- Ads (free users only) -->
-      <div id="ad-container" class="hidden mt-8 mx-auto max-w-md">
+      <div id="ad-container" class="hidden mb-8 mx-auto max-w-md">
         <p class="text-[9px] text-center text-white/30 mb-2 tracking-widest">AD</p>
         <ins class="adsbygoogle block rounded-xl overflow-hidden"
              style="display:block;min-height:90px"
@@ -473,74 +909,21 @@
              data-full-width-responsive="true"></ins>
       </div>
 
-      <!-- Referral teaser -->
-      <div onclick="showReferralModal()" class="mt-8 hud-pill rounded-2xl p-4 cursor-pointer active:scale-[0.98] transition-transform">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-xs font-black text-[#ffd700]">INVITE 3 FRIENDS</div>
-            <div class="text-[11px] text-white/60 mt-0.5 flex items-center gap-1 flex-wrap">Share link = +1 roast · 3 friends = 10 free <img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true"></div>
-          </div>
-          <div class="text-2xl">→</div>
-        </div>
-        <div class="progress-bar mt-3"><div class="progress-fill" id="referral-progress-landing" style="width:0%"></div></div>
-      </div>
-
-      <!-- Mini leaderboard -->
-      <div class="mt-8">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-[10px] font-bold tracking-[1.5px] text-white/40 inline-flex items-center gap-1"><img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true"> TODAY'S CROWN HOLDERS</span>
-          <button onclick="showLeaderboard()" class="text-[10px] text-[#ffd700] font-bold">VIEW ALL →</button>
-        </div>
-        <div id="mini-leaderboard" class="space-y-2"></div>
-      </div>
-
-      <!-- Social Proof -->
-      <div class="mt-10 text-center">
-        <div class="flex justify-center gap-x-6 text-sm">
-          <div>
-            <div class="font-mono text-2xl font-black tracking-tighter crown-glow" id="total-roasts">2,487,392</div>
-            <div class="text-[10px] text-white/50 tracking-widest -mt-1">VICTIMS ROASTED</div>
-          </div>
-          <div class="w-px bg-white/10"></div>
-          <div>
-            <div class="font-mono text-2xl font-black tracking-tighter text-[#22ff88]" id="live-today">148k</div>
-            <div class="text-[10px] text-white/50 tracking-widest -mt-1">TODAY 🔥</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Example roasts -->
-      <div class="mt-12">
-        <div class="text-xs font-bold tracking-[1.5px] text-white/40 text-center mb-4">VIRAL ROASTS THIS WEEK</div>
-        
-        <div class="grid grid-cols-2 gap-3">
-          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-3">
-            <div class="flex gap-3">
-              <img src="https://picsum.photos/id/1011/64/64" class="w-10 h-10 rounded-xl object-cover ring-1 ring-white/10" alt="">
-              <div class="flex-1 min-w-0">
-                <div class="text-xs text-white/50">Sarah K • Gen Z</div>
-                <div class="text-sm leading-tight text-white/90 mt-0.5">"Your aura is giving 'I peaked in high school and it was downhill from there' energy."</div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-3">
-            <div class="flex gap-3">
-              <img src="https://picsum.photos/id/1005/64/64" class="w-10 h-10 rounded-xl object-cover ring-1 ring-white/10" alt="">
-              <div class="flex-1 min-w-0">
-                <div class="text-xs text-white/50">Marcus T • Brutal</div>
-                <div class="text-sm leading-tight text-white/90 mt-0.5">"Brother you look like you were designed in a group project by people who hate each other."</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <footer class="text-center pb-4">
+        <p class="text-[11px] text-white/35 leading-relaxed">Ages 11+ · Brutal 16+ · Explicit 18+ · Photos stay on your device</p>
+        <p class="text-[11px] text-white/25 mt-2">
+          <a href="privacy-policy.html" class="underline underline-offset-2 hover:text-white/45">Privacy Policy</a>
+          <span class="text-white/15"> · </span>
+          <button type="button" onclick="showRestoreModal()" class="underline underline-offset-2 hover:text-white/45">Restore purchases</button>
+        </p>
+      </footer>
     </div>
   </div>
 
   <!-- Floating mega CTA (mobile) -->
   <div id="mega-cta-bar">
-    <button onclick="choosePhoto()" class="meme-btn mega-cta crown-btn py-4 rounded-2xl font-black text-lg tracking-tight">
-      📷 UPLOAD PHOTO
+    <button type="button" onclick="choosePhoto()" class="meme-btn mega-cta cta-primary py-3.5 rounded-2xl text-base max-w-none w-[calc(100%-2rem)]">
+      Generate Roast — Try Free
     </button>
   </div>
 
@@ -2460,6 +2843,36 @@ Rules:
     function showScreen(screen) {
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.getElementById(screen).classList.add('active');
+    }
+
+    function scrollLandingTo(sectionId) {
+      showScreen('landing');
+      requestAnimationFrame(() => {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+    function playExampleVideo(phoneEl) {
+      const video = phoneEl?.querySelector('video');
+      if (!video) return;
+      document.querySelectorAll('.example-phone video').forEach((v) => {
+        if (v !== video) {
+          v.pause();
+          v.closest('.example-phone')?.classList.remove('playing');
+        }
+      });
+      if (video.paused) {
+        video.muted = false;
+        video.play().catch(() => {
+          video.muted = true;
+          video.play();
+        });
+        phoneEl.classList.add('playing');
+      } else {
+        video.pause();
+        phoneEl.classList.remove('playing');
+      }
     }
 
     function updateRoastCounter() {
