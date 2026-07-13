@@ -4,11 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="Upload a selfie. Get absolutely cooked. Brutal, hilarious AI roasts.">
-  <title>AI Roast Me 🔥</title>
+  <meta name="description" content="RoastLord — one tap, get crowned & cooked. Viral AI roast cards. Share on TikTok. Free daily roasts.">
+  <meta property="og:title" content="RoastLord — Get Absolutely Cooked">
+  <meta property="og:description" content="Upload a selfie. Get roasted. Share the damage. #RoastLord">
+  <title>RoastLord</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6295924311353359"
+     crossorigin="anonymous"></script>
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="icon" href="icons/icon-48.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RoastLord">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
     
@@ -16,10 +28,20 @@
       --neon-green: #22ff88;
       --neon-pink: #ff2e63;
       --neon-cyan: #00f0ff;
+      --crown-gold: #ffd700;
+      --crown-glow: #f5c518;
     }
 
     body {
       font-family: 'Inter', system_ui, sans-serif;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    .native-app .fixed.top-0 {
+      padding-top: env(safe-area-inset-top);
     }
 
     .font-display {
@@ -103,13 +125,6 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .roast-card-export {
-      width: 1080px;
-      height: 1080px;
-      font-size: 42px;
-      line-height: 1.25;
-    }
-
     .style-pill {
       transition: all 0.15s ease;
     }
@@ -124,107 +139,379 @@
       font-weight: 600;
       letter-spacing: -0.01em;
     }
+
+    /* Toast for friendly share feedback (no more blocking alerts) */
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translate(-50%, 16px);
+      background: #0f0f12;
+      color: #f1f1f3;
+      border: 1px solid #22ff88;
+      padding: 11px 18px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.18s cubic-bezier(0.23,1,0.32,1), opacity 0.18s ease;
+      z-index: 99999;
+      max-width: 92vw;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+      pointer-events: auto;
+    }
+
+    #share-instructions {
+      transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.15s ease;
+    }
+    #share-instructions.hidden {
+      display: none;
+    }
+
+    .share-tiktok { background: linear-gradient(135deg, #ff0050, #00f2ea); color: #fff; border: none; }
+
+    .btn-loading {
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .demo-banner {
+      background: rgba(34, 255, 136, 0.08);
+      border: 1px solid rgba(34, 255, 136, 0.25);
+    }
+
+    .crown-glow { color: var(--crown-gold); text-shadow: 0 0 12px rgba(255, 215, 0, 0.45); }
+    .crown-border { border-color: rgba(255, 215, 0, 0.35); box-shadow: 0 0 24px rgba(255, 215, 0, 0.12); }
+    .crown-btn {
+      background: linear-gradient(135deg, #ffd700 0%, #f5c518 50%, #e6a800 100%);
+      color: #000;
+      box-shadow: 0 4px 0 #b8860b, 0 8px 24px rgba(255, 215, 0, 0.35);
+    }
+    .crown-btn:active { transform: scale(0.96) translateY(2px); box-shadow: 0 2px 0 #b8860b; }
+
+    .mega-cta {
+      position: fixed;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+      width: calc(100% - 32px);
+      max-width: 420px;
+      animation: cta-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes cta-pulse {
+      0%, 100% { box-shadow: 0 4px 0 #b8860b, 0 8px 32px rgba(255, 215, 0, 0.4); }
+      50% { box-shadow: 0 4px 0 #b8860b, 0 12px 48px rgba(255, 215, 0, 0.55); }
+    }
+
+    .hud-pill {
+      background: rgba(255, 215, 0, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.22);
+    }
+
+    .rl-logo {
+      object-fit: contain;
+      filter: drop-shadow(0 2px 10px rgba(255, 120, 0, 0.35));
+    }
+    /* Hero logo — matches former 👑 + RoastLord title block; +20% on phones */
+    .rl-logo-hero {
+      height: 6rem;
+      width: auto;
+      max-width: min(20rem, 88vw);
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @media (max-width: 768px) {
+      .rl-logo-hero {
+        height: 7.2rem;
+        max-width: min(24rem, 92vw);
+      }
+    }
+
+    .pepper-icon {
+      display: inline-block;
+      vertical-align: -0.12em;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .pepper-icon-xs { height: 0.9em; max-height: 12px; }
+    .pepper-icon-sm { height: 1em; max-height: 14px; }
+    .pepper-icon-md { height: 1.25rem; }
+    .pepper-icon-lg { height: 1.875rem; }
+
+    .viral-card-frame {
+      aspect-ratio: 9 / 16;
+      max-width: 320px;
+      margin: 0 auto;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      border: 2px solid rgba(255, 215, 0, 0.28);
+      box-shadow: 0 0 40px rgba(34, 255, 136, 0.12), 0 12px 40px rgba(0, 0, 0, 0.55);
+      background: #08080a;
+    }
+    .viral-card-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .score-pop {
+      animation: score-pop 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    @keyframes score-pop {
+      0% { transform: scale(0.6); opacity: 0; }
+      70% { transform: scale(1.08); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .streak-fire { animation: flicker 1.5s ease-in-out infinite alternate; }
+    @keyframes flicker {
+      from { opacity: 0.85; }
+      to { opacity: 1; }
+    }
+
+    .leader-row:nth-child(1) { background: rgba(255, 215, 0, 0.1); border-color: rgba(255, 215, 0, 0.3); }
+    .leader-row.you { border-color: #22ff88; background: rgba(34, 255, 136, 0.06); }
+
+    .modal-backdrop { background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); }
+
+    .progress-bar { height: 6px; border-radius: 99px; background: #1a1a1a; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #ffd700, #22ff88); transition: width 0.4s ease; }
+
+    #landing.active ~ #mega-cta-bar { display: block; }
+    #mega-cta-bar { display: none; }
+
+    .upload-hero-btn {
+      min-height: 72px;
+      box-shadow: 0 6px 0 #b8860b, 0 12px 40px rgba(255, 215, 0, 0.45);
+      animation: upload-pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes upload-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .onboarding-steps {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.35);
+    }
+    .onboarding-steps span.active { color: #ffd700; }
+
+    .upgrade-modal {
+      max-height: 92vh;
+      overflow-y: auto;
+      background: linear-gradient(180deg, #0f0f14 0%, #050506 100%);
+    }
+
+    .upgrade-card {
+      position: relative;
+      border-radius: 1.25rem;
+      padding: 1rem 1.1rem;
+      text-align: left;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .upgrade-card:active { transform: scale(0.98); }
+
+    .upgrade-card-featured {
+      border: 2px solid rgba(255, 215, 0, 0.55);
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(34, 255, 136, 0.06) 100%);
+      box-shadow: 0 0 32px rgba(255, 215, 0, 0.15);
+    }
+
+    .upgrade-card-sub {
+      border: 2px solid rgba(34, 255, 136, 0.35);
+      background: rgba(34, 255, 136, 0.05);
+    }
+
+    .upgrade-card-pack {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .upgrade-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      padding: 0.25rem 0.5rem;
+      border-radius: 999px;
+      margin-bottom: 0.5rem;
+    }
+
+    .upgrade-badge-gold { background: #ffd700; color: #000; }
+    .upgrade-badge-green { background: #22ff88; color: #000; }
+
+    .premium-perks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem;
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+    }
+    .premium-perk { display: flex; align-items: center; gap: 0.35rem; }
+    .premium-perk span { color: #22ff88; }
+
+    .style-pill-locked { opacity: 0.55; }
+
   </style>
 </head>
 <body class="bg-black text-white min-h-screen overflow-x-hidden">
-  <!-- Top nav / brand -->
+  <!-- Top nav / game HUD -->
   <div class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-lg">
-    <div class="max-w-xl mx-auto px-5 h-14 flex items-center justify-between">
-      <div class="flex items-center gap-x-3">
-        <div class="w-8 h-8 bg-white rounded-xl flex items-center justify-center">
-          <span class="text-black text-xl font-black tracking-tighter">🔥</span>
-        </div>
-        <div>
-          <span class="font-black text-2xl tracking-[-2px]">AI ROAST ME</span>
-        </div>
-      </div>
-      <div class="flex items-center gap-x-2 text-xs">
-        <div class="px-3 py-1 rounded-full bg-white/5 text-white/60 flex items-center gap-x-1.5">
-          <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
-          <span class="font-mono" id="roast-counter">2.4M</span>
-        </div>
-        <!-- API Key status -->
-        <button onclick="showApiKeyModal()" 
-                class="px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-white/70 flex items-center gap-x-1.5 text-[10px] font-medium"
-                id="api-key-btn" title="Manage xAI API Key for real roasts">
-          <span id="api-key-status">🔑 KEY</span>
+    <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-end gap-2">
+      <div class="flex items-center gap-1.5 text-[10px] shrink-0">
+        <button onclick="showLeaderboard()" class="hud-pill px-2 py-1 rounded-full font-bold flex items-center gap-1" title="Leaderboard">
+          <span>🏆</span><span id="hud-rank">#—</span>
+        </button>
+        <button onclick="showReferralModal()" class="hud-pill px-2 py-1 rounded-full font-bold flex items-center gap-1" title="Invite friends">
+          <span>👥</span><span id="hud-invites">0/3</span>
+        </button>
+        <button onclick="showUpgradeScreen('limit')" class="hud-pill px-2.5 py-1 rounded-full font-black text-[#ffd700] flex items-center gap-1" id="hud-roasts-left" title="Roasts remaining">
+          <span>5</span><img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true">
+        </button>
+        <button onclick="showUpgradeScreen()" id="hud-premium-btn" class="hidden hud-pill px-2 py-1 rounded-full font-black text-[10px] text-[#ffd700] border border-[#ffd700]/30">
+          GO PREMIUM
+        </button>
+        <button onclick="showApiKeyModal()" class="px-2 py-1 rounded-full bg-white/5 text-white/50 text-[9px]" id="api-key-btn" title="API Key">
+          <span id="api-key-status">🔑</span>
         </button>
       </div>
+    </div>
+    <!-- Streak bar -->
+    <div class="max-w-xl mx-auto px-4 pb-2 flex items-center gap-3 text-[10px]">
+      <div class="flex items-center gap-1 text-orange-400 font-bold streak-fire">
+        <span>🔥</span><span id="hud-streak">0</span><span class="text-white/40 font-medium">day streak</span>
+      </div>
+      <div class="flex-1 progress-bar"><div class="progress-fill" id="daily-progress" style="width:0%"></div></div>
+      <div class="text-white/50 font-mono" id="hud-score">0 DMG</div>
     </div>
   </div>
 
   <!-- ==================== LANDING ==================== -->
-  <div id="landing" class="section active pt-14">
-    <div class="max-w-xl mx-auto px-5 pt-10 pb-20">
-      
-      <!-- Hero -->
-      <div class="text-center pt-8 pb-6">
-        <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-2xl bg-white/5 mb-6 border border-white/10">
-          <span class="text-emerald-400">●</span>
-          <span class="text-sm font-medium tracking-wider">VIRAL IN 47 COUNTRIES</span>
-        </div>
+  <div id="landing" class="section active pt-[5.5rem]">
+    <div class="max-w-xl mx-auto px-5 pt-6 pb-32">
 
-        <h1 class="font-black text-[72px] leading-[0.92] tracking-[-5.5px] mb-3">
-          GET<br>ABSOLUTELY<br><span class="neon-green">COOKED.</span>
+      <!-- Simple onboarding: upload first -->
+      <div class="text-center mb-6">
+        <h1 class="mb-2">
+          <img src="/assets/roastlord-logo.png" alt="RoastLord" class="rl-logo rl-logo-hero" width="320" height="96" decoding="async">
         </h1>
-        
-        <p class="text-2xl text-white/70 font-medium tracking-tight">
-          Upload a photo.<br>
-          Get absolutely roasted by <span class="text-[#22ff88]">real Grok vision</span>.
+        <p class="text-white/55 text-sm max-w-xs mx-auto">Upload a selfie. Get roasted. Share the damage.</p>
+      </div>
+
+      <div class="onboarding-steps mb-4">
+        <span class="active">① UPLOAD</span>
+        <span>→</span>
+        <span>② GET COOKED</span>
+        <span>→</span>
+        <span>③ GO VIRAL</span>
+      </div>
+
+      <button onclick="choosePhoto()"
+              class="meme-btn crown-btn upload-hero-btn w-full max-w-md mx-auto block py-6 rounded-3xl font-black text-2xl tracking-tight mb-3">
+        📷 UPLOAD PHOTO
+      </button>
+      <p class="text-center text-[11px] text-white/45 mb-6">Selfie, photo library, or any pic — free to try</p>
+
+      <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+
+      <div 
+        id="upload-zone"
+        class="upload-zone mx-auto max-w-md border border-dashed border-white/15 hover:border-[#ffd700]/50 bg-zinc-950/60 rounded-2xl py-4 px-5 text-center cursor-pointer active:scale-[0.985] transition-all mb-5"
+        onclick="choosePhoto()">
+        <div class="text-xs font-semibold text-white/50">or drag &amp; drop here</div>
+      </div>
+
+      <div class="text-center mb-4">
+        <div class="inline-block px-4 py-2 rounded-full border border-[#ffd700]/30 bg-[#ffd700]/5">
+          <span class="text-[10px] font-bold tracking-[2px] text-[#ffd700]">TIKTOK VIRAL FORMAT</span>
+          <span class="block text-[10px] text-white/45 mt-0.5">max 16 words · text at 0s · 5 sec clip</span>
+        </div>
+      </div>
+
+      <details class="mb-6 group">
+        <summary class="text-center text-[10px] font-bold tracking-[2px] text-white/40 cursor-pointer list-none">
+          OPTIONAL: PICK ROAST STYLE ▾
+        </summary>
+        <div class="flex flex-wrap gap-2 justify-center mt-3" id="style-pills-landing"></div>
+      </details>
+
+      <div class="text-center">
+        <p class="text-xs text-white/40">Ages 11+ · Brutal Mode 16+ · Explicit language 18+ · Photos stay on your device</p>
+        <p class="text-xs text-white/30 mt-1">
+          <a href="privacy-policy.html" class="underline underline-offset-2 hover:text-white/50">Privacy Policy</a>
+          <span class="text-white/20"> · </span>
+          <button onclick="showRestoreModal()" class="underline underline-offset-2 hover:text-white/50">Restore purchases</button>
         </p>
       </div>
 
-      <!-- Style Selector - Prominent Buttons -->
-      <div class="mb-8">
-        <div class="text-center mb-3">
-          <span class="text-xs font-bold tracking-[2px] text-white/50">CHOOSE YOUR ROAST STYLE</span>
-        </div>
-        <div class="flex flex-wrap gap-2 justify-center" id="style-pills-landing">
-          <!-- Populated by JS -->
-        </div>
+      <!-- Ads (free users only) -->
+      <div id="ad-container" class="hidden mt-8 mx-auto max-w-md">
+        <p class="text-[9px] text-center text-white/30 mb-2 tracking-widest">AD</p>
+        <ins class="adsbygoogle block rounded-xl overflow-hidden"
+             style="display:block;min-height:90px"
+             data-ad-client="ca-pub-6295924311353359"
+             data-ad-slot="0000000000"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
       </div>
 
-      <!-- Upload Zone -->
-      <div 
-        id="upload-zone"
-        class="upload-zone mx-auto max-w-md border-2 border-dashed border-white/20 hover:border-white/40 bg-zinc-950 rounded-3xl p-9 text-center cursor-pointer active:scale-[0.985] transition-all"
-        onclick="document.getElementById('photo-input').click()">
-        
-        <div class="mx-auto w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-5">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-9 h-9 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 01-2-2M3 9a2 2 0 012-2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 01-2-2M3 9a2 2 0 012-2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 01-2-2" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618V17.382a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
+      <!-- Referral teaser -->
+      <div onclick="showReferralModal()" class="mt-8 hud-pill rounded-2xl p-4 cursor-pointer active:scale-[0.98] transition-transform">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs font-black text-[#ffd700]">INVITE 3 FRIENDS</div>
+            <div class="text-[11px] text-white/60 mt-0.5 flex items-center gap-1 flex-wrap">Share link = +1 roast · 3 friends = 10 free <img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true"></div>
+          </div>
+          <div class="text-2xl">→</div>
         </div>
-        
-        <div class="text-2xl font-black tracking-[-1px]">UPLOAD YOUR SELFIE</div>
-        <div class="text-white/60 mt-1.5">or drag &amp; drop a photo</div>
-        
-        <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+        <div class="progress-bar mt-3"><div class="progress-fill" id="referral-progress-landing" style="width:0%"></div></div>
       </div>
 
-      <div class="text-center mt-4">
-        <p class="text-xs text-white/40">We don't store your photos. This is just for the roast.</p>
+      <!-- Mini leaderboard -->
+      <div class="mt-8">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-[10px] font-bold tracking-[1.5px] text-white/40 inline-flex items-center gap-1"><img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true"> TODAY'S CROWN HOLDERS</span>
+          <button onclick="showLeaderboard()" class="text-[10px] text-[#ffd700] font-bold">VIEW ALL →</button>
+        </div>
+        <div id="mini-leaderboard" class="space-y-2"></div>
       </div>
 
       <!-- Social Proof -->
-      <div class="mt-12 text-center">
+      <div class="mt-10 text-center">
         <div class="flex justify-center gap-x-6 text-sm">
           <div>
-            <div class="font-mono text-3xl font-black tracking-tighter" id="total-roasts">2,487,392</div>
-            <div class="text-[10px] text-white/50 tracking-widest -mt-1">ROASTS SERVED</div>
+            <div class="font-mono text-2xl font-black tracking-tighter crown-glow" id="total-roasts">2,487,392</div>
+            <div class="text-[10px] text-white/50 tracking-widest -mt-1">VICTIMS ROASTED</div>
           </div>
           <div class="w-px bg-white/10"></div>
           <div>
-            <div class="font-mono text-3xl font-black tracking-tighter">148k</div>
-            <div class="text-[10px] text-white/50 tracking-widest -mt-1">TODAY</div>
+            <div class="font-mono text-2xl font-black tracking-tighter text-[#22ff88]" id="live-today">148k</div>
+            <div class="text-[10px] text-white/50 tracking-widest -mt-1">TODAY 🔥</div>
           </div>
         </div>
       </div>
 
       <!-- Example roasts -->
-      <div class="mt-16">
-        <div class="text-xs font-bold tracking-[1.5px] text-white/40 text-center mb-4">RECENT VICTIMS</div>
+      <div class="mt-12">
+        <div class="text-xs font-bold tracking-[1.5px] text-white/40 text-center mb-4">VIRAL ROASTS THIS WEEK</div>
         
         <div class="grid grid-cols-2 gap-3">
           <div class="bg-zinc-950 border border-white/10 rounded-2xl p-3">
@@ -250,8 +537,15 @@
     </div>
   </div>
 
+  <!-- Floating mega CTA (mobile) -->
+  <div id="mega-cta-bar">
+    <button onclick="choosePhoto()" class="meme-btn mega-cta crown-btn py-4 rounded-2xl font-black text-lg tracking-tight">
+      📷 UPLOAD PHOTO
+    </button>
+  </div>
+
   <!-- ==================== PROCESSING ==================== -->
-  <div id="processing" class="section pt-14">
+  <div id="processing" class="section pt-[5.5rem]">
     <div class="max-w-xl mx-auto px-5 pt-20 text-center">
       <div class="mx-auto w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-8">
         <div class="w-9 h-9 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -265,35 +559,42 @@
   </div>
 
   <!-- ==================== RESULT ==================== -->
-  <div id="result" class="section pt-14 pb-16">
+  <div id="result" class="section pt-[5.5rem] pb-20">
     <div class="max-w-xl mx-auto px-5">
       
-      <!-- Photo -->
-      <div class="flex justify-center mb-6">
-        <div class="relative">
-          <div class="w-64 h-64 md:w-72 md:h-72 rounded-[2.5rem] overflow-hidden ring-1 ring-white/10 shadow-2xl neon-border">
-            <img id="result-photo" class="w-full h-full object-cover" alt="Your photo">
-          </div>
-          <div class="absolute -bottom-1 -right-1 bg-black px-3 py-1 rounded-2xl text-xs font-bold border border-white/10 flex items-center gap-x-1">
-            <span>YOU</span>
-          </div>
+      <!-- Score reveal — game moment -->
+      <div id="score-reveal" class="hidden text-center mb-4 score-pop">
+        <div class="inline-block hud-pill rounded-2xl px-6 py-4 crown-border">
+          <div class="text-[10px] font-bold text-white/50 tracking-widest">DAMAGE DEALT</div>
+          <div class="font-black text-5xl crown-glow tracking-tighter" id="roast-score-display">0</div>
+          <div class="text-xs text-[#22ff88] font-bold mt-1" id="roast-rank-text">ROAST LORD IN TRAINING</div>
         </div>
       </div>
 
-      <!-- Roast Text -->
-      <div class="roast-card rounded-3xl p-7 border border-white/10 mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <span id="roast-style-badge" 
-                  class="inline-block text-xs font-black tracking-wider px-3 py-1 rounded-xl bg-white text-black"></span>
+      <!-- Viral TikTok card preview (9:16) — default share/download card -->
+      <div id="viral-card-wrap" class="mb-5">
+        <div class="text-[10px] text-[#ffd700] mb-2 font-black tracking-[0.15em] text-center">YOUR VIRAL CARD · 9:16</div>
+        <div class="viral-card-frame relative">
+          <img id="viral-card-preview" alt="Your viral roast card" decoding="async">
+          <div id="viral-card-loading" class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/90">
+            <div class="w-9 h-9 border-2 border-[#ffd700]/60 border-t-[#22ff88] rounded-full animate-spin"></div>
+            <span class="text-[10px] font-bold text-white/50 tracking-widest">BUILDING CARD</span>
           </div>
-          <div class="text-[10px] text-white/40">ROASTED BY AI</div>
         </div>
-
-        <div id="roast-text" 
-             class="roast-text text-[17px] leading-snug font-semibold tracking-[-0.2px] text-white">
-        </div>
+        <p class="text-[10px] text-center text-white/40 mt-2">Optimized for TikTok, Reels &amp; Stories</p>
       </div>
+
+      <!-- Demo mode banner (generic roast — no xAI charge) -->
+      <div id="demo-banner" class="hidden demo-banner rounded-2xl px-4 py-3 mb-4 text-center border border-orange-500/30">
+        <div class="text-xs font-bold text-orange-400 tracking-wide">⚠️ DEMO ROAST — NOT CHARGED</div>
+        <div class="text-[11px] text-white/60 mt-0.5" id="demo-banner-detail">Generic roast. Real AI failed or isn't connected.</div>
+        <button id="demo-banner-key-btn" onclick="showApiKeyModal()" class="mt-2 text-xs font-bold underline underline-offset-2 text-white/80 hover:text-white">Add API key →</button>
+      </div>
+
+      <!-- Hidden — used for copy/share text extraction -->
+      <div id="roast-text" class="hidden" aria-hidden="true"></div>
+      <span id="roast-style-badge" class="hidden" aria-hidden="true"></span>
+      <img id="result-photo" class="hidden" alt="" aria-hidden="true">
 
       <!-- Style Switcher -->
       <div class="mb-5">
@@ -307,7 +608,7 @@
       <div class="grid grid-cols-2 gap-3">
         <button onclick="roastAgain()" 
                 class="meme-btn col-span-1 bg-white text-black font-bold py-4 rounded-2xl active:bg-white/90 text-sm">
-          ROAST ME AGAIN
+          ROAST AGAIN
         </button>
         
         <button onclick="makeItMeaner()" 
@@ -321,20 +622,34 @@
         </button>
         
         <button onclick="downloadRoastImage()" 
-                class="meme-btn col-span-1 flex items-center justify-center gap-x-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 font-semibold py-4 rounded-2xl text-sm">
-          <span>DOWNLOAD CARD</span>
+                class="meme-btn col-span-1 flex items-center justify-center gap-x-2 crown-btn font-black py-4 rounded-2xl text-sm">
+          <span>📥 SAVE VIRAL CARD</span>
         </button>
       </div>
 
-      <!-- One-click Social Shares -->
-      <div class="mt-4">
-        <div class="text-xs text-white/50 mb-2 px-1 font-bold tracking-wider">SPREAD THE ROAST</div>
-        <div class="grid grid-cols-4 gap-2">
-          <button onclick="shareToX()" class="meme-btn text-xs py-2.5 rounded-2xl bg-[#000] border border-white/20 hover:bg-white/5 font-semibold">𝕏 / Twitter</button>
-          <button onclick="shareToInstagram()" class="meme-btn text-xs py-2.5 rounded-2xl bg-zinc-900 border border-white/20 hover:bg-white/5 font-semibold">Instagram</button>
-          <button onclick="shareToTikTok()" class="meme-btn text-xs py-2.5 rounded-2xl bg-zinc-900 border border-white/20 hover:bg-white/5 font-semibold">TikTok</button>
-          <button onclick="shareCard()" class="meme-btn text-xs py-2.5 rounded-2xl bg-[#22ff88] text-black font-bold">SHARE CARD</button>
+      <!-- VIRAL SHARE — TikTok first -->
+      <div class="mt-5">
+        <div class="text-[10px] text-[#ffd700] mb-2 px-1 font-black tracking-[1.5px] inline-flex items-center gap-1"><img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true"> GO VIRAL — SHARE FOR +50 DMG</div>
+
+        <button onclick="shareToTikTok()" 
+                class="meme-btn share-tiktok w-full py-4 rounded-3xl font-extrabold text-base flex items-center justify-center gap-x-2 mb-3">
+          <span>🎵 POST TO TIKTOK</span>
+          <span class="text-xs opacity-80">5s video · 9:16</span>
+        </button>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="shareToInstagram()" class="meme-btn py-3 rounded-2xl bg-zinc-900 border border-white/15 text-xs font-bold">📷 IG</button>
+          <button onclick="shareToWhatsApp()" class="meme-btn py-3 rounded-2xl bg-zinc-900 border border-white/15 text-xs font-bold">💬 WA</button>
+          <button onclick="shareToX()" class="meme-btn py-3 rounded-2xl bg-black border border-white/15 text-xs font-bold col-span-2">𝕏 Post to X</button>
         </div>
+
+        <button onclick="copyReferralLink()" class="meme-btn w-full mt-2 py-3 rounded-2xl border border-[#ffd700]/30 text-[#ffd700] text-xs font-bold">
+          🔗 COPY INVITE LINK
+        </button>
+        <button onclick="shareReferral()" class="meme-btn w-full mt-2 py-3 rounded-2xl bg-[#22ff88] text-black text-xs font-bold">
+          📲 SHARE INVITE LINK
+        </button>
+        <div class="text-[9px] text-center text-white/35 mt-2 inline-flex items-center justify-center gap-1 w-full flex-wrap">Share invite link = +1 roast · 3 friends = 10 free roasts <img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-xs" decoding="async" aria-hidden="true"></div>
       </div>
 
       <div class="text-center mt-8">
@@ -346,42 +661,13 @@
     </div>
   </div>
 
-  <!-- Share Card (hidden, used for export) -->
-  <div id="share-card" class="hidden fixed left-[-9999px] top-0">
-    <div class="roast-card-export bg-[#0a0a0a] text-white p-16 flex flex-col items-center justify-center" 
-         style="font-family: 'Space Grotesk', system_ui, sans-serif;">
-      
-      <div class="text-center mb-8">
-        <div class="flex items-center justify-center gap-x-3 mb-1">
-          <span class="text-6xl">🔥</span>
-          <span class="font-black text-6xl tracking-[-3.5px]">AI ROAST ME</span>
-        </div>
-        <div class="text-emerald-400 text-xl font-bold tracking-widest">ROASTED</div>
-      </div>
-
-      <div class="w-[460px] h-[460px] rounded-3xl overflow-hidden mb-8 ring-4 ring-white/10" id="share-photo-wrapper">
-        <!-- Image injected by JS -->
-      </div>
-
-      <div id="share-roast-text" 
-           class="text-center text-3xl leading-tight font-semibold tracking-[-0.5px] max-w-[820px]">
-        <!-- Text injected by JS -->
-      </div>
-
-      <div class="mt-auto pt-6 text-center">
-        <div class="text-[#22ff88] text-sm font-black tracking-[2px]">AI ROAST ME 🔥</div>
-        <div class="text-[10px] text-white/40">ai-roast.me • try it yourself</div>
-      </div>
-    </div>
-  </div>
-
   <!-- API Key Modal -->
   <div id="api-modal" class="hidden fixed inset-0 z-[200] items-center justify-center" style="background: rgba(0,0,0,0.85);">
     <div class="bg-zinc-950 border border-white/10 rounded-3xl p-8 max-w-md w-full mx-4">
       <div class="flex justify-between items-start mb-4">
         <div>
           <div class="font-black text-xl">xAI API Key</div>
-          <div class="text-xs text-white/50">Required for real Grok vision roasts</div>
+          <div class="text-xs text-white/50">Required for real RoastLord AI roasts</div>
         </div>
         <button onclick="hideApiKeyModal()" class="text-white/60 hover:text-white text-2xl leading-none">&times;</button>
       </div>
@@ -395,7 +681,7 @@
         
         <div class="text-[10px] text-white/50 leading-tight">
           Get your key at <a href="https://console.x.ai/" target="_blank" class="underline hover:text-white">https://console.x.ai/</a>. 
-          Ensure the key/team has permission for chat completions + vision (Grok 4.3), and has billing/credits. 
+          Ensure the key/team has permission for chat completions + vision (advanced AI), and has billing/credits. 
           Your key is stored only in your browser (localStorage) and sent directly to xAI. 
           Never share your key. 403 errors usually mean no permission or no credits.
         </div>
@@ -408,25 +694,1159 @@
     </div>
   </div>
 
+  <!-- Upgrade / Paywall Modal -->
+  <div id="paywall-modal" class="hidden fixed inset-0 z-[250] modal-backdrop items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="upgrade-modal border-t-2 sm:border-2 border-[#ffd700]/30 rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 max-w-md w-full crown-border">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-lg mb-1 block" decoding="async" aria-hidden="true">
+          <div class="font-black text-2xl tracking-tight leading-none" id="upgrade-title">GO PREMIUM</div>
+          <div class="text-sm text-white/55 mt-1.5" id="upgrade-subtitle">Unlock the full RoastLord experience.</div>
+        </div>
+        <button onclick="hidePaywall()" class="text-2xl text-white/40 hover:text-white leading-none mt-1">×</button>
+      </div>
+
+      <div class="hud-pill rounded-2xl p-3 mb-4">
+        <div class="text-[10px] font-black text-[#ffd700] tracking-wider mb-2">PREMIUM INCLUDES</div>
+        <div class="premium-perks">
+          <div class="premium-perk"><span>✓</span> Unlimited roasts</div>
+          <div class="premium-perk"><span>✓</span> Brutal Mode</div>
+          <div class="premium-perk"><span>✓</span> No ads</div>
+          <div class="premium-perk"><span>✓</span> All roast styles</div>
+          <div class="premium-perk col-span-2"><span>✓</span> No watermark on downloads</div>
+        </div>
+      </div>
+
+      <div class="space-y-3 mb-4">
+        <!-- Lifetime — featured -->
+        <button onclick="purchaseLifetime()" class="meme-btn upgrade-card upgrade-card-featured w-full block">
+          <span class="upgrade-badge upgrade-badge-gold">BEST VALUE</span>
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="font-black text-lg text-[#ffd700]">Lifetime Access</div>
+              <div class="text-[11px] text-white/65 mt-0.5 leading-snug">Unlimited roasts forever. Pay once, never again.</div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="font-black text-xl">$14.99</div>
+              <div class="text-[9px] text-white/45">one-time</div>
+            </div>
+          </div>
+        </button>
+
+        <!-- Subscription -->
+        <button onclick="purchaseSubscription()" class="meme-btn upgrade-card upgrade-card-sub w-full block">
+          <span class="upgrade-badge upgrade-badge-green">MOST POPULAR</span>
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="font-black text-lg text-[#22ff88]">Unlimited</div>
+              <div class="text-[11px] text-white/65 mt-0.5 leading-snug">Unlimited roasts every month. Cancel anytime.</div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="font-black text-xl">$4.99</div>
+              <div class="text-[9px] text-white/45">/ month</div>
+            </div>
+          </div>
+        </button>
+
+        <!-- Brutal Pack -->
+        <button onclick="purchasePack()" class="meme-btn upgrade-card upgrade-card-pack w-full block">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="font-black text-base">🔥 Brutal Pack</div>
+              <div class="text-[11px] text-white/55 mt-0.5 leading-snug">10 roasts + <strong class="text-white/75">all roast styles</strong> — Brutal, British, Gen Z &amp; Dad Joke. No ads, no watermark.</div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="font-black text-lg">$1.99</div>
+              <div class="text-[9px] text-white/45">one-time</div>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      <div class="space-y-2 border-t border-white/10 pt-4">
+        <button onclick="showReferralModal(); hidePaywall();" class="meme-btn w-full py-2.5 rounded-xl border border-white/10 text-xs font-bold text-[#ffd700]">
+          👥 Invite 3 friends = 10 FREE roasts
+        </button>
+        <button onclick="showRestoreModal(); hidePaywall();" class="meme-btn w-full py-2.5 rounded-xl text-xs font-semibold text-white/60">
+          📧 Restore purchases with email
+        </button>
+      </div>
+
+      <button onclick="resetRoastEconomy()" id="demo-reset-btn" class="w-full mt-3 text-[10px] text-[#22ff88] font-bold underline underline-offset-2">
+        Reset my free roasts (demo)
+      </button>
+      <button onclick="hidePaywall()" class="w-full mt-2 text-[10px] text-white/35">Maybe tomorrow</button>
+      <p id="paywall-footer-note" class="text-[9px] text-center text-white/30 mt-2">Secure checkout via Stripe · syncs to your email</p>
+    </div>
+  </div>
+
+  <!-- Restore purchases modal -->
+  <div id="restore-modal" class="hidden fixed inset-0 z-[250] modal-backdrop items-center justify-center p-4">
+    <div class="bg-zinc-950 border border-[#22ff88]/30 rounded-3xl p-6 max-w-md w-full">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <div class="font-black text-xl">📧 Restore Purchases</div>
+          <div class="text-xs text-white/50">New phone or cleared cache? We'll email you a restore link.</div>
+        </div>
+        <button onclick="hideRestoreModal()" class="text-2xl text-white/50">×</button>
+      </div>
+      <div id="restore-form">
+        <label class="text-xs font-bold text-white/60">EMAIL USED AT CHECKOUT</label>
+        <input id="restore-email-input" type="email" autocomplete="email"
+          class="w-full mt-1 mb-4 bg-black border border-white/20 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-[#22ff88]"
+          placeholder="you@example.com" />
+        <button onclick="requestRestoreEmail()" id="restore-send-btn"
+          class="meme-btn w-full py-3 rounded-2xl bg-[#22ff88] text-black font-black text-sm">
+          SEND RESTORE LINK
+        </button>
+      </div>
+      <div id="restore-success" class="hidden text-center py-4">
+        <div class="text-4xl mb-3">✅</div>
+        <p id="restore-success-msg" class="text-sm font-bold text-[#22ff88] leading-relaxed"></p>
+        <p class="text-[11px] text-white/45 mt-2">Link expires in 30 minutes</p>
+        <button onclick="hideRestoreModal()" class="mt-4 text-xs text-white/40 underline">Close</button>
+      </div>
+      <p id="restore-status" class="text-[11px] text-center text-white/50 mt-3 hidden"></p>
+    </div>
+  </div>
+
+  <!-- Referral Modal -->
+  <div id="referral-modal" class="hidden fixed inset-0 z-[250] modal-backdrop items-center justify-center p-4">
+    <div class="bg-zinc-950 border border-[#ffd700]/30 rounded-3xl p-6 max-w-md w-full">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <div class="font-black text-xl crown-glow inline-flex items-center gap-1.5"><img src="/assets/pepper.png" alt="" class="pepper-icon pepper-icon-md" decoding="async" aria-hidden="true"> INVITE FRIENDS</div>
+          <div class="text-xs text-white/50">3 friends join = 10 brutal roasts FREE</div>
+        </div>
+        <button onclick="hideReferralModal()" class="text-2xl text-white/50">×</button>
+      </div>
+      <div class="hud-pill rounded-2xl p-4 mb-4">
+        <div class="flex justify-between text-sm font-bold mb-2">
+          <span>Progress</span>
+          <span id="referral-count-text">0 / 3 friends</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="referral-progress" style="width:0%"></div></div>
+      </div>
+      <div class="bg-black rounded-2xl p-3 mb-4 flex gap-2 items-center">
+        <input id="referral-link" readonly class="flex-1 bg-transparent text-xs font-mono text-[#22ff88] outline-none truncate" />
+        <button onclick="copyReferralLink()" class="shrink-0 px-3 py-2 rounded-xl crown-btn text-xs font-black">COPY</button>
+      </div>
+      <button onclick="shareReferral()" class="meme-btn w-full py-3 rounded-2xl bg-[#22ff88] text-black font-bold text-sm mb-2">
+        📲 SHARE INVITE LINK
+      </button>
+      <p class="text-[10px] text-white/40 text-center">Friends get +3 bonus roasts when they join · You get +1 roast per share</p>
+    </div>
+  </div>
+
+  <!-- Age restriction modal -->
+  <div id="age-block-modal" class="hidden fixed inset-0 z-[260] modal-backdrop items-center justify-center p-4">
+    <div class="bg-zinc-950 border-2 border-orange-500/50 rounded-3xl p-6 max-w-md w-full text-center">
+      <div class="text-4xl mb-3">🛡️</div>
+      <div class="font-black text-xl text-orange-400 mb-2">AGE RESTRICTED</div>
+      <p id="age-block-message" class="text-sm text-white/70 leading-relaxed mb-5">
+        RoastLord cannot roast people who appear under 11. Please upload a photo of someone age 11 or older.
+      </p>
+      <button onclick="hideAgeBlockedModal()" class="meme-btn w-full py-3 rounded-2xl crown-btn font-black text-sm">
+        GOT IT — UPLOAD ANOTHER PHOTO
+      </button>
+    </div>
+  </div>
+
+  <!-- Leaderboard Modal -->
+  <div id="leaderboard-modal" class="hidden fixed inset-0 z-[250] modal-backdrop items-center justify-center p-4">
+    <div class="bg-zinc-950 border border-white/10 rounded-3xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <div class="font-black text-xl">🏆 CROWN LEADERBOARD</div>
+          <div class="text-xs text-white/50">Top damage dealers today</div>
+        </div>
+        <button onclick="hideLeaderboard()" class="text-2xl text-white/50">×</button>
+      </div>
+      <div id="full-leaderboard" class="space-y-2"></div>
+      <div class="mt-4 hud-pill rounded-2xl p-3 text-center text-xs text-white/60">
+        Share your roast to climb ranks + earn +50 damage bonus
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container for friendly share messages -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Share backdrop -->
+  <div id="share-backdrop" class="hidden fixed inset-0 z-[299] bg-black/70 backdrop-blur-sm" onclick="hideShareInstructions()"></div>
+
+  <!-- Copy fallback (iOS Safari over HTTP) -->
+  <div id="copy-fallback-backdrop" class="hidden fixed inset-0 z-[301] bg-black/80 backdrop-blur-sm" onclick="hideCopyFallback()"></div>
+  <div id="copy-fallback-modal" class="hidden fixed inset-x-0 bottom-0 z-[302] bg-[#0a0a0c] border-t-2 border-[#22ff88] p-5 rounded-t-3xl shadow-2xl">
+    <div class="max-w-xl mx-auto">
+      <div class="flex items-center justify-between mb-3">
+        <div id="copy-fallback-title" class="font-black text-lg">Copy text</div>
+        <button onclick="hideCopyFallback()" class="text-2xl leading-none text-white/60 hover:text-white">×</button>
+      </div>
+      <p class="text-xs text-white/50 mb-3">Tap the box → <strong>Select All</strong> → <strong>Copy</strong></p>
+      <textarea id="copy-fallback-input" readonly rows="4"
+        class="w-full bg-black border border-white/20 rounded-2xl px-4 py-3 text-sm text-[#22ff88] font-mono resize-none focus:outline-none focus:border-[#22ff88]"></textarea>
+      <button onclick="hideCopyFallback()" class="w-full mt-4 py-3 rounded-2xl border border-white/20 text-sm font-semibold">Done</button>
+    </div>
+  </div>
+
+  <!-- Save to Photos (iOS Safari fallback) -->
+  <div id="save-photos-backdrop" class="hidden fixed inset-0 z-[301] bg-black/80 backdrop-blur-sm" onclick="hideSaveToPhotosModal()"></div>
+  <div id="save-photos-modal" class="hidden fixed inset-x-0 bottom-0 z-[302] bg-[#0a0a0c] border-t-2 border-[#ffd700] p-5 rounded-t-3xl shadow-2xl">
+    <div class="max-w-xl mx-auto text-center">
+      <div id="save-photos-title" class="font-black text-lg mb-1">Save to Photos</div>
+      <p id="save-photos-hint" class="text-xs text-white/50 mb-4">Press and hold the image → <strong>Add to Photos</strong></p>
+      <div class="rounded-2xl overflow-hidden border border-white/10 mb-4 bg-black">
+        <img id="save-photos-preview" alt="Roast card" class="w-full object-contain max-h-[50vh]"/>
+        <video id="save-photos-video-preview" class="hidden w-full object-contain max-h-[50vh]" controls playsinline webkit-playsinline></video>
+      </div>
+      <button onclick="hideSaveToPhotosModal()" class="w-full py-3 rounded-2xl border border-white/20 text-sm font-semibold">Done</button>
+    </div>
+  </div>
+
+  <!-- Share instructions (fallback guide for platform buttons) -->
+  <div id="share-instructions" class="hidden fixed inset-x-0 bottom-0 z-[300] bg-[#0a0a0c] border-t-2 border-[#22ff88] p-5 rounded-t-3xl shadow-2xl">
+    <div class="max-w-xl mx-auto">
+      <div class="flex items-center justify-between mb-3">
+        <div class="font-black text-lg">How to share the roast card</div>
+        <button onclick="hideShareInstructions()" class="text-2xl leading-none text-white/60 hover:text-white">×</button>
+      </div>
+      <div id="share-instructions-content" class="text-sm text-white/90 space-y-3"></div>
+      <div class="mt-4 flex gap-2">
+        <button onclick="hideShareInstructions()" 
+                class="flex-1 py-3 rounded-2xl border border-white/20 text-sm font-semibold">Got it</button>
+      </div>
+      <div class="text-[10px] text-center text-white/40 mt-2">Tip: Add this app to your Home Screen for the smoothest sharing experience.</div>
+    </div>
+  </div>
+
+  <script src="env-config.js" onerror="void 0"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/capacitor-native.js"></script>
+  <!-- Optional local dev API key (local-dev-key.js is gitignored) -->
+  <script src="local-dev-key.js" onerror="void 0"></script>
   <script>
     // ==================== CONFIG & DATA ====================
     const STYLES = [
-      { id: 'normal', label: 'Normal Roast', color: '#22ff88' },
-      { id: 'brutal', label: 'Brutal Mode 🔥', color: '#ff2e63' },
-      { id: 'british', label: 'British Roast', color: '#00f0ff' },
-      { id: 'genz', label: 'Gen Z Roast', color: '#ff9500' },
-      { id: 'dad', label: 'Dad Joke Roast', color: '#a78bfa' }
+      { id: 'normal', label: 'Normal Roast', color: '#22ff88', premium: false },
+      { id: 'brutal', label: 'Brutal Mode 🔥', color: '#ff2e63', premium: true },
+      { id: 'british', label: 'British Roast', color: '#00f0ff', premium: true },
+      { id: 'genz', label: 'Gen Z Roast', color: '#ff9500', premium: true },
+      { id: 'dad', label: 'Dad Joke Roast', color: '#a78bfa', premium: true }
     ];
+
+    const PEPPER_SRC = '/assets/pepper.png';
+    function pepperIcon(size = 'sm') {
+      const sizes = { xs: 'pepper-icon-xs', sm: 'pepper-icon-sm', md: 'pepper-icon-md', lg: 'pepper-icon-lg' };
+      return `<img src="${PEPPER_SRC}" alt="" class="pepper-icon ${sizes[size] || sizes.sm}" decoding="async" aria-hidden="true">`;
+    }
+    function pepperizeHtml(str) {
+      return String(str).replace(/👑/g, pepperIcon('xs'));
+    }
+    function pepperizePlain(str) {
+      return String(str).replace(/👑/g, '');
+    }
 
     let currentPhotoURL = null;
     let currentPhotoFile = null;
     let currentPhotoBase64 = null; // for real AI vision
+    let currentAgePolicy = null;
     let currentStyle = 'normal';
+    const ROAST_FORMAT = 'viral';
     let currentRoast = '';
     let currentIntensity = 1;
+    let isDemoRoast = false;
 
-    // xAI API key (stored client-side for demo - use at your own risk)
+    // xAI API key — local override; production uses /api/roast proxy when configured
     let xaiApiKey = localStorage.getItem('xai_api_key') || '';
+
+    function isApiProxyEnabled() {
+      return Boolean(window.__ROASTLORD_ENV__?.API_PROXY_ENABLED);
+    }
+
+    function hasRoastApiAccess() {
+      return isApiProxyEnabled() || Boolean(xaiApiKey);
+    }
+
+    function resolveEnvConfig() {
+      const env = window.__ROASTLORD_ENV__ || {};
+      if (env.RL_ANALYTICS_URL) window.RL_ANALYTICS_URL = env.RL_ANALYTICS_URL;
+      updateStripeUI();
+    }
+
+    let _stripeStatus = null;
+
+    async function initStripeStatus() {
+      try {
+        const res = await fetch('/api/stripe/status');
+        if (res.ok) _stripeStatus = await res.json();
+      } catch (_) {
+        _stripeStatus = null;
+      }
+      updateStripeUI();
+      return _stripeStatus;
+    }
+
+    function isStripeEnabled() {
+      if (_stripeStatus) return Boolean(_stripeStatus.enabled);
+      return Boolean(window.__ROASTLORD_ENV__?.STRIPE_ENABLED);
+    }
+
+    function hasUnlimitedRoasts() {
+      const e = getEconomy();
+      return Boolean(e.lifetime || e.subscriptionActive);
+    }
+
+    function isPremium() {
+      const e = getEconomy();
+      if (hasUnlimitedRoasts()) return true;
+      // Brutal Pack unlocks all roast styles (+ premium perks) while pack roasts remain
+      if ((e.packRoasts || 0) > 0) return true;
+      return false;
+    }
+
+    function isBrutalAllowedByAge() {
+      return !currentAgePolicy || currentAgePolicy.allowBrutal !== false;
+    }
+
+    function isStyleUnlocked(styleId) {
+      if (styleId === 'brutal' && !isBrutalAllowedByAge()) return false;
+      const style = STYLES.find(s => s.id === styleId);
+      if (!style || !style.premium) return true;
+      return isPremium();
+    }
+
+    function defaultStyleForUser() {
+      if (isPremium() && isBrutalAllowedByAge()) return 'brutal';
+      return 'normal';
+    }
+
+    function getEffectiveRoastStyle(style) {
+      if (style === 'brutal' && !isBrutalAllowedByAge()) return 'normal';
+      return style;
+    }
+
+    function applyAgePolicyUI() {
+      if (!isBrutalAllowedByAge() && currentStyle === 'brutal') {
+        currentStyle = 'normal';
+      }
+      refreshAllStylePills();
+    }
+
+    function requirePremium(reason) {
+      if (isPremium()) return true;
+      showUpgradeScreen(reason || 'premium');
+      return false;
+    }
+
+    function showUpgradeScreen(reason) {
+      const title = document.getElementById('upgrade-title');
+      const subtitle = document.getElementById('upgrade-subtitle');
+      const messages = {
+        limit: ["OUT OF ROASTS", "You've hit today's free limit. Upgrade for unlimited roasts + premium perks."],
+        brutal: ["UNLOCK BRUTAL MODE", "Premium gets meaner, savage roasts that hit harder."],
+        style: ["UNLOCK ALL STYLES", "British, Gen Z, Dad Joke & Brutal — Premium only."],
+        watermark: ["NO WATERMARK", "Premium downloads are clean — no branding strip."],
+        premium: ["GO PREMIUM", "Unlimited roasts, all styles, no ads, clean cards."]
+      };
+      const msg = messages[reason] || messages.premium;
+      if (title) title.textContent = msg[0];
+      if (subtitle) subtitle.textContent = msg[1];
+      showPaywall();
+    }
+
+    function trySelectStyle(styleId) {
+      if (styleId === 'brutal' && !isBrutalAllowedByAge()) {
+        showToast('Brutal Mode unlocks at 16+', 3500);
+        return false;
+      }
+      if (!isStyleUnlocked(styleId)) {
+        requirePremium('style');
+        return false;
+      }
+      currentStyle = styleId;
+      refreshAllStylePills();
+      return true;
+    }
+
+    async function rerenderWithCurrentSettings() {
+      if (!requireRoastOrPaywall()) return;
+      const resultScreen = document.getElementById('result');
+      resultScreen.style.opacity = '0.6';
+      resultScreen.style.pointerEvents = 'none';
+      try {
+        let newRoast;
+        if (currentPhotoBase64 && hasRoastApiAccess()) {
+          newRoast = await callGrokVision(currentPhotoBase64, currentStyle);
+          isDemoRoast = false;
+        } else {
+          newRoast = getFallbackRoast(currentStyle);
+          isDemoRoast = true;
+        }
+        currentRoast = newRoast;
+        document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
+        const styleInfo = STYLES.find(s => s.id === currentStyle);
+        const badge = document.getElementById('roast-style-badge');
+        badge.textContent = styleInfo.label.toUpperCase();
+        badge.style.background = styleInfo.color;
+        badge.style.color = '#000';
+        updateDemoBanner();
+        onRoastSuccess();
+      } catch (e) {
+        if (handleAgeBlockError(e)) return;
+        console.error('Re-roast failed:', e);
+        showToast("Couldn't regenerate — try again", 3000);
+      } finally {
+        resultScreen.style.opacity = '1';
+        resultScreen.style.pointerEvents = 'auto';
+      }
+    }
+
+    function updateStripeUI() {
+      const demoBtn = document.getElementById('demo-reset-btn');
+      const note = document.getElementById('paywall-footer-note');
+      if (demoBtn) demoBtn.classList.toggle('hidden', isStripeEnabled());
+      if (note) {
+        note.textContent = isStripeEnabled()
+          ? 'Secure checkout via Stripe · syncs to your email'
+          : 'Checkout unavailable — contact support if this persists.';
+      }
+      updatePremiumUI();
+    }
+
+    function updatePremiumUI() {
+      const premiumBtn = document.getElementById('hud-premium-btn');
+      const roastsEl = document.getElementById('hud-roasts-left');
+      const adContainer = document.getElementById('ad-container');
+      const meanerBtn = document.querySelector('button[onclick="makeItMeaner()"]');
+      const downloadLabel = document.querySelector('button[onclick="downloadRoastImage()"] span');
+
+      if (premiumBtn) premiumBtn.classList.toggle('hidden', isPremium());
+      if (roastsEl && isPremium()) roastsEl.classList.add('text-[#ffd700]');
+
+      if (adContainer) {
+        if (isPremium()) {
+          adContainer.classList.add('hidden');
+        } else {
+          adContainer.classList.remove('hidden');
+          initAds();
+        }
+      }
+
+      if (meanerBtn && !isPremium()) {
+        meanerBtn.innerHTML = 'MAKE IT MEANER 🔒';
+      } else if (meanerBtn) {
+        meanerBtn.innerHTML = 'MAKE IT MEANER 🔥';
+      }
+
+      if (downloadLabel) {
+        downloadLabel.textContent = isPremium() ? '📥 SAVE VIRAL CARD' : '📥 SAVE VIRAL CARD';
+      }
+
+      if (!isStyleUnlocked(currentStyle)) currentStyle = defaultStyleForUser();
+      refreshAllStylePills();
+    }
+
+    function initAds() {
+      if (isPremium()) return;
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (_) {}
+    }
+
+    function refreshAllStylePills() {
+      initStylePillsLanding();
+      if (document.getElementById('result')?.classList.contains('active')) {
+        setupResultStylePills();
+      }
+    }
+
+    function renderStylePill(style, isActive, onClick) {
+      const ageLocked = style.id === 'brutal' && !isBrutalAllowedByAge();
+      const premiumLocked = style.premium && !isPremium();
+      const locked = premiumLocked || ageLocked;
+      const pill = document.createElement('button');
+      pill.className = `px-4 py-1 text-xs font-bold rounded-2xl border transition-all ${
+        isActive
+          ? 'bg-[#ffd700] text-black border-[#ffd700]'
+          : locked
+            ? 'bg-zinc-950 border-white/10 style-pill-locked'
+            : 'bg-zinc-950 border-white/20 hover:border-white/40'
+      }`;
+      pill.textContent = ageLocked ? style.label + ' 🛡️' : (premiumLocked ? style.label + ' 🔒' : style.label);
+      pill.onclick = onClick;
+      return pill;
+    }
+
+    function syncEconomyFromServer(data) {
+      const e = getEconomy();
+      e.lifetime = Boolean(data.lifetime);
+      e.subscriptionActive = Boolean(data.subscriptionActive);
+      e.unlimited = Boolean(data.lifetime || data.subscriptionActive);
+      e.packRoasts = typeof data.packRoasts === 'number' ? data.packRoasts : 0;
+      e.plan = data.plan || (e.lifetime ? 'lifetime' : e.subscriptionActive ? 'subscription' : e.packRoasts > 0 ? 'pack' : 'none');
+      saveJSON('rl_economy', e);
+      if (data.email) localStorage.setItem('rl_purchase_email', data.email);
+      return e;
+    }
+
+    function applyServerEntitlements(data) {
+      if (!data) return;
+      syncEconomyFromServer(data);
+      updateHUD();
+      updatePremiumUI();
+    }
+
+    function purchaseSuccessMessage(data) {
+      if (data?.lifetime || data?.plan === 'lifetime') return 'LIFETIME ACCESS UNLOCKED!';
+      if (data?.subscriptionActive || data?.plan === 'subscription') return 'UNLIMITED SUBSCRIPTION ACTIVE!';
+      if (data?.plan === 'pack' || (data?.packRoasts > 0 && !data?.lifetime && !data?.subscriptionActive)) {
+        const n = data.packRoasts || PACK_SIZE;
+        return '🔥 Brutal Pack — all roast styles + ' + n + ' roasts unlocked!';
+      }
+      return 'Purchase unlocked!';
+    }
+
+    async function startStripeCheckout(product) {
+      const email = localStorage.getItem('rl_purchase_email') || '';
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product, email: email || undefined })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Could not start checkout');
+      }
+      window.location.href = data.url;
+    }
+
+    function needsEntitlementSync() {
+      const p = new URLSearchParams(location.search);
+      if (p.get('restore')) return true;
+      return p.get('purchase') === 'success' && Boolean(p.get('session_id'));
+    }
+
+    function setRoastsHudSyncing(syncing) {
+      const el = document.getElementById('hud-roasts-left');
+      if (!el) return;
+      if (syncing) {
+        el.textContent = '···';
+        el.classList.add('opacity-60', 'pointer-events-none');
+      } else {
+        el.classList.remove('opacity-60', 'pointer-events-none');
+      }
+    }
+
+    async function handlePurchaseReturn() {
+      const params = new URLSearchParams(location.search);
+      if (params.get('purchase') === 'cancelled') {
+        showToast('Checkout cancelled');
+        history.replaceState(null, '', location.pathname + location.hash);
+        return;
+      }
+      const sessionId = params.get('session_id');
+      if (params.get('purchase') !== 'success' || !sessionId) return;
+
+      try {
+        const res = await fetch('/api/stripe/session?session_id=' + encodeURIComponent(sessionId));
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Could not confirm purchase');
+        applyServerEntitlements(data);
+        hidePaywall();
+        showToast(purchaseSuccessMessage(data), 4000);
+      } catch (err) {
+        console.error('[purchase return]', err);
+        showToast('Payment received — tap Restore purchases if roasts are missing', 5000);
+      } finally {
+        history.replaceState(null, '', location.pathname + location.hash);
+      }
+    }
+
+    async function handleRestoreReturn() {
+      const token = new URLSearchParams(location.search).get('restore');
+      if (!token) return;
+
+      try {
+        const res = await fetch('/api/restore/verify?token=' + encodeURIComponent(token));
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Restore link invalid');
+        applyServerEntitlements(data);
+        hideRestoreModal();
+        hidePaywall();
+        showToast(purchaseSuccessMessage(data) || 'Purchases restored!', 4000);
+      } catch (err) {
+        console.error('[restore return]', err);
+        showToast(err.message || 'Restore link expired — request a new one', 5000);
+      } finally {
+        history.replaceState(null, '', location.pathname + location.hash);
+      }
+    }
+
+    function showRestoreModal() {
+      const m = document.getElementById('restore-modal');
+      const input = document.getElementById('restore-email-input');
+      const status = document.getElementById('restore-status');
+      const form = document.getElementById('restore-form');
+      const success = document.getElementById('restore-success');
+      if (status) { status.classList.add('hidden'); status.textContent = ''; }
+      if (form) form.classList.remove('hidden');
+      if (success) success.classList.add('hidden');
+      if (input) input.value = localStorage.getItem('rl_purchase_email') || '';
+      if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    }
+
+    function hideRestoreModal() {
+      const m = document.getElementById('restore-modal');
+      if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    }
+
+    async function requestRestoreEmail() {
+      const input = document.getElementById('restore-email-input');
+      const btn = document.getElementById('restore-send-btn');
+      const status = document.getElementById('restore-status');
+      const form = document.getElementById('restore-form');
+      const success = document.getElementById('restore-success');
+      const successMsg = document.getElementById('restore-success-msg');
+      const email = (input?.value || '').trim();
+      if (!email) {
+        showToast('Enter the email you used at checkout');
+        return;
+      }
+
+      setButtonLoading(btn, true, 'SENDING...');
+      try {
+        const res = await fetch('/api/restore/request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Could not send restore email');
+
+        localStorage.setItem('rl_purchase_email', email);
+        const message = data.message || 'Check your email for the restore link.';
+
+        if (data.emailSent && form && success && successMsg) {
+          form.classList.add('hidden');
+          successMsg.textContent = message;
+          success.classList.remove('hidden');
+        } else if (status) {
+          status.textContent = message;
+          status.classList.remove('hidden');
+        }
+
+        showToast(message, data.emailSent ? 4500 : 4000);
+      } catch (err) {
+        showToast(err.message || 'Restore request failed', 4000);
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    // ==================== VIRAL GAME ENGINE ====================
+    const FREE_DAILY = 5;
+    const REFERRAL_GOAL = 3;
+    const REFERRAL_REWARD = 10;
+    const PACK_SIZE = 10;
+    let lastRoastScore = 0;
+
+    const FAKE_LEADERS = [
+      { name: 'roastqueen_99', score: 9847, crown: true },
+      { name: 'damage_dealer', score: 9201, crown: false },
+      { name: 'savage_king', score: 8755, crown: false },
+      { name: 'meme_lord_x', score: 8102, crown: false },
+      { name: 'cooked_daily', score: 7890, crown: false },
+      { name: 'brutal_babe', score: 7544, crown: false },
+      { name: 'no_mercy_mike', score: 7201, crown: false },
+      { name: 'victim_zero', score: 6988, crown: false }
+    ];
+
+    const RANK_TITLES = [
+      { min: 9000, title: 'SUPREME ROASTLORD' },
+      { min: 7000, title: '🔥 DAMAGE DEALER' },
+      { min: 5000, title: '💀 CERTIFIED SAVAGE' },
+      { min: 3000, title: '⚡ ROAST APPRENTICE' },
+      { min: 0, title: '🐣 FRESH VICTIM' }
+    ];
+
+    function loadJSON(key, fallback) {
+      try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+      catch { return fallback; }
+    }
+    function saveJSON(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+    function getProfile() {
+      return loadJSON('rl_profile', { streak: 0, lastDate: '', totalScore: 0, totalRoasts: 0, displayName: 'you' });
+    }
+
+    function updateStreak() {
+      const p = getProfile();
+      const today = new Date().toDateString();
+      if (p.lastDate === today) return p;
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (p.lastDate === yesterday.toDateString()) p.streak = (p.streak || 0) + 1;
+      else p.streak = 1;
+      p.lastDate = today;
+      saveJSON('rl_profile', p);
+      return p;
+    }
+
+    function getEconomy() {
+      const today = new Date().toDateString();
+      const e = loadJSON('rl_economy', {
+        dailyUsed: 0, dailyDate: today, bonusRoasts: 0, packRoasts: 0,
+        unlimited: false, lifetime: false, subscriptionActive: false, plan: 'none'
+      });
+      if (e.dailyDate !== today) { e.dailyUsed = 0; e.dailyDate = today; }
+      // unlimited = lifetime or active subscription only (never Brutal Pack)
+      e.unlimited = Boolean(e.lifetime || e.subscriptionActive);
+      saveJSON('rl_economy', e);
+      return e;
+    }
+
+    function getReferral() {
+      let r = loadJSON('rl_referral', null);
+      if (!r) {
+        r = { code: 'RL' + Math.random().toString(36).slice(2, 8).toUpperCase(), joined: 0, redeemed: false };
+        saveJSON('rl_referral', r);
+      }
+      return r;
+    }
+
+    function roastsRemaining() {
+      const e = getEconomy();
+      if (hasUnlimitedRoasts()) return 999;
+      return Math.max(0, FREE_DAILY - e.dailyUsed) + (e.bonusRoasts || 0) + (e.packRoasts || 0);
+    }
+
+    function canRoast() {
+      return roastsRemaining() > 0;
+    }
+
+    function consumeRoast() {
+      const e = getEconomy();
+      if (hasUnlimitedRoasts()) return true;
+      if (e.dailyUsed < FREE_DAILY) { e.dailyUsed++; saveJSON('rl_economy', e); updateHUD(); return true; }
+      if (e.bonusRoasts > 0) { e.bonusRoasts--; saveJSON('rl_economy', e); updateHUD(); return true; }
+      if (e.packRoasts > 0) { e.packRoasts--; saveJSON('rl_economy', e); updateHUD(); return true; }
+      return false;
+    }
+
+    function calcRoastScore(text, style) {
+      const mult = { brutal: 1.6, genz: 1.3, british: 1.2, dad: 1.1, normal: 1.0 };
+      const base = (text?.length || 40) * 3;
+      const rand = Math.floor(Math.random() * 35) + 15;
+      return Math.min(9999, Math.floor(base * (mult[style] || 1) / 4) + rand);
+    }
+
+    function getRankTitle(score) {
+      return (RANK_TITLES.find(r => score >= r.min) || RANK_TITLES[RANK_TITLES.length - 1]).title;
+    }
+
+    function recordRoastComplete(score) {
+      lastRoastScore = score;
+      updateStreak();
+      const p = getProfile();
+      p.totalScore = (p.totalScore || 0) + score;
+      p.totalRoasts = (p.totalRoasts || 0) + 1;
+      saveJSON('rl_profile', p);
+      updateHUD();
+      showScoreReveal(score);
+    }
+
+    function showScoreReveal(score) {
+      const el = document.getElementById('score-reveal');
+      const display = document.getElementById('roast-score-display');
+      const rank = document.getElementById('roast-rank-text');
+      if (!el || !display) return;
+      display.textContent = score.toLocaleString();
+      if (rank) rank.textContent = getRankTitle(score);
+      el.classList.remove('hidden');
+      el.classList.add('score-pop');
+    }
+
+    function awardShareBonus(platform) {
+      const p = getProfile();
+      p.totalScore = (p.totalScore || 0) + 50;
+      saveJSON('rl_profile', p);
+      updateHUD();
+      if (window.RLAnalytics) RLAnalytics.trackShare(platform || 'roast');
+      showToast('+50 DMG for sharing! 👑', 2800);
+    }
+
+    function trackReferralJoin() {
+      const params = new URLSearchParams(location.search);
+      const ref = params.get('ref');
+      if (!ref) return;
+      if (ref === getReferral().code) return;
+      if (localStorage.getItem('rl_referred_by') === ref) return;
+      localStorage.setItem('rl_referred_by', ref);
+      const e = getEconomy();
+      e.bonusRoasts = (e.bonusRoasts || 0) + 3;
+      saveJSON('rl_economy', e);
+      if (window.RLAnalytics) RLAnalytics.trackReferralJoin(ref);
+      showToast('Welcome! +3 bonus roasts from your friend 👑', 3500);
+      updateHUD();
+    }
+
+    function grantReferralShareReward() {
+      const e = getEconomy();
+      e.bonusRoasts = (e.bonusRoasts || 0) + 1;
+      saveJSON('rl_economy', e);
+      updateHUD();
+    }
+
+    function getReferralJoins() {
+      return parseInt(localStorage.getItem('rl_invite_shares') || '0', 10);
+    }
+
+    function creditReferralShare() {
+      const count = getReferralJoins();
+      if (count >= REFERRAL_GOAL) {
+        showToast('Invite progress already complete — friends still get +3 roasts via your link 👑', 3000);
+        return;
+      }
+      const newCount = count + 1;
+      localStorage.setItem('rl_invite_shares', String(newCount));
+      const r = getReferral();
+      r.joined = Math.min(REFERRAL_GOAL, newCount);
+      if (newCount >= REFERRAL_GOAL && !r.redeemed) {
+        r.redeemed = true;
+        const e = getEconomy();
+        e.bonusRoasts = (e.bonusRoasts || 0) + REFERRAL_REWARD;
+        saveJSON('rl_economy', e);
+        showToast('🎉 10 FREE BRUTAL ROASTS UNLOCKED!', 4000);
+      } else {
+        grantReferralShareReward();
+        showToast('Invite shared! ' + newCount + '/' + REFERRAL_GOAL + ' toward 10 free roasts', 2800);
+      }
+      if (window.RLAnalytics) RLAnalytics.trackReferral('share');
+      saveJSON('rl_referral', r);
+      updateReferralUI();
+    }
+
+    function getReferralUrl() {
+      const base = location.origin + location.pathname;
+      return base + '?ref=' + getReferral().code;
+    }
+
+    function getViralShareText(roastText) {
+      return (roastText || '') + '\n\nI just got COOKED on RoastLord\n'
+        + '🔥 Damage: ' + (lastRoastScore || '???') + '\n'
+        + '#RoastLord #GetRoasted #FYP #viral\n'
+        + getReferralUrl();
+    }
+
+    function updateHUD() {
+      const p = getProfile();
+      const e = getEconomy();
+      const remaining = roastsRemaining();
+      const streakEl = document.getElementById('hud-streak');
+      const scoreEl = document.getElementById('hud-score');
+      const roastsEl = document.getElementById('hud-roasts-left');
+      const rankEl = document.getElementById('hud-rank');
+      const invitesEl = document.getElementById('hud-invites');
+      const progressEl = document.getElementById('daily-progress');
+
+      if (streakEl) streakEl.textContent = p.streak || 0;
+      if (scoreEl) scoreEl.textContent = (p.totalScore || 0).toLocaleString() + ' DMG';
+      if (roastsEl) {
+        const count = hasUnlimitedRoasts() ? '∞' : String(remaining);
+        roastsEl.innerHTML = `<span>${count}</span>${pepperIcon('xs')}`;
+      }
+      const joins = getReferralJoins();
+      if (invitesEl) invitesEl.textContent = joins + '/' + REFERRAL_GOAL;
+      if (rankEl) {
+        const board = buildLeaderboard(p.totalScore || 0);
+        const myRank = board.findIndex(x => x.you) + 1;
+        rankEl.textContent = '#' + (myRank || '—');
+      }
+      if (progressEl) {
+        const used = hasUnlimitedRoasts() ? 0 : Math.min(e.dailyUsed || 0, FREE_DAILY);
+        progressEl.style.width = (hasUnlimitedRoasts() ? 100 : (used / FREE_DAILY) * 100) + '%';
+      }
+      updateReferralUI();
+      renderMiniLeaderboard();
+      updatePremiumUI();
+    }
+
+    function updateReferralUI() {
+      const joins = getReferralJoins();
+      const pct = Math.min(100, (joins / REFERRAL_GOAL) * 100);
+      ['referral-progress', 'referral-progress-landing'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.width = pct + '%';
+      });
+      const countText = document.getElementById('referral-count-text');
+      if (countText) countText.textContent = joins + ' / ' + REFERRAL_GOAL + ' friends';
+      const linkInput = document.getElementById('referral-link');
+      if (linkInput) linkInput.value = getReferralUrl();
+    }
+
+    function buildLeaderboard(myScore) {
+      const board = FAKE_LEADERS.map(l => ({ ...l }));
+      board.push({ name: 'you', score: myScore || lastRoastScore || 42, you: true, crown: false });
+      board.sort((a, b) => b.score - a.score);
+      return board.slice(0, 10);
+    }
+
+    function renderLeaderboardRow(entry, i) {
+      const medal = i === 0 ? pepperIcon('xs') : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+      const youMark = entry.you && i > 0 ? pepperIcon('xs') : '';
+      const cls = 'leader-row flex items-center justify-between p-3 rounded-xl border border-white/10 text-sm' + (entry.you ? ' you' : '');
+      return `<div class="${cls}"><div class="flex items-center gap-2 font-bold truncate"><span class="inline-flex items-center">${medal}</span><span class="truncate inline-flex items-center gap-1">${entry.name}${youMark}</span></div><div class="font-mono text-[#ffd700] shrink-0">${entry.score.toLocaleString()}</div></div>`;
+    }
+
+    function renderMiniLeaderboard() {
+      const p = getProfile();
+      const el = document.getElementById('mini-leaderboard');
+      if (!el) return;
+      el.innerHTML = buildLeaderboard(p.totalScore).slice(0, 3).map((e, i) => renderLeaderboardRow(e, i)).join('');
+    }
+
+    function showLeaderboard() {
+      const p = getProfile();
+      const el = document.getElementById('full-leaderboard');
+      if (el) el.innerHTML = buildLeaderboard(p.totalScore).map((e, i) => renderLeaderboardRow(e, i)).join('');
+      const m = document.getElementById('leaderboard-modal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    }
+    function hideLeaderboard() {
+      const m = document.getElementById('leaderboard-modal');
+      m.classList.add('hidden'); m.classList.remove('flex');
+    }
+
+    function showPaywall() {
+      updateStripeUI();
+      const m = document.getElementById('paywall-modal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    }
+    function hidePaywall() {
+      const m = document.getElementById('paywall-modal');
+      m.classList.add('hidden'); m.classList.remove('flex');
+    }
+
+    function showReferralModal() {
+      updateReferralUI();
+      const m = document.getElementById('referral-modal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    }
+    function hideReferralModal() {
+      const m = document.getElementById('referral-modal');
+      m.classList.add('hidden'); m.classList.remove('flex');
+    }
+
+    async function purchaseProduct(product) {
+      if (!_stripeStatus) await initStripeStatus();
+
+      if (isStripeEnabled()) {
+        try {
+          await startStripeCheckout(product);
+        } catch (err) {
+          showToast(err.message || 'Checkout failed — try again', 4000);
+        }
+        return;
+      }
+
+      showToast('Checkout is temporarily unavailable. Please try again later.', 4500);
+    }
+
+    async function purchasePack() { return purchaseProduct('pack'); }
+    async function purchaseSubscription() { return purchaseProduct('subscription'); }
+    async function purchaseLifetime() { return purchaseProduct('lifetime'); }
+
+    function resetRoastEconomy() {
+      const today = new Date().toDateString();
+      saveJSON('rl_economy', {
+        dailyUsed: 0, dailyDate: today, bonusRoasts: 0, packRoasts: 0,
+        unlimited: false, lifetime: false, subscriptionActive: false, plan: 'none'
+      });
+      localStorage.setItem('rl_invite_shares', '0');
+      const r = getReferral();
+      r.joined = 0;
+      r.redeemed = false;
+      saveJSON('rl_referral', r);
+      hidePaywall();
+      updateHUD();
+      showToast('Free roasts + invite progress reset 👑', 3500);
+    }
+
+    function requireRoastOrPaywall() {
+      if (canRoast()) return true;
+      showUpgradeScreen('limit');
+      return false;
+    }
+
+    function onRoastSuccess() {
+      consumeRoast();
+      const score = calcRoastScore(currentRoast, currentStyle);
+      recordRoastComplete(score);
+      if (window.RLAnalytics) RLAnalytics.trackRoast(currentStyle);
+      prefetchShareCard();
+    }
+
+    function choosePhoto() {
+      if (!requireRoastOrPaywall()) return;
+      if (isNativeApp() && window.RoastLordNative?.pickFromGallery) {
+        pickNativeGallery();
+        return;
+      }
+      const input = document.getElementById('photo-input');
+      if (input) input.click();
+    }
+
+    function copyToClipboardSync(text) {
+      if (!text) return false;
+      try {
+        const el = document.createElement('textarea');
+        el.value = text;
+        el.setAttribute('readonly', '');
+        el.style.cssText = 'position:fixed;left:0;top:0;width:2em;height:2em;padding:0;border:none;outline:none;box-shadow:none;background:transparent;font-size:16px;opacity:0';
+        document.body.appendChild(el);
+        el.focus();
+        el.setSelectionRange(0, text.length);
+        const ok = document.execCommand('copy');
+        document.body.removeChild(el);
+        if (ok) return true;
+      } catch (_) {}
+      return false;
+    }
+
+    async function copyToClipboard(text) {
+      if (!text) return false;
+      if (copyToClipboardSync(text)) return true;
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      } catch (_) {}
+      return false;
+    }
+
+    function showCopyFallback(text, title) {
+      const modal = document.getElementById('copy-fallback-modal');
+      const backdrop = document.getElementById('copy-fallback-backdrop');
+      const input = document.getElementById('copy-fallback-input');
+      const titleEl = document.getElementById('copy-fallback-title');
+      if (!modal || !input) return;
+      if (titleEl) titleEl.textContent = title || 'Copy text';
+      input.value = text;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex', 'flex-col');
+      if (backdrop) backdrop.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        input.focus();
+        input.select();
+        try { input.setSelectionRange(0, text.length); } catch (_) {}
+      });
+      showToast('Text selected — tap Copy on your keyboard');
+    }
+
+    function hideCopyFallback() {
+      const modal = document.getElementById('copy-fallback-modal');
+      const backdrop = document.getElementById('copy-fallback-backdrop');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'flex-col');
+      }
+      if (backdrop) backdrop.classList.add('hidden');
+    }
+
+    function showCopyButtonFeedback() {
+      const btns = document.querySelectorAll('button');
+      const copyBtn = Array.from(btns).find(b => b.textContent.includes('COPY ROAST'));
+      if (copyBtn) {
+        const orig = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<span>COPIED!</span>';
+        setTimeout(() => { copyBtn.innerHTML = orig; }, 1400);
+      }
+    }
+
+    async function copyReferralLink() {
+      const text = 'Get absolutely COOKED on RoastLord: ' + getReferralUrl();
+      if (await copyToClipboard(text)) {
+        showToast('Invite link copied!');
+        return;
+      }
+      showCopyFallback(text, 'Copy invite link');
+    }
+
+    async function shareReferral() {
+      const text = 'I dare you to get roasted on RoastLord. Think you can handle it?\n' + getReferralUrl();
+      if (!navigator.share) {
+        await copyReferralLink();
+        showToast('Share not available — link copied instead');
+        return;
+      }
+      try {
+        await navigator.share({ title: 'RoastLord', text });
+        creditReferralShare();
+      } catch (e) {
+        if (e?.name === 'AbortError') return;
+        await copyReferralLink();
+      }
+    }
+
+    function setButtonLoading(btn, loading, loadingLabel) {
+      if (!btn) return;
+      if (loading) {
+        if (!btn.dataset.origHtml) btn.dataset.origHtml = btn.innerHTML;
+        btn.classList.add('btn-loading');
+        btn.innerHTML = loadingLabel || 'Working...';
+      } else {
+        btn.classList.remove('btn-loading');
+        if (btn.dataset.origHtml) {
+          btn.innerHTML = btn.dataset.origHtml;
+          delete btn.dataset.origHtml;
+        }
+      }
+    }
+
+    function updateDemoBanner() {
+      const demo = document.getElementById('demo-banner');
+      const demoDetail = document.getElementById('demo-banner-detail');
+      const demoKeyBtn = document.getElementById('demo-banner-key-btn');
+      if (!demo) return;
+
+      if (isDemoRoast) {
+        demo.classList.remove('hidden');
+        if (demoDetail) {
+          demoDetail.textContent = isApiProxyEnabled()
+            ? 'Server AI call failed — showing a generic roast instead.'
+            : 'No API connected — add a key or deploy with XAI_API_KEY on Vercel.';
+        }
+        if (demoKeyBtn) demoKeyBtn.classList.toggle('hidden', isApiProxyEnabled());
+      } else {
+        demo.classList.add('hidden');
+      }
+    }
+
+    async function ensureFontsForCard() {
+      if (!document.fonts) return;
+      await Promise.all([
+        document.fonts.load('800 56px Inter'),
+        document.fonts.load('800 44px Inter'),
+        document.fonts.load('700 28px Inter'),
+        document.fonts.load('600 14px Inter')
+      ]).catch(() => {});
+      await document.fonts.ready;
+    }
+
+    // Simple non-blocking toast (used for share feedback)
+    function showToast(msg, ms = 2400) {
+      const t = document.getElementById('toast');
+      if (!t) { console.log('[toast]', msg); return; }
+      if (typeof msg === 'string' && msg.includes('👑')) t.innerHTML = pepperizeHtml(msg);
+      else t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._hideTimer);
+      t._hideTimer = setTimeout(() => {
+        t.classList.remove('show');
+      }, ms);
+    }
 
     const funnyLoadingLines = [
       "Scanning for emotional damage...",
@@ -446,8 +1866,29 @@
       });
     }
 
+    function isNativeApp() {
+      return !!(window.RoastLordNative && window.RoastLordNative.isNative && window.RoastLordNative.isNative());
+    }
+
+    function setupNativeUI() {
+      // Mobile photo buttons are always visible in HTML now
+    }
+
+    async function pickNativeGallery() {
+      if (!window.RoastLordNative?.pickFromGallery) return;
+      try {
+        const file = await window.RoastLordNative.pickFromGallery();
+        if (file) await processUploadedPhoto(file);
+      } catch (e) {
+        if (e?.message !== 'User cancelled photos app') {
+          showToast('Gallery unavailable — check permissions in Settings');
+        }
+      }
+    }
+
     // ==================== PWA ====================
     function registerPWA() {
+      if (isNativeApp()) return;
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('sw.js')
@@ -465,20 +1906,316 @@
       });
     }
 
-    // ==================== REAL AI ROAST GENERATOR (xAI Grok Vision) ====================
+    // ==================== REAL AI ROAST GENERATOR (powered by advanced vision) ====================
+    const TONE_STYLES = {
+      normal: 'Witty, playful, savage — like a sharp comedian who actually looked at the photo.',
+      brutal: 'Short, direct, and savage — blunt insults only. Never clever, never wordy.',
+      british: 'Dry British sarcasm, posh insults, understated devastation.',
+      genz: 'Playful Gen Z TikTok energy: no cap, rizz, aura, mid, cooked, delulu — chaotic, simple, and viral.',
+      dad: 'Dad-joke roasts with puns and "I\'m not saying, but..." energy.'
+    };
+
+    const HOOK_RULES = `HOOK RULES (mandatory — the opening IS the roast):
+- The FIRST 5 words must be a strong, punchy hook that grabs attention instantly.
+- Open blunt — no warm-up, no soft setup, no explaining yourself.
+- NEVER start with soft openings like: "You know...", "Honestly...", "Well,", "I have to say...", "It looks like...", "You seem...", "So basically...", "I mean..."
+- Brutal hooks: direct insults — "Bro your face...", "Your face is...", "Bro you look...", "You look stupid..."
+- Gen Z hooks: playful slang — "Not you posting...", "No cap your...", "The audacity of..."`;
+
+    const TIKTOK_FORMAT = `FORMAT (mandatory — every roast):
+- Maximum 16 words total. Never exceed 16 words.
+- 1–2 short, punchy sentences max. No filler, no wordy endings.
+- Easy to read aloud within a 4–5 second video.
+- No explanations, soft language, or extra details at the end.
+- Reference ONE specific detail from the photo (expression, hair, outfit, pose, vibe).`;
+
+    function getBrutalStyleAddendum() {
+      return `
+
+BRUTAL STYLE (mandatory — this is the priority):
+- Short, direct, and savage — like a blunt insult to someone's face.
+- Mean and funny. No soft language, no clever wordplay, no long setups.
+- NEVER be wordy or "trying too hard to be smart."
+- Good: "Bro your face looks ugly. That haircut made it worse, period."`;
+    }
+
+    function getRoastSystemPrompt() {
+      return `You are RoastLord — a savage TikTok-native roast writer.
+
+Every roast is a 4–5 second viral clip in text form:
+- Maximum 16 words total — never exceed 16 words
+- First 5 words = strong, punchy hook (not a gentle intro)
+- Short and punchy — avoid long or wordy roasts in every style
+- Brutal style: short, direct, savage — never clever or wordy
+- Gen Z style: playful TikTok slang, still tight and simple
+- No soft language, explanations, or extra details at the end
+
+Rules:
+- Match the requested tone style exactly.
+- Output ONLY the roast text. No quotes, labels, or preamble.
+- NEVER be racist, sexist, homophobic, or attack protected traits. Roast style, choices, and vibe only.`;
+    }
+
     function getStylePrompt(style) {
-      const base = `You are a savage roast comedian. Analyze the photo for appearance, clothing, expression, vibe, and details. Create a specific, witty, hilarious roast. Reference actual visual details from the image. Output ONLY the roast text (4-6 sentences). No intros or disclaimers.`;
+      const tone = TONE_STYLES[style] || TONE_STYLES.normal;
+      let prompt = `Write a roast for the person in this photo.
 
-      const styleSpecific = {
-        normal: `Witty and playful savage roast.`,
-        brutal: `Maximum savagery, direct and mean but clever.`,
-        british: `Dry, posh British sarcasm and shade.`,
-        genz: `Gen Z slang: no cap, rizz, aura, mid, chaotic.`,
-        dad: `Dad jokes mixed with roasts, puns, "I'm not saying but..."`
-      };
+Tone style: ${tone}
 
-      const styleText = styleSpecific[style] || styleSpecific.normal;
-      return `${base} Style: ${styleText} Be specific to the image.`;
+${HOOK_RULES}
+
+${TIKTOK_FORMAT}`;
+      if (style === 'brutal') prompt += getBrutalStyleAddendum();
+      prompt += `
+
+Output ONLY the roast text. No quotes, labels, or preamble.`;
+      return prompt;
+    }
+
+    function getMaxTokensForLength() {
+      return 48;
+    }
+
+    function enforceRoastFormat(roast) {
+      let text = (roast || '')
+        .replace(/^["']|["']$/g, '')
+        .replace(/^(Roast:|ROAST:)\s*/i, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const words = text.split(/\s+/).filter(Boolean);
+      if (words.length <= 16) return text;
+      return words.slice(0, 16).join(' ').replace(/[,;—-]\s*$/, '').trim();
+    }
+
+    const AGE_BLOCK_MESSAGE =
+      'RoastLord cannot roast people who appear under 11. Please upload a photo of someone age 11 or older.';
+
+    function getMinorShieldAddendum() {
+      return `
+
+CRITICAL CHILD SAFETY (mandatory):
+- A child who appears 10 or younger is visible in this photo alongside an older person.
+- Roast ONLY the older person(s). Do NOT roast, insult, mock, tease, or negatively describe any child or anyone who appears 10 or younger.
+- Do not mention children at all unless unavoidable — never as the punchline or target.
+- All humor must be directed only at the older person's appearance, outfit, expression, pose, vibe, or choices.`;
+    }
+
+    function getTeenMildAddendum() {
+      return `
+
+TEEN SAFETY (mandatory — subject appears 11-15):
+- Keep the roast light, playful, and witty — never mean-spirited, humiliating, harsh, or devastating.
+- No brutal energy. Think friendly comedian, not insult comic.
+- Avoid comments that could embarrass a middle-schooler or high-school freshman.`;
+    }
+
+    function getCleanLanguageAddendum() {
+      return `
+
+LANGUAGE (mandatory — under 18):
+- No profanity, curse words, slurs, sexual content, innuendo, or graphic insults.
+- Keep all language clean enough for teens and school-safe sharing.`;
+    }
+
+    function getAdultLanguageAddendum() {
+      return `
+
+LANGUAGE (18+ subject):
+- Mild profanity is allowed if it fits the roast style naturally.
+- Still NO slurs, hate speech, sexual harassment, or attacks on protected traits.`;
+    }
+
+    function buildRoastPrompt(style, _length, policy) {
+      const opts = typeof policy === 'boolean' ? { shieldMinors: policy } : (policy || {});
+      let prompt = getStylePrompt(style);
+      if (opts.shieldMinors) prompt += getMinorShieldAddendum();
+      if (opts.ageTier === 'teen_11_15') prompt += getTeenMildAddendum();
+      if (opts.allowExplicit) prompt += getAdultLanguageAddendum();
+      else prompt += getCleanLanguageAddendum();
+      return prompt;
+    }
+
+    function parseAgeCheckResponse(text) {
+      if (!text) return null;
+      const cleaned = text.replace(/```json\s*|```/g, '').trim();
+      const start = cleaned.indexOf('{');
+      const end = cleaned.lastIndexOf('}');
+      if (start === -1 || end === -1) return null;
+      try {
+        return JSON.parse(cleaned.slice(start, end + 1));
+      } catch {
+        return null;
+      }
+    }
+
+    function makeAllowPolicy(ageTier, shieldMinors = false) {
+      const base = { action: 'allow', shieldMinors: Boolean(shieldMinors), ageTier };
+      switch (ageTier) {
+        case 'teen_11_15':
+          return { ...base, allowBrutal: false, allowExplicit: false };
+        case 'teen_16_17':
+          return { ...base, allowBrutal: true, allowExplicit: false };
+        case 'adult_18_plus':
+          return { ...base, allowBrutal: true, allowExplicit: true };
+        default:
+          return { ...base, ageTier: 'unknown', allowBrutal: false, allowExplicit: false, uncertain: true };
+      }
+    }
+
+    function getAgePolicy(ageData) {
+      if (!ageData) return makeAllowPolicy('unknown');
+      if (!ageData.hasVisiblePeople) return makeAllowPolicy('unknown');
+
+      if (ageData.onlyChildrenUnder11) {
+        return { action: 'block', code: 'UNDER_11', message: AGE_BLOCK_MESSAGE };
+      }
+
+      if (ageData.hasChild10OrUnder) {
+        if (ageData.hasPerson18Plus) return makeAllowPolicy('adult_18_plus', true);
+        if (ageData.hasPerson16to17) return makeAllowPolicy('teen_16_17', true);
+        if (ageData.hasPerson11to15) return makeAllowPolicy('teen_11_15', true);
+        return { action: 'block', code: 'UNDER_11', message: AGE_BLOCK_MESSAGE };
+      }
+
+      const bucket = ageData.subjectAgeBucket;
+      if (bucket === 'under_11') {
+        return { action: 'block', code: 'UNDER_11', message: AGE_BLOCK_MESSAGE };
+      }
+      if (bucket === 'age_11_15') return makeAllowPolicy('teen_11_15');
+      if (bucket === 'age_16_17') return makeAllowPolicy('teen_16_17');
+      if (bucket === 'age_18_plus') return makeAllowPolicy('adult_18_plus');
+
+      if (ageData.hasPerson18Plus && !ageData.hasPerson11to15) return makeAllowPolicy('adult_18_plus');
+      if (ageData.hasPerson16to17 && !ageData.hasPerson11to15) return makeAllowPolicy('teen_16_17');
+      if (ageData.hasPerson11to15) return makeAllowPolicy('teen_11_15');
+
+      return makeAllowPolicy('unknown');
+    }
+
+    function createAgeBlockedError(message) {
+      const err = new Error(message || AGE_BLOCK_MESSAGE);
+      err.code = 'UNDER_11';
+      err.name = 'AgeBlockedError';
+      return err;
+    }
+
+    async function prefetchAgePolicy(imageBase64) {
+      currentAgePolicy = null;
+      if (!hasRoastApiAccess()) return;
+
+      if (isApiProxyEnabled()) {
+        const response = await fetch('/api/age-check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageBase64 })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || `Age check failed: ${response.status}`);
+        currentAgePolicy = data.policy;
+      } else if (xaiApiKey) {
+        currentAgePolicy = await analyzePhotoAgeClient(imageBase64);
+      }
+
+      if (currentAgePolicy?.action === 'block') {
+        throw createAgeBlockedError(currentAgePolicy.message);
+      }
+      applyAgePolicyUI();
+    }
+
+    async function analyzePhotoAgeClient(imageBase64) {
+      const system = `You are a conservative photo safety classifier. Estimate apparent ages of visible people. If unsure whether someone is under 11, classify them as under 11. Output ONLY valid JSON with no markdown fences.`;
+      const userText = `Analyze every visible person in this photo. For each person estimate one bucket:
+- "under_11" (appears 10 or younger)
+- "age_11_15"
+- "age_16_17"
+- "age_18_plus"
+- "unclear"
+
+Return ONLY this JSON object:
+{
+  "hasVisiblePeople": boolean,
+  "peopleCount": number,
+  "subjectAgeBucket": "under_11" | "age_11_15" | "age_16_17" | "age_18_plus" | "unclear",
+  "hasChild10OrUnder": boolean,
+  "hasPerson11to15": boolean,
+  "hasPerson16to17": boolean,
+  "hasPerson18Plus": boolean,
+  "onlyChildrenUnder11": boolean,
+  "confidence": "high" | "medium" | "low",
+  "notes": "brief"
+}
+
+Rules:
+- subjectAgeBucket: apparent age of the PRIMARY subject (main person photographed)
+- hasChild10OrUnder: true if ANY person appears 10 or younger
+- hasPerson11to15: true if ANY person appears 11-15
+- hasPerson16to17: true if ANY person appears 16-17
+- hasPerson18Plus: true if ANY person appears 18+
+- onlyChildrenUnder11: true ONLY when hasVisiblePeople is true AND every visible person appears 10 or younger
+- If no people are visible, set hasVisiblePeople false and other flags false`;
+
+      const response = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${xaiApiKey}`
+        },
+        body: JSON.stringify({
+          model: 'grok-4.3',
+          messages: [
+            { role: 'system', content: system },
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: userText },
+                {
+                  type: 'image_url',
+                  image_url: { url: `data:image/jpeg;base64,${imageBase64}`, detail: 'high' }
+                }
+              ]
+            }
+          ],
+          max_completion_tokens: 280,
+          temperature: 0.1
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error?.message || `Age check failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const raw = data.choices?.[0]?.message?.content?.trim() || '';
+      return getAgePolicy(parseAgeCheckResponse(raw));
+    }
+
+    function showAgeBlockedModal(message) {
+      const modal = document.getElementById('age-block-modal');
+      const msg = document.getElementById('age-block-message');
+      if (msg) msg.textContent = message || AGE_BLOCK_MESSAGE;
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function hideAgeBlockedModal() {
+      const modal = document.getElementById('age-block-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+      resetToLanding();
+    }
+
+    function handleAgeBlockError(e) {
+      if (e?.code === 'UNDER_11' || e?.code === 'MINORS_ONLY' || e?.name === 'AgeBlockedError') {
+        showAgeBlockedModal(e.message);
+        showScreen('landing');
+        return true;
+      }
+      return false;
     }
 
     async function resizeImageToBase64(file, maxSize = 1024) {
@@ -512,28 +2249,64 @@
     }
 
     async function callGrokVision(imageBase64, style) {
-      let roastPrompt;
-      let key;
+      const requestedStyle = style;
+      const effectiveStyle = getEffectiveRoastStyle(style);
 
-      if (!xaiApiKey) {
-        key = prompt(
-          "Enter your xAI API key to use real Grok vision:\n\n(Get a free key at https://console.x.ai/ — make sure it has chat + vision permissions and credits. Keys stored only in browser localStorage for this demo)"
-        );
-        if (!key) {
-          throw new Error("API key is required for real AI roasts.");
+      if (isApiProxyEnabled()) {
+        console.log('[RoastLord] Calling server proxy /api/roast (uses XAI_API_KEY on Vercel)');
+        const response = await fetch('/api/roast', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageBase64, style: effectiveStyle })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (response.status === 403 && data.blocked) {
+          throw createAgeBlockedError(data.message);
         }
-        xaiApiKey = key.trim();
-        localStorage.setItem('xai_api_key', xaiApiKey);
-        updateApiKeyUI();
+        if (!response.ok) {
+          console.error('[RoastLord] /api/roast failed:', response.status, data);
+          throw new Error(data.error || `Roast API error: ${response.status}`);
+        }
+        if (data.agePolicy) {
+          currentAgePolicy = { action: 'allow', ...data.agePolicy };
+          applyAgePolicyUI();
+        }
+        if (data.styleAdjusted || (data.style && data.style !== requestedStyle)) {
+          currentStyle = data.style || effectiveStyle;
+          showToast('Brutal Mode is 16+ — used a milder style', 3500);
+        }
+        const roast = enforceRoastFormat(data.roast?.trim());
+        if (!roast) throw new Error("RoastLord didn't return a roast. Try a different photo or style.");
+        console.log('[RoastLord] Live AI roast received via server proxy');
+        return roast;
       }
 
-      roastPrompt = getStylePrompt(style);
+      if (!xaiApiKey) {
+        showApiKeyModal();
+        throw new Error("API key required — add your xAI key to generate real roasts.");
+      }
+
+      if (!currentAgePolicy || currentAgePolicy.action !== 'allow') {
+        currentAgePolicy = await analyzePhotoAgeClient(imageBase64);
+      }
+      if (currentAgePolicy.action === 'block') {
+        throw createAgeBlockedError(currentAgePolicy.message);
+      }
+      applyAgePolicyUI();
+
+      const roastStyle = getEffectiveRoastStyle(requestedStyle);
+      if (roastStyle !== requestedStyle) {
+        currentStyle = roastStyle;
+        showToast('Brutal Mode is 16+ — used Normal roast', 3500);
+      }
+
+      const roastPrompt = buildRoastPrompt(roastStyle, ROAST_FORMAT, currentAgePolicy);
 
       if (!imageBase64 || typeof imageBase64 !== 'string' || imageBase64.length < 100) {
         throw new Error('Invalid or missing base64 image data for vision API.');
       }
 
-      console.log('Calling Grok API with model: grok-4.3, style:', style, 'has image base64 length:', imageBase64.length);
+      console.log('Calling Grok API with model: grok-4.3, style:', style, 'format: viral, base64 length:', imageBase64.length);
 
       const response = await fetch('https://api.x.ai/v1/chat/completions', {
         method: 'POST',
@@ -544,24 +2317,20 @@
         body: JSON.stringify({
           model: 'grok-4.3',
           messages: [
+            { role: 'system', content: getRoastSystemPrompt() },
             {
               role: 'user',
               content: [
-                {
-                  type: 'text',
-                  text: roastPrompt
-                },
+                { type: 'text', text: roastPrompt },
                 {
                   type: 'image_url',
-                  image_url: {
-                    url: `data:image/jpeg;base64,${imageBase64}`
-                  }
+                  image_url: { url: `data:image/jpeg;base64,${imageBase64}`, detail: 'high' }
                 }
               ]
             }
           ],
-          max_completion_tokens: 450,
-          temperature: 0.85
+          max_completion_tokens: getMaxTokensForLength(),
+          temperature: 0.93
         })
       });
 
@@ -574,7 +2343,7 @@
           xaiApiKey = '';
           updateApiKeyUI();
           if (response.status === 403) {
-            throw new Error("API key forbidden (403). Your key or team doesn't have permission for this model/endpoint (e.g. Grok 4.3 vision). Check billing, credits, and team permissions at https://console.x.ai/. Ask team admin if needed. Get a new key there.");
+            throw new Error("API key forbidden (403). Your key or team doesn't have permission for this model/endpoint (e.g. advanced vision). Check billing, credits, and team permissions at https://console.x.ai/. Ask team admin if needed. Get a new key there.");
           }
           throw new Error("Invalid API key. Please try again.");
         }
@@ -585,37 +2354,50 @@
       let roast = data.choices?.[0]?.message?.content?.trim();
 
       if (!roast) {
-        throw new Error("Grok didn't return a roast. Try a different photo or style.");
+        throw new Error("RoastLord didn't return a roast. Try a different photo or style.");
       }
 
-      return roast;
+      return enforceRoastFormat(roast);
     }
 
-    // Fallback in case of no key / error (kept for graceful degradation)
+    // Fallback in case of no key / error (max 16 words, text at 0s)
     function getFallbackRoast(style) {
-      const fallbacks = {
-        normal: "Your vibe is giving 'I peaked three years ago and I'm still talking about it'.",
-        brutal: "I've seen more personality in a parking meter.",
-        british: "You look like the human embodiment of a disappointing cup of tea.",
-        genz: "Bestie the aura is actually negative. Like deeply in the red.",
-        dad: "I'm not saying you're mid, but your reflection filed for emotional support."
+      const roasts = {
+        normal: "Not you walking in looking cooked. Your haircut called security and your aura screams mid.",
+        brutal: "Bro your face looks ugly today. That smirk makes everything ten times worse, period.",
+        british: "Absolutely not, you look like that. Your mirror filed a complaint and won in court.",
+        genz: "No cap your aura is cooked, bestie. This pic screams mid and skipped you.",
+        dad: "I'm not saying you're mid, but wow. Your reflection filed paperwork and hesitated."
       };
-      return fallbacks[style] || fallbacks.normal + " (fallback - add your xAI key for real roasts)";
+      return roasts[style] || roasts.normal;
     }
 
     function updateApiKeyUI() {
       const btn = document.getElementById('api-key-status');
+      const wrap = document.getElementById('api-key-btn');
       if (!btn) return;
+
+      // Production: server proxy handles AI — no key UI for end users
+      if (isApiProxyEnabled()) {
+        if (wrap) wrap.classList.add('hidden');
+        return;
+      }
+
+      if (wrap) wrap.classList.remove('hidden');
       if (xaiApiKey) {
-        btn.innerHTML = `🔑 ${xaiApiKey.slice(0,4)}...${xaiApiKey.slice(-3)}`;
+        btn.innerHTML = `🔑 ${xaiApiKey.slice(0, 4)}…${xaiApiKey.slice(-3)}`;
         btn.classList.add('text-[#22ff88]');
       } else {
-        btn.innerHTML = `🔑 KEY`;
+        btn.innerHTML = '🔑 ADD KEY';
         btn.classList.remove('text-[#22ff88]');
       }
     }
 
     function showApiKeyModal() {
+      if (isApiProxyEnabled()) {
+        showToast('AI roasts are on — just upload a photo 👑', 2800);
+        return;
+      }
       const modal = document.getElementById('api-modal');
       const input = document.getElementById('api-key-input');
       modal.classList.remove('hidden');
@@ -637,7 +2419,9 @@
         xaiApiKey = val;
         localStorage.setItem('xai_api_key', val);
         updateApiKeyUI();
+        updateDemoBanner();
         hideApiKeyModal();
+        showToast('API key saved — upload or re-roast for real AI roasts');
       }
     }
 
@@ -655,11 +2439,19 @@
     }
 
     function updateRoastCounter() {
-      const counter = document.getElementById('roast-counter');
       const total = document.getElementById('total-roasts');
-      
-      if (counter) counter.textContent = (2487392 + Math.floor(Math.random() * 400)).toLocaleString();
-      if (total) total.textContent = (2487392 + Math.floor(Math.random() * 900)).toLocaleString();
+      const todayEl = document.getElementById('live-today');
+      const stats = window.RLAnalytics ? RLAnalytics.getDisplayStats() : null;
+
+      if (total) {
+        total.textContent = stats
+          ? stats.totalRoasts.toLocaleString()
+          : (2487392 + Math.floor(Math.random() * 400)).toLocaleString();
+      }
+      if (todayEl) {
+        const n = stats ? stats.todayRoasts : 148000 + Math.floor(Math.random() * 900);
+        todayEl.textContent = n >= 1000 ? Math.round(n / 1000) + 'k' : String(n);
+      }
     }
 
 
@@ -672,6 +2464,7 @@
     }
 
     async function processUploadedPhoto(file) {
+      if (!requireRoastOrPaywall()) return;
       currentPhotoFile = file;
       
       const reader = new FileReader();
@@ -700,6 +2493,7 @@
         }
 
         // Show processing UI with funny lines
+        if (window.RLAnalytics) RLAnalytics.trackUpload();
         showScreen('processing');
         
         const subEl = document.getElementById('loading-subtitle');
@@ -715,9 +2509,14 @@
           }, 80);
         }, 480);
 
-        // Call real AI
-        await generateRealRoast();
-        clearInterval(interval);
+        try {
+          await prefetchAgePolicy(currentPhotoBase64);
+          await generateRealRoast();
+        } catch (err) {
+          if (!handleAgeBlockError(err)) throw err;
+        } finally {
+          clearInterval(interval);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -755,15 +2554,18 @@
       const subEl = document.getElementById('loading-subtitle');
       const originalTitle = loadingTitle.textContent;
 
-      loadingTitle.textContent = 'Grok is analyzing the photo...';
+      loadingTitle.textContent = 'RoastLord is analyzing the photo...';
 
       try {
         let roastText;
-        if (currentPhotoBase64 && xaiApiKey) {
+        if (currentPhotoBase64 && hasRoastApiAccess()) {
           roastText = await callGrokVision(currentPhotoBase64, currentStyle);
+          isDemoRoast = false;
         } else {
-          // graceful fallback
+          if (!hasRoastApiAccess()) showApiKeyModal();
           roastText = getFallbackRoast(currentStyle);
+          isDemoRoast = true;
+          showToast('Demo roast — add your xAI key for personalized roasts', 3800);
         }
 
         currentRoast = roastText;
@@ -780,15 +2582,19 @@
         document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
 
         setupResultStylePills();
+        updateDemoBanner();
+        onRoastSuccess();
 
-        // Clear loading interval if any
         showScreen('result');
 
       } catch (error) {
+        if (handleAgeBlockError(error)) return;
         console.error('Roast generation failed:', error);
         const isAuthError = error.message.includes('403') || error.message.includes('401') || error.message.includes('key');
-        alert('Roast failed: ' + error.message + (isAuthError ? '\n\nCheck your xAI API key permissions and credits at console.x.ai' : '') + '\n\nFalling back to demo roast.');
+        const hint = isAuthError ? ' Check key permissions & credits at console.x.ai.' : '';
+        showToast('Roast failed — using DEMO (no xAI charge).' + hint, 5000);
         currentRoast = getFallbackRoast(currentStyle);
+        isDemoRoast = true;
         
         document.getElementById('result-photo').src = currentPhotoURL || '';
         const styleInfo = STYLES.find(s => s.id === currentStyle) || STYLES[0];
@@ -799,6 +2605,8 @@
         document.getElementById('roast-text').innerHTML = currentRoast;
 
         setupResultStylePills();
+        updateDemoBanner();
+        onRoastSuccess();
         showScreen('result');
       } finally {
         loadingTitle.textContent = originalTitle;
@@ -811,51 +2619,10 @@
       container.innerHTML = '';
 
       STYLES.forEach(style => {
-        const pill = document.createElement('button');
-        pill.className = `px-4 py-1 text-xs font-bold rounded-2xl border transition-all 
-          ${currentStyle === style.id 
-            ? 'bg-white text-black border-white' 
-            : 'bg-zinc-900 border-white/10 hover:border-white/30'}`;
-        
-        pill.textContent = style.label;
-        
-        pill.onclick = async () => {
-          currentStyle = style.id;
-          
-          // Re-run with new style (real AI if possible)
-          const resultScreen = document.getElementById('result');
-          resultScreen.style.opacity = '0.6';
-          resultScreen.style.pointerEvents = 'none';
-
-          try {
-            let newRoast;
-            if (currentPhotoBase64) {
-              newRoast = await callGrokVision(currentPhotoBase64, currentStyle);
-            } else {
-              newRoast = getFallbackRoast(currentStyle);
-            }
-            currentRoast = newRoast;
-            document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
-
-            const styleInfo = STYLES.find(s => s.id === currentStyle);
-            const badge = document.getElementById('roast-style-badge');
-            badge.textContent = styleInfo.label.toUpperCase();
-            badge.style.background = styleInfo.color;
-            badge.style.color = '#000';
-
-            // refresh pills by rebuilding (ensures correct active + listeners)
-            setupResultStylePills();
-
-          } catch (e) {
-            console.error('Re-roast from style pill failed:', e);
-            const isAuth = e.message.includes('403') || e.message.includes('401') || e.message.includes('key');
-            alert('Failed to re-roast: ' + e.message + (isAuth ? ' (Check API key at console.x.ai)' : ''));
-          } finally {
-            resultScreen.style.opacity = '1';
-            resultScreen.style.pointerEvents = 'auto';
-          }
-        };
-        
+        const pill = renderStylePill(style, currentStyle === style.id, async () => {
+          if (!trySelectStyle(style.id)) return;
+          await rerenderWithCurrentSettings();
+        });
         container.appendChild(pill);
       });
     }
@@ -863,184 +2630,1528 @@
     // ==================== ACTIONS (VIRAL + REAL AI) ====================
     async function roastAgain() {
       if (!currentPhotoBase64) {
-        alert("Upload a photo first!");
+        showToast('Upload a photo first!');
         return;
       }
+      if (!requireRoastOrPaywall()) return;
+      const btn = event?.target?.closest('button');
+      setButtonLoading(btn, true, 'ROASTING...');
       try {
+        if (!hasRoastApiAccess()) {
+          showApiKeyModal();
+          throw new Error('API key required');
+        }
         const newRoast = await callGrokVision(currentPhotoBase64, currentStyle);
         currentRoast = newRoast;
+        isDemoRoast = false;
         document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
+        updateDemoBanner();
+        onRoastSuccess();
       } catch (e) {
+        if (handleAgeBlockError(e)) return;
         console.error('Roast Again failed:', e);
         const isAuth = e.message.includes('403') || e.message.includes('401') || e.message.includes('key');
         if (isAuth) {
-          alert('Roast Again failed due to API key issue: ' + e.message + '. Please update your key via the 🔑 button.');
-          // optionally clear
+          showToast('API key issue — update via 🔑 button', 4000);
           localStorage.removeItem('xai_api_key');
           xaiApiKey = '';
           updateApiKeyUI();
+        } else if (!e.message.includes('API key required')) {
+          showToast('Roast failed — try again', 3000);
         }
         currentRoast = getFallbackRoast(currentStyle);
+        isDemoRoast = true;
         document.getElementById('roast-text').innerHTML = currentRoast;
+        updateDemoBanner();
+      } finally {
+        setButtonLoading(btn, false);
       }
     }
 
     async function makeItMeaner() {
       if (!currentPhotoBase64) return;
-      
-      // Increase "intensity" by using a more brutal prompt variation
-      const brutalStyle = 'brutal';
+      if (!isBrutalAllowedByAge()) {
+        showToast('Brutal Mode unlocks at 16+', 3500);
+        return;
+      }
+      if (!requirePremium('brutal')) return;
+      if (!requireRoastOrPaywall()) return;
+
+      const btn = event?.target?.closest('button');
+      setButtonLoading(btn, true, 'GOING HARDER...');
       const originalStyle = currentStyle;
-      
-      currentStyle = brutalStyle;
-      
+      currentStyle = 'brutal';
+
       try {
+        if (!hasRoastApiAccess()) {
+          showApiKeyModal();
+          throw new Error('API key required');
+        }
         const meanerRoast = await callGrokVision(currentPhotoBase64, 'brutal');
         currentRoast = meanerRoast;
+        isDemoRoast = false;
         document.getElementById('roast-text').innerHTML = currentRoast.replace(/\n/g, '<br>');
 
-        // update badge to show it got brutal
         const badge = document.getElementById('roast-style-badge');
         badge.textContent = 'BRUTAL MODE 🔥';
         badge.style.background = '#ff2e63';
         badge.style.color = '#000';
 
-        // refresh pills
         setupResultStylePills();
+        updateDemoBanner();
+        onRoastSuccess();
       } catch (e) {
+        if (handleAgeBlockError(e)) return;
         console.error('Make it Meaner failed:', e);
         const isAuth = e.message.includes('403') || e.message.includes('401') || e.message.includes('key');
         if (isAuth) {
-          alert("Couldn't make it meaner due to API key issue: " + e.message + ". Update key via 🔑 button at console.x.ai.");
+          showToast("API key issue — update via 🔑 button", 4000);
           localStorage.removeItem('xai_api_key');
           xaiApiKey = '';
           updateApiKeyUI();
-        } else {
-          alert("Couldn't make it meaner: " + e.message);
+        } else if (!e.message.includes('API key required')) {
+          showToast("Couldn't make it meaner — try again", 3000);
         }
         currentStyle = originalStyle;
+      } finally {
+        setButtonLoading(btn, false);
       }
     }
 
-    function copyRoast() {
-      const text = document.getElementById('roast-text').innerText;
-      navigator.clipboard.writeText(text + "\n\n🔥 Roasted by AI Roast Me").then(() => {
-        const btns = document.querySelectorAll('button');
-        const copyBtn = Array.from(btns).find(b => b.textContent.includes('COPY'));
-        if (copyBtn) {
-          const orig = copyBtn.innerHTML;
-          copyBtn.innerHTML = 'COPIED!';
-          setTimeout(() => { copyBtn.innerHTML = orig; }, 1400);
+    async function copyRoast() {
+      const text = getViralShareText(document.getElementById('roast-text')?.innerText || '');
+      if (await copyToClipboard(text)) {
+        showCopyButtonFeedback();
+        showToast('Roast copied! 👑');
+        return;
+      }
+      showCopyFallback(text, 'Copy your roast');
+    }
+
+    let _roastLordLogoPromise = null;
+    let _pepperIconPromise = null;
+
+    function loadPepperIcon() {
+      if (!_pepperIconPromise) {
+        _pepperIconPromise = new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('Pepper icon failed to load'));
+          img.src = PEPPER_SRC;
+        });
+      }
+      return _pepperIconPromise;
+    }
+
+    function drawPepperOnCanvas(ctx, pepper, leftX, topY, size) {
+      const ratio = pepper.naturalWidth / Math.max(1, pepper.naturalHeight);
+      const h = size;
+      const w = h * ratio;
+      ctx.drawImage(pepper, leftX, topY, w, h);
+      return w;
+    }
+
+    function loadRoastLordLogo() {
+      if (!_roastLordLogoPromise) {
+        _roastLordLogoPromise = new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('RoastLord logo failed to load'));
+          img.src = '/assets/roastlord-logo.png';
+        });
+      }
+      return _roastLordLogoPromise;
+    }
+
+    function drawLogoOnCanvas(ctx, logo, centerX, topY, maxHeight) {
+      const ratio = logo.naturalWidth / Math.max(1, logo.naturalHeight);
+      const h = maxHeight;
+      const w = h * ratio;
+      ctx.drawImage(logo, centerX - w / 2, topY, w, h);
+    }
+
+    function drawLogoLeftOnCanvas(ctx, logo, leftX, topY, maxHeight) {
+      const ratio = logo.naturalWidth / Math.max(1, logo.naturalHeight);
+      const h = maxHeight;
+      const w = h * ratio;
+      ctx.drawImage(logo, leftX, topY, w, h);
+    }
+
+    function drawMemeTextLine(ctx, text, x, y, fillStyle) {
+      ctx.lineJoin = 'round';
+      ctx.miterLimit = 2;
+      ctx.shadowColor = 'rgba(0,0,0,0.95)';
+      ctx.shadowBlur = 14;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 4;
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 12;
+      ctx.strokeText(text, x, y);
+      ctx.lineWidth = 7;
+      ctx.strokeText(text, x, y);
+      ctx.fillStyle = fillStyle || '#ffffff';
+      ctx.fillText(text, x, y);
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+    }
+
+    // ==================== VIRAL ROAST CARD (9:16 TikTok / Reels / Stories) ====================
+    // 1080x1920 @2x — logo/username/score in top-left safe zone (avoids TikTok right-edge UI)
+    // Compact photo, hero roast text, tight spacing, meme-style stroke text on dark gradient
+    async function generateRoastCardCanvas() {
+      if (!currentPhotoURL || !currentRoast) {
+        throw new Error('Missing photo or roast for card export');
+      }
+
+      await ensureFontsForCard();
+      const logo = await loadRoastLordLogo().catch(() => null);
+      const pepper = await loadPepperIcon().catch(() => null);
+
+      const WIDTH = 1080;
+      const HEIGHT = 1920;
+      const SCALE = 2;
+      const SAFE_TOP = 140;
+      const SAFE_BOTTOM = 280;
+      const SAFE_RIGHT = 88;
+      const MARGIN = 48;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = WIDTH * SCALE;
+      canvas.height = HEIGHT * SCALE;
+      const ctx = canvas.getContext('2d', { alpha: false });
+      ctx.scale(SCALE, SCALE);
+
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+      bgGrad.addColorStop(0, '#12121a');
+      bgGrad.addColorStop(0.45, '#08080c');
+      bgGrad.addColorStop(1, '#030304');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      const glow = ctx.createRadialGradient(MARGIN + 120, SAFE_TOP + 40, 20, MARGIN + 120, SAFE_TOP + 80, 340);
+      glow.addColorStop(0, 'rgba(255, 215, 0, 0.1)');
+      glow.addColorStop(0.55, 'rgba(34, 255, 136, 0.05)');
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.18)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(12, 12, WIDTH - 24, HEIGHT - 24);
+
+      const styleInfo = STYLES.find(s => s.id === currentStyle) || STYLES[0];
+      const styleLabel = (styleInfo.label || 'ROAST').toUpperCase();
+      const styleColor = styleInfo.color || '#22ff88';
+
+      const headerLeft = MARGIN;
+      let headerY = SAFE_TOP - 72;
+      const headerLogoH = logo ? 56 : 0;
+
+      if (logo) {
+        drawLogoLeftOnCanvas(ctx, logo, headerLeft, headerY, headerLogoH);
+        headerY += headerLogoH + 10;
+      } else {
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 28px Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+        if (pepper) {
+          drawPepperOnCanvas(ctx, pepper, headerLeft, headerY, 28);
+        } else {
+          ctx.fillText('ROASTLORD', headerLeft, headerY);
         }
+        headerY += 38;
+      }
+
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.font = '700 22px Inter, system-ui, sans-serif';
+      ctx.fillText('@roastlord.com', headerLeft, headerY);
+      headerY += 30;
+
+      if (lastRoastScore > 0) {
+        const scoreText = '💥 ' + lastRoastScore.toLocaleString() + ' DMG';
+        ctx.font = '800 24px Inter, system-ui, sans-serif';
+        const scoreW = Math.min(ctx.measureText(scoreText).width + 36, WIDTH - SAFE_RIGHT - headerLeft);
+        roundRectPath(ctx, headerLeft, headerY, scoreW, 40, 12);
+        ctx.fillStyle = 'rgba(34, 255, 136, 0.14)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(34, 255, 136, 0.45)';
+        ctx.lineWidth = 1.5;
+        roundRectPath(ctx, headerLeft, headerY, scoreW, 40, 12);
+        ctx.stroke();
+        ctx.fillStyle = '#22ff88';
+        ctx.font = '800 24px Inter, system-ui, sans-serif';
+        ctx.fillText(scoreText, headerLeft + 18, headerY + 9);
+        headerY += 48;
+      }
+
+      ctx.font = '800 18px Inter, system-ui, sans-serif';
+      const styleBadgeW = Math.min(ctx.measureText(styleLabel).width + 32, WIDTH - SAFE_RIGHT - headerLeft);
+      roundRectPath(ctx, headerLeft, headerY, styleBadgeW, 32, 10);
+      ctx.fillStyle = styleColor;
+      ctx.fill();
+      ctx.fillStyle = '#000000';
+      ctx.fillText(styleLabel, headerLeft + 16, headerY + 8);
+      headerY += 40;
+
+      const photo = new Image();
+      await new Promise((res, rej) => { photo.onload = res; photo.onerror = rej; photo.src = currentPhotoURL; });
+
+      const photoMaxW = WIDTH - MARGIN * 2;
+      const photoMaxH = 360;
+      const photoZoneY = headerY + 8;
+
+      const imgRatio = photo.naturalWidth / Math.max(1, photo.naturalHeight);
+      let dW = photoMaxW;
+      let dH = dW / imgRatio;
+      if (dH > photoMaxH) {
+        dH = photoMaxH;
+        dW = dH * imgRatio;
+      }
+      const pX = Math.round((WIDTH - dW) / 2);
+      const pY = Math.round(photoZoneY + (photoMaxH - dH) / 2);
+      const fPad = 5;
+
+      ctx.fillStyle = '#0a0a0e';
+      roundRectPath(ctx, pX - fPad, pY - fPad, dW + fPad * 2, dH + fPad * 2, 20);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(34, 255, 136, 0.35)';
+      ctx.lineWidth = 2;
+      roundRectPath(ctx, pX - fPad, pY - fPad, dW + fPad * 2, dH + fPad * 2, 20);
+      ctx.stroke();
+
+      ctx.save();
+      roundRectPath(ctx, pX, pY, dW, dH, 16);
+      ctx.clip();
+      ctx.drawImage(photo, pX, pY, dW, dH);
+      ctx.restore();
+
+      const footerReserve = isPremium() ? 72 : 148;
+      const textY0 = photoZoneY + photoMaxH + 28;
+      const textBottomLimit = HEIGHT - SAFE_BOTTOM - footerReserve;
+      const textMaxWidth = WIDTH - MARGIN * 2;
+      const textX = WIDTH / 2;
+
+      const paras = currentRoast.split(/\n+/).map(p => p.trim()).filter(Boolean);
+      const sizeSteps = [
+        { fSize: 56, lh: 68 },
+        { fSize: 48, lh: 58 },
+        { fSize: 40, lh: 50 },
+        { fSize: 34, lh: 44 }
+      ];
+
+      let lines = [];
+      let fSize = 56;
+      let lh = 68;
+
+      for (const step of sizeSteps) {
+        fSize = step.fSize;
+        lh = step.lh;
+        ctx.font = `800 ${fSize}px Inter, system-ui, -apple-system, sans-serif`;
+        lines = [];
+        for (const p of paras) {
+          lines.push(...wrapTextToLines(ctx, p, textMaxWidth));
+          lines.push('');
+        }
+        while (lines.length && !lines[lines.length - 1]) lines.pop();
+        const visibleCount = lines.filter(l => l).length;
+        const blockH = visibleCount * lh + (lines.length - visibleCount) * lh * 0.35;
+        if (blockH <= textBottomLimit - textY0 || step === sizeSteps[sizeSteps.length - 1]) break;
+      }
+
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      let ty = textY0;
+      for (const ln of lines) {
+        if (!ln) { ty += lh * 0.35; continue; }
+        if (ty + lh > textBottomLimit) break;
+        drawMemeTextLine(ctx, ln, textX, ty);
+        ty += lh;
+      }
+
+      const accentY = Math.min(ty + 16, textBottomLimit + 8);
+      const accentGrad = ctx.createLinearGradient(MARGIN, accentY, WIDTH - MARGIN, accentY);
+      accentGrad.addColorStop(0, 'rgba(34, 255, 136, 0)');
+      accentGrad.addColorStop(0.5, 'rgba(255, 215, 0, 0.45)');
+      accentGrad.addColorStop(1, 'rgba(34, 255, 136, 0)');
+      ctx.strokeStyle = accentGrad;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(MARGIN, accentY);
+      ctx.lineTo(WIDTH - MARGIN, accentY);
+      ctx.stroke();
+
+      const footerY = HEIGHT - SAFE_BOTTOM - (isPremium() ? 36 : 108);
+
+      if (!isPremium()) {
+        const refCode = (getReferral().code || 'ROAST').slice(0, 10);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#ffd700';
+        ctx.font = '800 20px Inter, system-ui, sans-serif';
+        ctx.fillText('roastlord.com', headerLeft, footerY);
+        if (pepper) drawPepperOnCanvas(ctx, pepper, headerLeft + ctx.measureText('roastlord.com').width + 8, footerY + 2, 18);
+        ctx.fillStyle = '#22ff88';
+        ctx.font = '700 16px Inter, system-ui, sans-serif';
+        ctx.fillText('GET ROASTED FREE', headerLeft, footerY + 28);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.font = '600 13px Inter, system-ui, sans-serif';
+        ctx.fillText('#RoastLord #FYP · ref:' + refCode, headerLeft, footerY + 52);
+      } else if (logo) {
+        drawLogoLeftOnCanvas(ctx, logo, headerLeft, footerY, 36);
+        ctx.textAlign = 'left';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.font = '600 14px Inter, system-ui, sans-serif';
+        ctx.fillText('@roastlord.com', headerLeft, footerY + 44);
+      }
+
+      if (lastRoastScore > 0) {
+        const rankTitle = getRankTitle(lastRoastScore).replace(/^[^\s]+\s/, '');
+        ctx.textAlign = 'left';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+        ctx.font = '600 12px Inter, system-ui, sans-serif';
+        ctx.fillText(rankTitle, headerLeft, HEIGHT - SAFE_BOTTOM - 20);
+      }
+
+      return canvas;
+    }
+
+    function roundRectPath(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    function wrapTextToLines(ctx, text, maxW) {
+      const words = text.split(/\s+/);
+      const out = [];
+      let cur = '';
+      for (let i = 0; i < words.length; i++) {
+        const test = cur ? cur + ' ' + words[i] : words[i];
+        if (ctx.measureText(test).width > maxW && cur) {
+          out.push(cur);
+          cur = words[i];
+        } else {
+          cur = test;
+        }
+      }
+      if (cur) out.push(cur);
+      return out;
+    }
+
+    function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+    function easeOutCubic(t) { const x = clamp01(t); return 1 - Math.pow(1 - x, 3); }
+    function easeOutBack(t) {
+      const x = clamp01(t);
+      const c1 = 1.70158;
+      const c3 = c1 + 1;
+      return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+    }
+
+    function getVideoExtension(mime) {
+      return (mime || '').includes('webm') ? 'webm' : 'mp4';
+    }
+
+    const VIDEO_ENCODE_API = '/api/video/encode';
+    const VIDEO_ENCODE_MAX_BODY = 4.0 * 1024 * 1024;
+
+    let _videoStatusCallback = null;
+
+    function setVideoEncodeStatus(msg) {
+      if (_videoStatusCallback) _videoStatusCallback(msg);
+    }
+
+    function isSafari() {
+      const ua = navigator.userAgent;
+      return (/Safari/i.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|Firefox/i.test(ua)) || isIOS();
+    }
+
+    function getVideoExportSize() {
+      return isSafari() ? { w: 540, h: 960 } : { w: 720, h: 1280 };
+    }
+
+    function getMediaRecorderMimeType() {
+      const types = isSafari()
+        ? ['video/mp4', 'video/mp4;codecs=avc1', 'video/mp4;codecs=h264', 'video/webm']
+        : ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
+      return types.find((t) => typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(t)) || '';
+    }
+
+    function canCaptureCanvasVideo() {
+      return typeof MediaRecorder !== 'undefined'
+        && !!getMediaRecorderMimeType()
+        && typeof HTMLCanvasElement !== 'undefined'
+        && typeof HTMLCanvasElement.prototype.captureStream === 'function';
+    }
+
+    async function packJpegFrameBundle(jpegBlobs) {
+      const parts = await Promise.all(jpegBlobs.map((blob) => blob.arrayBuffer()));
+      let total = 0;
+      for (const buf of parts) total += 4 + buf.byteLength;
+      const out = new Uint8Array(total);
+      const view = new DataView(out.buffer);
+      let offset = 0;
+      for (const buf of parts) {
+        const bytes = new Uint8Array(buf);
+        view.setUint32(offset, bytes.byteLength, false);
+        offset += 4;
+        out.set(bytes, offset);
+        offset += bytes.byteLength;
+      }
+      return new Blob([out], { type: 'application/octet-stream' });
+    }
+
+    async function encodeVideoOnServer(blob, opts = {}) {
+      const headers = { 'Content-Type': blob.type || 'application/octet-stream' };
+      if (opts.mode === 'frames') {
+        headers['X-Encode-Mode'] = 'frames';
+        headers['X-Frame-Count'] = String(opts.frameCount);
+        headers['X-Fps'] = String(opts.fps || 30);
+      }
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 45000);
+      let res;
+      try {
+        res = await fetch(VIDEO_ENCODE_API, { method: 'POST', headers, body: blob, signal: controller.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+      if (!res.ok) {
+        let detail = '';
+        try {
+          const err = await res.json();
+          detail = err.error || '';
+        } catch (_) {}
+        throw new Error(detail || `Server encode failed (${res.status})`);
+      }
+      return await res.blob();
+    }
+
+    function canvasToJpegBlob(canvas, quality = 0.58) {
+      return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    }
+
+    function estimateJpegQuality(sampleBytes, totalFrames) {
+      const overhead = totalFrames * 4;
+      const budget = VIDEO_ENCODE_MAX_BODY - overhead;
+      const pad = isSafari() ? 1.45 : 1.12;
+      const projected = sampleBytes * totalFrames * pad;
+      if (projected <= budget) return isSafari() ? 0.52 : 0.62;
+      const scale = budget / projected;
+      const maxQ = isSafari() ? 0.52 : 0.62;
+      const minQ = isSafari() ? 0.26 : 0.38;
+      return Math.max(minQ, Math.min(maxQ, maxQ * scale));
+    }
+
+    async function captureCanvasAsVideo(canvas, drawFrame, totalFrames, fps) {
+      const mimeType = getMediaRecorderMimeType();
+      if (!mimeType) throw new Error('MediaRecorder not supported');
+      if (typeof canvas.captureStream !== 'function') throw new Error('Canvas capture not supported');
+
+      const frameDelayMs = Math.ceil(1000 / fps);
+      let stream;
+      let track;
+      let useRequestFrame = false;
+
+      try {
+        stream = canvas.captureStream(0);
+        track = stream.getVideoTracks()[0];
+        useRequestFrame = !!(track && typeof track.requestFrame === 'function');
+      } catch (_) {}
+
+      if (!stream || !useRequestFrame) {
+        stream = canvas.captureStream(fps);
+        track = stream.getVideoTracks()[0];
+        useRequestFrame = false;
+      }
+
+      const recorderOpts = { mimeType };
+      if (!isSafari()) recorderOpts.videoBitsPerSecond = 6_000_000;
+
+      const recorder = new MediaRecorder(stream, recorderOpts);
+      const outType = mimeType.split(';')[0];
+
+      const chunks = [];
+      const done = new Promise((resolve, reject) => {
+        recorder.ondataavailable = (e) => { if (e.data?.size) chunks.push(e.data); };
+        recorder.onerror = () => reject(new Error('MediaRecorder failed'));
+        recorder.onstop = () => resolve(new Blob(chunks, { type: outType }));
       });
+
+      // Prime frame 0 so photo + text appear from the start of the recording (no ~1s encoder lead-in).
+      drawFrame(0);
+      if (useRequestFrame && track) track.requestFrame();
+      await new Promise((r) => setTimeout(r, frameDelayMs));
+
+      recorder.start(100);
+      for (let frame = 0; frame < totalFrames; frame++) {
+        drawFrame(frame);
+        if (useRequestFrame && track) track.requestFrame();
+        if (frame % 10 === 0) setVideoEncodeStatus(`CAPTURING VIDEO... ${Math.round((frame / totalFrames) * 100)}%`);
+        await new Promise((r) => setTimeout(r, frameDelayMs));
+      }
+      await new Promise((r) => setTimeout(r, frameDelayMs * 3));
+      if (recorder.state !== 'inactive') recorder.stop();
+      return done;
+    }
+
+    async function polishVideoForTikTok(videoBlob) {
+      setVideoEncodeStatus('ENCODING HD...');
+      try {
+        const mp4 = await encodeVideoOnServer(videoBlob);
+        if (mp4?.size > 1024) return mp4;
+      } catch (err) {
+        console.warn('[video] server polish failed, using captured video:', err);
+      }
+      const type = videoBlob.type || 'video/mp4';
+      return new Blob([videoBlob], { type: type.includes('mp4') ? 'video/mp4' : type });
+    }
+
+    async function tryServerFrameEncode(jpegBlobs, fps = 30) {
+      const bundle = await packJpegFrameBundle(jpegBlobs);
+      if (bundle.size > VIDEO_ENCODE_MAX_BODY) {
+        throw new Error(`Frame bundle too large (${Math.round(bundle.size / 1024)}KB)`);
+      }
+      setVideoEncodeStatus('ENCODING HD...');
+      const mp4 = await encodeVideoOnServer(bundle, {
+        mode: 'frames',
+        frameCount: jpegBlobs.length,
+        fps
+      });
+      return mp4?.size > 1024 ? mp4 : null;
+    }
+
+    async function renderRoastVideoFramesOnce(sourceCanvas, exportCanvas, drawAtFrame, totalFrames, forcedQuality = null) {
+      const exportCtx = exportCanvas.getContext('2d', { alpha: false });
+      const frames = [];
+      let quality = forcedQuality;
+
+      for (let frame = 0; frame < totalFrames; frame++) {
+        drawAtFrame(frame);
+        exportCtx.drawImage(sourceCanvas, 0, 0, exportCanvas.width, exportCanvas.height);
+        if (quality == null && frame === 0) {
+          const sample = await canvasToJpegBlob(exportCanvas, isSafari() ? 0.52 : 0.62);
+          if (!sample) throw new Error('Failed to render video frame');
+          quality = estimateJpegQuality(sample.size, totalFrames);
+        }
+        const jpeg = await canvasToJpegBlob(exportCanvas, quality);
+        if (!jpeg) throw new Error('Failed to render video frame');
+        frames.push(jpeg);
+        if (frame % 15 === 0) {
+          setVideoEncodeStatus(`RENDERING FRAMES... ${Math.round((frame / totalFrames) * 100)}%`);
+        }
+      }
+      return frames;
+    }
+
+    function drawMemeTextLineAnimated(ctx, text, x, y, alpha, scale, fillStyle) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+      ctx.translate(-x, -y);
+      drawMemeTextLine(ctx, text, x, y, fillStyle);
+      ctx.restore();
+    }
+
+    function drawVideoBackground(ctx, width, height) {
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
+      bgGrad.addColorStop(0, '#101018');
+      bgGrad.addColorStop(0.5, '#07070b');
+      bgGrad.addColorStop(1, '#020203');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      const glow = ctx.createRadialGradient(width / 2, height * 0.28, 20, width / 2, height * 0.32, 520);
+      glow.addColorStop(0, 'rgba(255, 215, 0, 0.08)');
+      glow.addColorStop(0.55, 'rgba(34, 255, 136, 0.04)');
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    function buildRoastVideoLayout(ctx, photo, roastText) {
+      const WIDTH = 1080;
+      const HEIGHT = 1920;
+      const MARGIN = 40;
+      const photoMaxW = WIDTH - MARGIN * 2;
+      const photoMaxH = 700;
+      const photoZoneY = 100;
+
+      const imgRatio = photo.naturalWidth / Math.max(1, photo.naturalHeight);
+      let dW = photoMaxW;
+      let dH = dW / imgRatio;
+      if (dH > photoMaxH) {
+        dH = photoMaxH;
+        dW = dH * imgRatio;
+      }
+      const pX = Math.round((WIDTH - dW) / 2);
+      const pY = Math.round(photoZoneY + (photoMaxH - dH) / 2);
+
+      const textY0 = photoZoneY + photoMaxH + 36;
+      const textBottom = HEIGHT - 280;
+      const textMaxWidth = WIDTH - MARGIN * 2;
+      const textX = WIDTH / 2;
+
+      const paras = roastText.split(/\n+/).map(p => p.trim()).filter(Boolean);
+      const sizeSteps = [
+        { fSize: 78, lh: 94 },
+        { fSize: 68, lh: 82 },
+        { fSize: 58, lh: 70 },
+        { fSize: 50, lh: 60 }
+      ];
+
+      let lines = [];
+      let fSize = 78;
+      let lh = 94;
+      for (const step of sizeSteps) {
+        fSize = step.fSize;
+        lh = step.lh;
+        ctx.font = `800 ${fSize}px Inter, system-ui, -apple-system, sans-serif`;
+        lines = [];
+        for (const p of paras) {
+          lines.push(...wrapTextToLines(ctx, p, textMaxWidth));
+        }
+        const blockH = lines.length * lh;
+        if (blockH <= textBottom - textY0 || step === sizeSteps[sizeSteps.length - 1]) break;
+      }
+
+      return {
+        width: WIDTH,
+        height: HEIGHT,
+        photo: { x: pX, y: pY, w: dW, h: dH, pad: 6, radius: 22 },
+        lines,
+        fSize,
+        lh,
+        textX,
+        textY0,
+        logoY: 1640,
+        logoH: 72
+      };
+    }
+
+    const VIDEO_TIMING = {
+      DURATION: 5,
+      TEXT_DONE_BY: 3.0,
+      EXTRA_LINE_POP: 0.1,
+      EXTRA_LINE_START: 0.12,
+      LINE_STAGGER_MAX: 0.16,
+      LINE_STAGGER_MIN: 0.06,
+      LOGO_START: 4.0
+    };
+
+    const FIRST_LINE_STYLE = { alpha: 1, scale: 1 };
+
+    function getPhotoStyle() {
+      return { alpha: 1, scale: 1 };
+    }
+
+    function getVideoLineStagger(lineCount) {
+      if (lineCount <= 1) return 0;
+      const t = VIDEO_TIMING;
+      const needed = (t.TEXT_DONE_BY - t.EXTRA_LINE_START - t.EXTRA_LINE_POP) / (lineCount - 1);
+      return Math.min(t.LINE_STAGGER_MAX, Math.max(t.LINE_STAGGER_MIN, needed));
+    }
+
+    function getExtraLineProgress(timeSec, lineIndex, lineStagger) {
+      if (lineIndex < 1) return null;
+      const lineStart = VIDEO_TIMING.EXTRA_LINE_START + (lineIndex - 1) * lineStagger;
+      const local = (timeSec - lineStart) / VIDEO_TIMING.EXTRA_LINE_POP;
+      if (local <= 0) return null;
+      const eased = easeOutBack(clamp01(local));
+      return {
+        alpha: easeOutCubic(clamp01(local * 3.5)),
+        scale: 0.96 + 0.04 * eased
+      };
+    }
+
+    function drawRoastVideoFrame(ctx, layout, assets, timeSec) {
+      const { width, height, photo: ph, lines, fSize, lh, textX, textY0, logoY, logoH } = layout;
+      const { photo, logo } = assets;
+      const { DURATION, LOGO_START } = VIDEO_TIMING;
+      const photoStyle = getPhotoStyle();
+
+      drawVideoBackground(ctx, width, height);
+
+      if (photoStyle.alpha > 0.001) {
+        const cx = ph.x + ph.w / 2;
+        const cy = ph.y + ph.h / 2;
+        ctx.save();
+        ctx.globalAlpha = photoStyle.alpha;
+        ctx.translate(cx, cy);
+        ctx.scale(photoStyle.scale, photoStyle.scale);
+        ctx.translate(-cx, -cy);
+
+        ctx.fillStyle = '#0a0a0e';
+        roundRectPath(ctx, ph.x - ph.pad, ph.y - ph.pad, ph.w + ph.pad * 2, ph.h + ph.pad * 2, ph.radius);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(34, 255, 136, 0.45)';
+        ctx.lineWidth = 3;
+        roundRectPath(ctx, ph.x - ph.pad, ph.y - ph.pad, ph.w + ph.pad * 2, ph.h + ph.pad * 2, ph.radius);
+        ctx.stroke();
+        ctx.save();
+        roundRectPath(ctx, ph.x, ph.y, ph.w, ph.h, ph.radius - 4);
+        ctx.clip();
+        ctx.drawImage(photo, ph.x, ph.y, ph.w, ph.h);
+        ctx.restore();
+        ctx.restore();
+      }
+
+      // === UPDATED TEXT DRAWING (Force first line at 0s) ===
+const visibleLines = lines.filter(Boolean);
+const lineCount = Math.max(1, visibleLines.length);
+const lineStagger = getVideoLineStagger(lineCount);
+
+ctx.font = `800 ${fSize}px Inter, system-ui, -apple-system, sans-serif`;
+ctx.textAlign = 'center';
+ctx.textBaseline = 'top';
+let ty = textY0;
+
+visibleLines.forEach((ln, i) => {
+  let anim;
+  if (i === 0) {
+    anim = FIRST_LINE_STYLE;           // Force instant full visibility
+  } else {
+    anim = getExtraLineProgress(timeSec, i, lineStagger);
+  }
+
+  if (!anim || anim.alpha <= 0.001) return;
+
+  drawMemeTextLineAnimated(ctx, ln, textX, ty, anim.alpha, anim.scale);
+  ty += lh;
+});
+
+      if (timeSec >= LOGO_START) {
+        const logoP = easeOutCubic((timeSec - LOGO_START) / (DURATION - LOGO_START));
+        ctx.save();
+        ctx.globalAlpha = logoP;
+        if (logo) {
+          drawLogoOnCanvas(ctx, logo, width / 2, logoY, logoH);
+        } else {
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#ffd700';
+          ctx.font = '800 48px Inter, system-ui, sans-serif';
+          ctx.fillText('ROASTLORD', width / 2, logoY + 12);
+        }
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+        ctx.font = '700 26px Inter, system-ui, sans-serif';
+        ctx.fillText('@roastlord.com', width / 2, logoY + (logo ? logoH + 18 : 58));
+        ctx.restore();
+      }
+    }
+
+    async function generateRoastVideo() {
+      if (!currentPhotoURL || !currentRoast) {
+        throw new Error('Missing photo or roast for video export');
+      }
+
+      await ensureFontsForCard();
+      const [logo, photo] = await Promise.all([
+        loadRoastLordLogo().catch(() => null),
+        new Promise((res, rej) => {
+          const img = new Image();
+          img.onload = () => res(img);
+          img.onerror = rej;
+          img.src = currentPhotoURL;
+        })
+      ]);
+
+      const WIDTH = 1080;
+      const HEIGHT = 1920;
+      const FPS = 30;
+      const DURATION_SEC = VIDEO_TIMING.DURATION;
+      const TOTAL_FRAMES = FPS * DURATION_SEC;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+      const ctx = canvas.getContext('2d', { alpha: false });
+      const { w: exportW, h: exportH } = getVideoExportSize();
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = exportW;
+      exportCanvas.height = exportH;
+      const exportCtx = exportCanvas.getContext('2d', { alpha: false });
+      const layout = buildRoastVideoLayout(ctx, photo, currentRoast);
+      const assets = { photo, logo };
+
+      const drawAtFrame = (frame) => {
+        const t = Math.min(DURATION_SEC, frame / FPS);
+        drawRoastVideoFrame(ctx, layout, assets, t);
+      };
+
+      const drawExportAtFrame = (frame) => {
+        drawAtFrame(frame);
+        exportCtx.drawImage(canvas, 0, 0, exportW, exportH);
+      };
+
+      if (isSafari() && canCaptureCanvasVideo()) {
+        try {
+          setVideoEncodeStatus('CAPTURING VIDEO... 0%');
+          const captured = await captureCanvasAsVideo(exportCanvas, drawExportAtFrame, TOTAL_FRAMES, FPS);
+          if (captured?.size > 2048) {
+            return await polishVideoForTikTok(captured);
+          }
+        } catch (err) {
+          console.warn('[video] safari capture failed:', err);
+        }
+      }
+
+      setVideoEncodeStatus('RENDERING FRAMES... 0%');
+      let frames = await renderRoastVideoFramesOnce(canvas, exportCanvas, drawAtFrame, TOTAL_FRAMES);
+
+      try {
+        const serverMp4 = await tryServerFrameEncode(frames, FPS);
+        if (serverMp4) return serverMp4;
+      } catch (err) {
+        console.warn('[video] server frame encode failed:', err);
+        if (err.message?.includes('too large')) {
+          setVideoEncodeStatus('RENDERING FRAMES... 0%');
+          frames = await renderRoastVideoFramesOnce(canvas, exportCanvas, drawAtFrame, TOTAL_FRAMES, 0.26);
+          const retryMp4 = await tryServerFrameEncode(frames, FPS);
+          if (retryMp4) return retryMp4;
+        }
+      }
+
+      if (canCaptureCanvasVideo()) {
+        setVideoEncodeStatus('CAPTURING VIDEO... 0%');
+        const captured = await captureCanvasAsVideo(exportCanvas, drawExportAtFrame, TOTAL_FRAMES, FPS);
+        if (captured?.size > 2048) {
+          return await polishVideoForTikTok(captured);
+        }
+      }
+
+      throw new Error('Video export failed — check your connection and try again');
+    }
+
+    async function prepareTikTokVideoAssets() {
+      const roastText = (currentRoast || document.getElementById('roast-text')?.innerText || '').trim();
+      const blob = await generateRoastVideo();
+      const text = getViralShareText(roastText);
+      return { roastText, blob, text };
     }
 
     async function downloadRoastImage() {
-      const card = document.getElementById('share-card');
-      const wrapper = document.getElementById('share-photo-wrapper');
-      const textContainer = document.getElementById('share-roast-text');
-      
-      wrapper.innerHTML = '';
-      const img = document.createElement('img');
-      img.src = currentPhotoURL;
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'cover';
-      wrapper.appendChild(img);
-      
-      textContainer.innerHTML = currentRoast;
-      
-      card.style.display = 'block';
-      
+      const text = (currentRoast || document.getElementById('roast-text')?.innerText || '').trim();
+      const btn = event?.target?.closest('button');
+      setButtonLoading(btn, true, 'GENERATING...');
       try {
-        const canvas = await html2canvas(card.querySelector('.roast-card-export'), {
-          scale: 2,
-          backgroundColor: '#0a0a0a'
-        });
-        
-        const link = document.createElement('a');
-        link.download = `ai-roast-me-${Date.now()}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      } catch (err) {
-        alert("Couldn't generate image. Screenshot the roast instead.");
-      }
-      
-      card.style.display = 'none';
-    }
+        const canvas = await generateRoastCardCanvas();
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+        if (!blob) throw new Error('no blob');
 
-    // Improved viral sharing
-    async function shareCard() {
-      try {
-        await downloadRoastImage(); // ensure latest card is generated (or user can download)
-        
-        const text = document.getElementById('roast-text').innerText;
-        
-        if (navigator.canShare && navigator.canShare({ files: [] })) {
-          // Generate blob for share
-          const card = document.getElementById('share-card');
-          const wrapper = document.getElementById('share-photo-wrapper');
-          wrapper.innerHTML = '';
-          const img = document.createElement('img');
-          img.src = currentPhotoURL;
-          img.style.width = '100%';
-          img.style.height = '100%';
-          img.style.objectFit = 'cover';
-          wrapper.appendChild(img);
-          document.getElementById('share-roast-text').innerHTML = currentRoast;
-          card.style.display = 'block';
-
-          const canvas = await html2canvas(card.querySelector('.roast-card-export'), { scale: 1.8 });
-          card.style.display = 'none';
-
-          canvas.toBlob(async (blob) => {
-            const file = new File([blob], 'ai-roast-me.png', { type: 'image/png' });
-            try {
-              await navigator.share({
-                title: 'AI Roast Me',
-                text: text + ' 🔥',
-                files: [file]
-              });
-            } catch (err) {
-              fallbackSocialShare(text);
-            }
-          });
-        } else {
-          fallbackSocialShare(text);
+        await saveCardBlob(blob);
+        try { await navigator.clipboard.writeText(getViralShareText(text)); } catch (_) {}
+        if (!isIOS() || !isMobileDevice()) {
+          showToast(isPremium()
+            ? 'Premium card saved — no watermark!'
+            : 'Card saved (watermarked) — Go Premium for clean downloads');
         }
-      } catch (e) {
-        fallbackSocialShare(document.getElementById('roast-text').innerText);
+      } catch (err) {
+        console.error('downloadRoastImage error:', err);
+        showToast("Couldn't generate the card. Screenshot the screen instead.");
+      } finally {
+        setButtonLoading(btn, false);
       }
     }
 
-    function fallbackSocialShare(roastText) {
-      const shareText = encodeURIComponent(roastText + "\n\n🔥 Roasted by AI Roast Me");
-      // X
-      window.open(`https://x.com/intent/tweet?text=${shareText}`, '_blank');
-      // Also trigger download so user has the image ready to attach
-      downloadRoastImage();
+    async function prepareShareAssets() {
+      const roastText = (currentRoast || document.getElementById('roast-text')?.innerText || '').trim();
+      const canvas = await generateRoastCardCanvas();
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Could not create roast card');
+      const text = getViralShareText(roastText);
+      return { roastText, canvas, blob, text };
     }
 
-    function shareToX() {
-      const text = document.getElementById('roast-text').innerText;
-      const tweet = encodeURIComponent(text + "\n\nRoasted by AI Roast Me 🔥 ai-roast.me");
-      window.open(`https://x.com/intent/tweet?text=${tweet}`, '_blank');
-      // Pro tip: download the card so they can attach it
-      setTimeout(() => downloadRoastImage(), 300);
+    let _savePhotosPreviewUrl = null;
+
+    function showSaveToPhotosModal(blob, opts = {}) {
+      const isVideo = opts.isVideo || (blob.type || '').startsWith('video/');
+      const modal = document.getElementById('save-photos-modal');
+      const backdrop = document.getElementById('save-photos-backdrop');
+      const img = document.getElementById('save-photos-preview');
+      const video = document.getElementById('save-photos-video-preview');
+      const title = document.getElementById('save-photos-title');
+      const hint = document.getElementById('save-photos-hint');
+      if (!modal || !img) return;
+      if (_savePhotosPreviewUrl) URL.revokeObjectURL(_savePhotosPreviewUrl);
+      _savePhotosPreviewUrl = URL.createObjectURL(blob);
+
+      if (isVideo && video) {
+        if (title) title.textContent = 'Save Video to Photos';
+        if (hint) hint.innerHTML = 'Press and hold the video → <strong>Save Video</strong>';
+        img.classList.add('hidden');
+        img.removeAttribute('src');
+        video.classList.remove('hidden');
+        video.src = _savePhotosPreviewUrl;
+        video.load();
+        showToast('Press and hold → Save Video');
+      } else {
+        if (title) title.textContent = 'Save to Photos';
+        if (hint) hint.innerHTML = 'Press and hold the image → <strong>Add to Photos</strong>';
+        if (video) {
+          video.pause();
+          video.classList.add('hidden');
+          video.removeAttribute('src');
+          video.load();
+        }
+        img.classList.remove('hidden');
+        img.src = _savePhotosPreviewUrl;
+        showToast('Press and hold image → Add to Photos');
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex', 'flex-col');
+      if (backdrop) backdrop.classList.remove('hidden');
     }
 
-    function shareToInstagram() {
-      alert("Instagram doesn't support direct web shares well.\n\n1. Tap 'Download Card'\n2. Open Instagram and post the image with the roast text as caption!");
-      downloadRoastImage();
+    function hideSaveToPhotosModal() {
+      const modal = document.getElementById('save-photos-modal');
+      const backdrop = document.getElementById('save-photos-backdrop');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'flex-col');
+      }
+      if (backdrop) backdrop.classList.add('hidden');
+      if (_savePhotosPreviewUrl) {
+        URL.revokeObjectURL(_savePhotosPreviewUrl);
+        _savePhotosPreviewUrl = null;
+      }
+      const img = document.getElementById('save-photos-preview');
+      const video = document.getElementById('save-photos-video-preview');
+      if (img) {
+        img.classList.remove('hidden');
+        img.removeAttribute('src');
+      }
+      if (video) {
+        video.pause();
+        video.classList.add('hidden');
+        video.removeAttribute('src');
+        video.load();
+      }
     }
 
-    function shareToTikTok() {
-      alert("For TikTok:\n\n1. Download the roast card\n2. Use it as a video background or reaction + add the roast text on screen!");
-      downloadRoastImage();
+    async function saveCardBlob(blob, filename, opts = {}) {
+      const isVideo = (blob.type || '').startsWith('video/');
+      const defaultExt = isVideo ? getVideoExtension(blob.type) : 'png';
+      const name = filename || `roastlord-${Date.now()}.${defaultExt}`;
+      const mime = isVideo
+        ? (blob.type && blob.type.includes('mp4') ? 'video/mp4' : (blob.type || 'video/mp4'))
+        : (blob.type || 'image/png');
+
+      if (isNativeApp() && window.RoastLordNative?.saveCardToPhotos) {
+        await window.RoastLordNative.saveCardToPhotos(blob);
+        showToast(isVideo ? 'Saved to Photos 🎬' : 'Saved to Photos 📷');
+        return true;
+      }
+      if (isNativeApp() && window.RoastLordNative?.saveCard) {
+        await window.RoastLordNative.saveCard(blob);
+        showToast(isVideo ? 'Saved to Photos 🎬' : 'Saved to Photos 📷');
+        return true;
+      }
+
+      if (isIOS() && isMobileDevice()) {
+        if (isVideo && opts.deferIosVideo) {
+          return true;
+        }
+
+        if (isVideo) {
+          const file = new File([blob], name, { type: mime });
+          if (navigator.share) {
+            try {
+              await navigator.share({ files: [file], title: 'RoastLord' });
+              showToast('Tap Save Video → Photos');
+              return true;
+            } catch (e) {
+              if (e?.name === 'AbortError') {
+                showSaveToPhotosModal(blob, { isVideo: true });
+                return true;
+              }
+            }
+          }
+          showSaveToPhotosModal(blob, { isVideo: true });
+          return true;
+        }
+
+        const file = new File([blob], name, { type: mime });
+        const data = { files: [file], title: 'RoastLord' };
+        if (navigator.share && (!navigator.canShare || navigator.canShare(data))) {
+          try {
+            await navigator.share(data);
+            showToast('Tap Save Image → goes to Photos');
+            return true;
+          } catch (e) {
+            if (e?.name === 'AbortError') return true;
+          }
+        }
+        showSaveToPhotosModal(blob);
+        return true;
+      }
+
+      if (isMobileDevice() && navigator.share) {
+        const file = new File([blob], name, { type: mime });
+        const data = { files: [file], title: 'RoastLord' };
+        try {
+          if (!navigator.canShare || navigator.canShare(data)) {
+            await navigator.share(data);
+            return true;
+          }
+        } catch (e) {
+          if (e?.name === 'AbortError') return true;
+        }
+      }
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = name;
+      link.href = url;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      return true;
+    }
+
+    async function copyShareCaption(text) {
+      return copyToClipboard(text);
+    }
+
+    /**
+     * Native iOS/Android share sheet — used by the main "Share Roast Card" button.
+     */
+    async function tryNativeShare(roastText, extraTitle = 'RoastLord') {
+      try {
+        const { blob, text } = await prepareShareAssets();
+        const caption = text || getViralShareText(roastText);
+
+        if (isNativeApp() && window.RoastLordNative?.shareCard) {
+          await window.RoastLordNative.shareCard(blob, caption, extraTitle);
+          return true;
+        }
+
+        const file = new File([blob], 'roastlord-roast.png', { type: 'image/png' });
+        const shareData = { title: extraTitle, text: caption, files: [file] };
+
+        if (navigator.canShare && navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+          return true;
+        }
+
+        if (navigator.share) {
+          await navigator.share(shareData);
+          return true;
+        }
+      } catch (err) {
+        if (err && err.name === 'AbortError') return true;
+        console.log('[share] native share not available or failed:', err && err.message);
+      }
+      return false;
+    }
+
+    async function shareCard() {
+      const roastText = (currentRoast || document.getElementById('roast-text')?.innerText || '').trim();
+      const btn = event?.target?.closest('button');
+      setButtonLoading(btn, true, 'PREPARING...');
+
+      let didNative = false;
+      try {
+        didNative = await tryNativeShare(roastText);
+      } finally {
+        setButtonLoading(btn, false);
+      }
+
+      if (didNative) {
+        awardShareBonus();
+        return;
+      }
+
+      try {
+        const { blob, text } = await prepareShareAssets();
+        _pendingShareBlob = blob;
+        _pendingShareText = text;
+        await saveCardBlob(blob);
+        await copyShareCaption(text);
+        showToast('Card saved + caption copied to clipboard.');
+        setTimeout(() => showShareInstructions('all', text), 650);
+        awardShareBonus();
+      } catch (err) {
+        console.error('shareCard error:', err);
+        showToast('Could not prepare card — try again');
+      }
+    }
+
+    let _pendingShareBlob = null;
+    let _pendingShareText = null;
+    let _pendingShareIsVideo = false;
+    let _pendingSharePreviewUrl = null;
+    let _shareVideoPreviewUrl = null;
+    let _sharePrefetching = false;
+
+    function updateSharePreviewUrl() {
+      if (_pendingSharePreviewUrl) URL.revokeObjectURL(_pendingSharePreviewUrl);
+      _pendingSharePreviewUrl = _pendingShareBlob ? URL.createObjectURL(_pendingShareBlob) : null;
+
+      const preview = document.getElementById('viral-card-preview');
+      const loading = document.getElementById('viral-card-loading');
+      if (!preview) return;
+
+      if (_pendingSharePreviewUrl) {
+        preview.onload = () => { if (loading) loading.classList.add('hidden'); };
+        preview.onerror = () => { if (loading) loading.classList.remove('hidden'); };
+        preview.src = _pendingSharePreviewUrl;
+        if (preview.complete && preview.naturalWidth > 0 && loading) {
+          loading.classList.add('hidden');
+        }
+      } else {
+        preview.removeAttribute('src');
+        if (loading) loading.classList.remove('hidden');
+      }
+    }
+
+    function clearPendingShare() {
+      _pendingShareBlob = null;
+      _pendingShareText = null;
+      _pendingShareIsVideo = false;
+      if (_pendingSharePreviewUrl) {
+        URL.revokeObjectURL(_pendingSharePreviewUrl);
+        _pendingSharePreviewUrl = null;
+      }
+      _sharePrefetching = false;
+      const preview = document.getElementById('viral-card-preview');
+      const loading = document.getElementById('viral-card-loading');
+      if (preview) preview.removeAttribute('src');
+      if (loading) loading.classList.remove('hidden');
+    }
+
+    function prefetchShareCard() {
+      clearPendingShare();
+      _sharePrefetching = true;
+
+      const preview = document.getElementById('viral-card-preview');
+      const loading = document.getElementById('viral-card-loading');
+      if (preview) preview.removeAttribute('src');
+      if (loading) loading.classList.remove('hidden');
+
+      prepareShareAssets()
+        .then(({ blob, text }) => {
+          _pendingShareBlob = blob;
+          _pendingShareText = text;
+          updateSharePreviewUrl();
+        })
+        .catch((err) => {
+          console.log('[share] prefetch failed:', err && err.message);
+          if (loading) loading.classList.remove('hidden');
+        })
+        .finally(() => { _sharePrefetching = false; });
+    }
+
+    function isMobileDevice() {
+      return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+        || (navigator.maxTouchPoints > 1 && window.innerWidth < 1024);
+    }
+
+    function isIOS() {
+      return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    function getOpenUrlForPlatform(platform, text) {
+      const tweet = text && text.length > 275 ? text.slice(0, 272) + '...' : (text || '');
+      const enc = encodeURIComponent(text || '');
+      const encTweet = encodeURIComponent(tweet);
+
+      switch (platform) {
+        case 'whatsapp':
+          return 'https://wa.me/?text=' + enc;
+        case 'x':
+        case 'twitter':
+          return 'https://x.com/intent/tweet?text=' + encTweet;
+        case 'instagram':
+        case 'ig':
+          return isIOS() ? 'instagram://app' : 'https://www.instagram.com/';
+        case 'tiktok':
+          return isIOS() ? 'snssdk1233://upload' : 'https://www.tiktok.com/upload';
+        default:
+          return 'https://www.instagram.com/';
+      }
+    }
+
+    function makeAppLink(platform, text, label, className, extraUrl) {
+      const url = extraUrl || getOpenUrlForPlatform(platform, text);
+      const isHttp = url.startsWith('http');
+      const targetAttr = isHttp ? ' target="_blank" rel="noopener noreferrer"' : '';
+      return `<a href="${url}"${targetAttr}
+        class="block w-full mt-2 py-3.5 text-center font-extrabold rounded-2xl no-underline ${className}">${label}</a>`;
+    }
+
+    function mobileShareImageBtn(appName) {
+      if (!isMobileDevice() || !navigator.share) return '';
+      const isVideo = _pendingShareIsVideo;
+      const label = isVideo ? '📤 SHARE VIDEO' : '📤 SHARE CARD WITH IMAGE';
+      return `
+        <button type="button" onclick="sharePendingCard()"
+          class="meme-btn w-full py-4 mb-2 crown-btn font-black rounded-2xl text-sm">
+          ${label}
+        </button>
+        <div class="text-[9px] text-center text-[#ffd700] mb-3">${isVideo
+          ? `Pick <strong>${appName}</strong> to post, or <strong>Save Video</strong> for Photos`
+          : `Best on iPhone — pick <strong>${appName}</strong> from the share menu`}</div>`;
+    }
+
+    async function sharePendingCard() {
+      if (!_pendingShareBlob) {
+        showToast('No card ready — try sharing again');
+        return;
+      }
+      try {
+        const caption = _pendingShareText || '';
+        if (isNativeApp() && window.RoastLordNative?.shareCard) {
+          await window.RoastLordNative.shareCard(_pendingShareBlob, caption, 'RoastLord');
+        } else {
+          const isVideo = _pendingShareIsVideo || (_pendingShareBlob.type || '').startsWith('video/');
+          const ext = isVideo ? getVideoExtension(_pendingShareBlob.type) : 'png';
+          const mime = _pendingShareBlob.type || (isVideo ? 'video/webm' : 'image/png');
+          const file = new File([_pendingShareBlob], `roastlord-roast.${ext}`, { type: mime });
+          const data = { files: [file], text: caption, title: 'RoastLord' };
+          if (navigator.canShare && navigator.canShare(data)) {
+            await navigator.share(data);
+          } else if (navigator.share) {
+            await navigator.share(data);
+          } else {
+            showToast('Share not supported — file is already saved');
+            return;
+          }
+        }
+        hideShareInstructions();
+      } catch (e) {
+        if (e?.name !== 'AbortError') showToast('Share cancelled or not available');
+      }
+    }
+
+    async function shareToPlatform(platform) {
+      const btn = event?.target?.closest('button');
+      const isTikTok = platform === 'tiktok';
+      setButtonLoading(btn, true, isTikTok ? 'RENDERING VIDEO...' : 'PREPARING...');
+      _videoStatusCallback = (msg) => setButtonLoading(btn, true, msg);
+
+      try {
+        const { blob, text } = isTikTok
+          ? await prepareTikTokVideoAssets()
+          : await prepareShareAssets();
+        _pendingShareBlob = blob;
+        _pendingShareText = text;
+        _pendingShareIsVideo = isTikTok;
+        const iosTikTokVideo = isTikTok && isIOS() && isMobileDevice();
+        await saveCardBlob(blob, isTikTok
+          ? `roastlord-video-${Date.now()}.${getVideoExtension(blob.type)}`
+          : undefined, { deferIosVideo: iosTikTokVideo });
+        await copyShareCaption(text);
+
+        if (!isMobileDevice()) {
+          if (platform === 'whatsapp' || platform === 'x' || platform === 'twitter') {
+            window.open(getOpenUrlForPlatform(platform, text), '_blank', 'noopener,noreferrer');
+          }
+        }
+
+        showShareInstructions(platform, text);
+        showToast(isMobileDevice()
+          ? (isTikTok
+            ? (isIOS() ? 'Press and hold the video → Save Video to Photos' : '5s video saved — open TikTok to upload')
+            : (isIOS() ? 'Card saved to Photos — tap below to open the app' : 'Card saved — tap the button below to open the app'))
+          : (isTikTok ? 'Video saved to Downloads — caption copied' : 'Card saved to Downloads — caption copied'));
+
+        awardShareBonus(platform);
+      } catch (err) {
+        console.error('shareToPlatform error:', err);
+        showToast(isTikTok
+          ? (err.message || "Couldn't generate TikTok video — try again")
+          : 'Could not prepare card — try the main Share button');
+      } finally {
+        _videoStatusCallback = null;
+        setButtonLoading(btn, false);
+      }
+    }
+
+    async function shareToX() {
+      await shareToPlatform('x');
+    }
+
+    async function shareToInstagram() {
+      await shareToPlatform('instagram');
+    }
+
+    async function shareToTikTok() {
+      await shareToPlatform('tiktok');
+    }
+
+    async function shareToWhatsApp() {
+      await shareToPlatform('whatsapp');
+    }
+
+    function downloadForInstagram() { shareToInstagram(); }
+
+    function showShareInstructions(platform, shareText) {
+      const modal = document.getElementById('share-instructions');
+      const content = document.getElementById('share-instructions-content');
+      if (!modal || !content) {
+        showToast('Card saved + text copied. Open your social app and select the image from Recents.');
+        return;
+      }
+
+      const text = shareText || _pendingShareText || '';
+      let title = 'Your roast card is ready';
+      let steps = '';
+      let openBtn = '';
+
+      const onDesktop = !isMobileDevice();
+      const cardWhere = onDesktop
+        ? '<span class="font-mono text-[#ffd700]">roastlord-....png</span> from <strong>Downloads</strong>'
+        : '<span class="font-mono text-[#ffd700]">roastlord card</span> from <strong>Photos / Recents</strong>';
+
+      const common = '<div class="text-xs text-white/60 mt-2">Caption copied to clipboard.</div>';
+
+      if (platform === 'instagram' || platform === 'ig') {
+        title = 'Post to Instagram';
+        steps = `
+          <div class="text-[#22ff88] font-bold text-xs mb-2">✓ Card saved · Caption copied</div>
+          <ol class="list-decimal list-inside text-sm space-y-1 pl-1">
+            <li>Tap <strong>Share card with image</strong> below → pick Instagram</li>
+            <li>Or tap <strong>Open Instagram</strong> → + → Story → pick ${cardWhere}</li>
+          </ol>`;
+        openBtn = mobileShareImageBtn('Instagram')
+          + makeAppLink('instagram', text, '📷 Open Instagram →', 'bg-gradient-to-r from-purple-600 to-pink-500 text-white');
+      } else if (platform === 'tiktok') {
+        title = 'Post to TikTok';
+        const videoWhere = onDesktop
+          ? '<span class="font-mono text-[#ffd700]">roastlord-video....mp4</span> from <strong>Downloads</strong>'
+          : '<span class="font-mono text-[#ffd700]">5s roast video</span> from <strong>Photos / Recents</strong>';
+        let videoEmbed = '';
+        if (!onDesktop && isIOS() && _pendingShareIsVideo && _pendingShareBlob) {
+          if (_shareVideoPreviewUrl) URL.revokeObjectURL(_shareVideoPreviewUrl);
+          _shareVideoPreviewUrl = URL.createObjectURL(_pendingShareBlob);
+          videoEmbed = `
+            <div class="rounded-2xl overflow-hidden border border-[#ffd700]/30 my-3 bg-black">
+              <video src="${_shareVideoPreviewUrl}" controls playsinline webkit-playsinline
+                id="share-instructions-video" class="w-full max-h-[42vh] object-contain"></video>
+            </div>
+            <div class="text-xs text-[#ffd700] font-bold mb-2">① Press and hold the video above → <strong>Save Video</strong></div>`;
+        }
+        steps = `
+          <div class="text-[#22ff88] font-bold text-xs mb-2">✓ 5s vertical video ready · Caption copied</div>
+          ${videoEmbed}
+          <ol class="list-decimal list-inside text-sm space-y-1 pl-1">
+            ${videoEmbed ? '<li>Save video to Photos (step ①)</li>' : ''}
+            <li>Tap <strong>Share video</strong> below → pick TikTok (or choose <strong>Save Video</strong>)</li>
+            <li>Or tap <strong>Open TikTok</strong> → + → Upload → pick ${videoWhere}</li>
+            <li>Paste caption when posting</li>
+          </ol>`;
+        openBtn = mobileShareImageBtn('TikTok')
+          + makeAppLink('tiktok', text, '🎵 Open TikTok →', 'share-tiktok');
+      } else if (platform === 'x' || platform === 'twitter') {
+        title = 'Post to X';
+        steps = `
+          <div class="text-[#22ff88] font-bold text-xs mb-2">✓ Card saved · Caption copied</div>
+          <ol class="list-decimal list-inside text-sm space-y-1 pl-1">
+            <li>Tap <strong>Share card with image</strong> → pick X</li>
+            <li>Or tap <strong>Open X</strong> → attach ${cardWhere} + paste caption</li>
+          </ol>`;
+        openBtn = mobileShareImageBtn('X')
+          + makeAppLink('x', text, '𝕏 Open X →', 'bg-black text-white border border-white/20');
+      } else if (platform === 'whatsapp') {
+        title = 'Share to WhatsApp';
+        steps = `
+          <div class="text-[#22ff88] font-bold text-xs mb-2">✓ Card saved · Caption copied</div>
+          <ol class="list-decimal list-inside text-sm space-y-1 pl-1">
+            <li>Tap <strong>Share card with image</strong> → pick WhatsApp (easiest)</li>
+            <li>Or tap <strong>Open WhatsApp</strong> → 📎 → attach ${cardWhere}</li>
+          </ol>`;
+        openBtn = mobileShareImageBtn('WhatsApp')
+          + makeAppLink('whatsapp', text, '💬 Open WhatsApp →', 'bg-[#25D366] text-black');
+      } else {
+        title = 'Your roast card is ready';
+        steps = '<div class="text-sm">Pick an app below. On iPhone, use <strong>Share card with image</strong> for the easiest flow.</div>';
+        openBtn = mobileShareImageBtn('any app')
+          + `<div class="grid grid-cols-2 gap-2 mt-2">
+            ${makeAppLink('tiktok', text, 'TikTok', 'py-2.5 text-sm bg-white/5 border border-white/10 text-white')}
+            ${makeAppLink('instagram', text, 'Instagram', 'py-2.5 text-sm bg-white/5 border border-white/10 text-white')}
+            ${makeAppLink('whatsapp', text, 'WhatsApp', 'py-2.5 text-sm bg-white/5 border border-white/10 text-white')}
+          </div>`;
+      }
+
+      content.innerHTML = `
+        <div class="font-bold text-base mb-2">${title}</div>
+        ${steps}
+        ${openBtn}
+        ${common}
+      `;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      const backdrop = document.getElementById('share-backdrop');
+      if (backdrop) backdrop.classList.remove('hidden');
+    }
+
+    function hideShareInstructions() {
+      const modal = document.getElementById('share-instructions');
+      if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+      }
+      const backdrop = document.getElementById('share-backdrop');
+      if (backdrop) backdrop.classList.add('hidden');
+      const vid = document.getElementById('share-instructions-video');
+      if (vid) {
+        vid.pause();
+        vid.removeAttribute('src');
+        vid.load();
+      }
+      if (_shareVideoPreviewUrl) {
+        URL.revokeObjectURL(_shareVideoPreviewUrl);
+        _shareVideoPreviewUrl = null;
+      }
+    }
+
+    const SOCIAL_LINKS = {
+      instagram: { app: 'instagram://app', web: 'https://www.instagram.com/' },
+      tiktok:    { app: 'snssdk1233://upload', web: 'https://www.tiktok.com/upload' },
+      x:         { app: 'twitter://post', web: 'https://x.com/compose/post' },
+      twitter:   { app: 'twitter://post', web: 'https://x.com/compose/post' },
+      whatsapp:  { app: 'whatsapp://send', web: 'https://web.whatsapp.com/' }
+    };
+
+    function openSocialApp(app, opts = {}) {
+      const links = SOCIAL_LINKS[app];
+      if (!links) return;
+
+      const webUrl = opts.webUrl || links.web;
+
+      if (!isMobileDevice()) {
+        window.open(webUrl, '_blank', 'noopener,noreferrer');
+        showToast('Opened in browser — upload roastlord-....png from Downloads');
+        if (!opts.keepModal) hideShareInstructions();
+        return;
+      }
+
+      const link = document.createElement('a');
+      link.href = links.app;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('Opening app — attach roast card from Photos');
+      if (!opts.keepModal) hideShareInstructions();
     }
 
     async function shareRoast() {
-      // General share (prefers native with file if possible)
       await shareCard();
     }
 
@@ -1048,7 +4159,11 @@
       currentPhotoURL = null;
       currentPhotoFile = null;
       currentPhotoBase64 = null;
+      currentAgePolicy = null;
       currentIntensity = 1;
+      clearPendingShare();
+      hideSaveToPhotosModal();
+      hideCopyFallback();
       
       const input = document.getElementById('photo-input');
       if (input) input.value = '';
@@ -1059,33 +4174,14 @@
     // ==================== INITIALIZATION ====================
     function initStylePillsLanding() {
       const container = document.getElementById('style-pills-landing');
+      if (!container) return;
       container.innerHTML = '';
       
       STYLES.forEach(style => {
-        const pill = document.createElement('button');
-        pill.className = `px-4 py-1 text-sm font-bold rounded-2xl border transition-all
-          ${style.id === 'normal' ? 'bg-white text-black border-white' : 'bg-zinc-950 border-white/20 hover:border-white/40'}`;
-        
-        pill.textContent = style.label;
-        
-        pill.onclick = () => {
-          currentStyle = style.id;
-          
-          // Update visual state
-          container.querySelectorAll('button').forEach(b => {
-            b.classList.remove('bg-white', 'text-black', 'border-white');
-            b.classList.add('bg-zinc-950', 'border-white/20');
-          });
-          pill.classList.remove('bg-zinc-950', 'border-white/20');
-          pill.classList.add('bg-white', 'text-black', 'border-white');
-        };
-        
+        const pill = renderStylePill(style, style.id === currentStyle, () => {
+          trySelectStyle(style.id);
+        });
         container.appendChild(pill);
-
-        if (style.id === 'normal') {
-          pill.classList.remove('bg-zinc-950', 'border-white/20');
-          pill.classList.add('bg-white', 'text-black', 'border-white');
-        }
       });
     }
 
@@ -1110,15 +4206,22 @@
       zone.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          input.click();
+          choosePhoto();
         }
       });
     }
 
-    function init() {
+    window.resetRoasts = resetRoastEconomy;
+
+    async function init() {
+      resolveEnvConfig();
+      const pendingEntitlementSync = needsEntitlementSync();
+      if (pendingEntitlementSync) setRoastsHudSyncing(true);
+
       initTailwind();
       registerPWA();
-      
+      setupNativeUI();
+
       // Landing setup
       initStylePillsLanding();
       setupDragAndDrop();
@@ -1126,9 +4229,29 @@
       initFakeStats();
       updateRoastCounter();
       updateApiKeyUI();
-      
-      // Default style (matches new buttons)
-      currentStyle = 'normal';
+      trackReferralJoin();
+      if (window.RLAnalytics) {
+        RLAnalytics.trackSession();
+        if (new URLSearchParams(location.search).has('analytics')) {
+          RLAnalytics.printReport();
+        }
+      }
+      if (new URLSearchParams(location.search).has('reset-roasts')) {
+        resetRoastEconomy();
+        history.replaceState(null, '', location.pathname + location.hash);
+      }
+
+      await Promise.all([
+        initStripeStatus(),
+        handlePurchaseReturn(),
+        handleRestoreReturn()
+      ]);
+
+      updateHUD();
+      setRoastsHudSyncing(false);
+      updateReferralUI();
+      currentStyle = defaultStyleForUser();
+      updatePremiumUI();
       
       // Keyboard escape to go back
       document.addEventListener('keydown', (e) => {
@@ -1140,20 +4263,16 @@
         }
       });
       
-      // Fun: random roast counter boost on load
-      setTimeout(() => {
-        const el = document.getElementById('total-roasts');
-        if (el) el.textContent = (parseInt(el.textContent.replace(/,/g, '')) + 17).toLocaleString();
-      }, 4000);
-      
+      setInterval(updateRoastCounter, 45000);
+
       // Make sure landing is shown
       showScreen('landing');
       
-      console.log('%c[AI Roast Me] App initialized with real Grok vision support.', 'color:#22ff88');
+      console.log('%c[RoastLord] App initialized.', 'color:#22ff88');
     }
 
     // Boot the app
-    window.onload = init;
+    window.onload = () => { init().catch((err) => console.error('[RoastLord] init failed', err)); };
   </script>
 </body>
 </html>
