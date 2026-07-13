@@ -195,25 +195,14 @@ if (fs.existsSync(soundsSrc)) {
   console.log('[vercel] copied public/sounds/ → dist/sounds/');
 }
 
+const { copyExamplesToDist } = require('../lib/example-assets');
 const examplesOut = path.join(assetsDir, 'examples');
-fs.mkdirSync(examplesOut, { recursive: true });
-const exampleIds = [
-  'v6-brutal-1', 'v6-brutal-2', 'v6-brutal-3',
-  'v6-genz-1', 'v6-genz-2', 'v6-genz-3'
-];
-let examplesCopied = 0;
-for (const id of exampleIds) {
-  const mp4 = path.join(root, 'assets', 'test-videos', `test-${id}.mp4`);
-  const jpg = path.join(root, 'assets', 'test-photos', `${id}.jpg`);
-  if (fs.existsSync(mp4)) {
-    fs.copyFileSync(mp4, path.join(examplesOut, `${id}.mp4`));
-    examplesCopied++;
-  }
-  if (fs.existsSync(jpg)) {
-    fs.copyFileSync(jpg, path.join(examplesOut, `${id}.jpg`));
-  }
+const { copied, manifest } = copyExamplesToDist(root, examplesOut);
+if (copied) {
+  const vidCount = manifest.videos.length;
+  const picCount = manifest.photos.length;
+  console.log(`[vercel] copied ${copied} example assets → dist/assets/examples/ (${vidCount} videos, ${picCount} extra photos)`);
 }
-if (examplesCopied) console.log(`[vercel] copied ${examplesCopied} example videos → dist/assets/examples/`);
 
 const esbuildFlags = '--bundle --format=iife --minify --platform=browser';
 execSync(`npx esbuild src/analytics.js ${esbuildFlags} --outfile=dist/js/analytics.js`, { cwd: root, stdio: 'inherit' });

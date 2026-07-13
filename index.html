@@ -544,6 +544,31 @@
       color: rgba(255, 255, 255, 0.88);
       font-weight: 600;
     }
+    .example-card-image-only .example-phone {
+      cursor: default;
+    }
+    .example-card-image-only .example-play {
+      display: none;
+    }
+    .example-photo-scroll {
+      display: flex;
+      gap: 0.65rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.35rem;
+      scrollbar-width: none;
+    }
+    .example-photo-scroll::-webkit-scrollbar { display: none; }
+    .example-photo-thumb {
+      flex: 0 0 4.5rem;
+      scroll-snap-align: start;
+      aspect-ratio: 9 / 16;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      object-fit: cover;
+    }
     .section-label {
       font-size: 10px;
       font-weight: 800;
@@ -695,142 +720,22 @@
         </div>
       </section>
 
-      <!-- Examples -->
+      <!-- Examples (loaded from /assets/examples/manifest.json at runtime) -->
       <section id="examples" class="mb-10 scroll-mt-24">
         <div class="flex items-end justify-between mb-4">
           <div>
             <h2 class="section-label">Real roast previews</h2>
             <p class="text-sm font-bold text-white mt-1">Tap to play · Brutal &amp; Gen Z</p>
           </div>
-          <span class="text-[10px] text-white/35 font-mono">6 clips</span>
+          <span class="text-[10px] text-white/35 font-mono" id="examples-count">…</span>
         </div>
 
-        <!-- Mobile: horizontal scroll -->
-        <div class="example-scroll" id="example-scroll-mobile">
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-genz-1.mp4" poster="/assets/examples/v6-genz-1.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-genz">Gen Z</span>
-              <p class="example-roast">"No cap your aura is cooked. That smile screams mid and zero rizz."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-brutal-1.mp4" poster="/assets/examples/v6-brutal-1.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-brutal">Brutal</span>
-              <p class="example-roast">"Bro your smirk is stupid ugly. That face ruins the whole photo, period."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-genz-2.mp4" poster="/assets/examples/v6-genz-2.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-genz">Gen Z</span>
-              <p class="example-roast">"Not you posting this delulu pic. Your face is mid and giving NPC."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-brutal-2.mp4" poster="/assets/examples/v6-brutal-2.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-brutal">Brutal</span>
-              <p class="example-roast">"Your face is genuinely embarrassing today. That grin makes you look even stupider."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-genz-3.mp4" poster="/assets/examples/v6-genz-3.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-genz">Gen Z</span>
-              <p class="example-roast">"Bro your rizz died on arrival. This fit is mid and you're cooked."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-brutal-3.mp4" poster="/assets/examples/v6-brutal-3.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-brutal">Brutal</span>
-              <p class="example-roast">"Bro you look tired and ugly. That dead stare killed whatever vibe you had."</p>
-            </div>
-          </div>
-        </div>
+        <div class="example-scroll" id="example-scroll-mobile"></div>
+        <div class="example-grid" id="example-grid-desktop"></div>
 
-        <!-- Desktop: grid -->
-        <div class="example-grid" id="example-grid-desktop">
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-genz-1.mp4" poster="/assets/examples/v6-genz-1.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-genz">Gen Z</span>
-              <p class="example-roast">"No cap your aura is cooked. That smile screams mid and zero rizz."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-brutal-1.mp4" poster="/assets/examples/v6-brutal-1.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-brutal">Brutal</span>
-              <p class="example-roast">"Bro your smirk is stupid ugly. That face ruins the whole photo, period."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-genz-2.mp4" poster="/assets/examples/v6-genz-2.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-genz">Gen Z</span>
-              <p class="example-roast">"Not you posting this delulu pic. Your face is mid and giving NPC."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-brutal-2.mp4" poster="/assets/examples/v6-brutal-2.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-brutal">Brutal</span>
-              <p class="example-roast">"Your face is genuinely embarrassing today. That grin makes you look even stupider."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-genz-3.mp4" poster="/assets/examples/v6-genz-3.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-genz">Gen Z</span>
-              <p class="example-roast">"Bro your rizz died on arrival. This fit is mid and you're cooked."</p>
-            </div>
-          </div>
-          <div class="example-card" data-example>
-            <div class="example-phone" onclick="playExampleVideo(this)">
-              <video src="/assets/examples/v6-brutal-3.mp4" poster="/assets/examples/v6-brutal-3.jpg" muted playsinline loop preload="metadata"></video>
-              <span class="example-play" aria-hidden="true">▶</span>
-            </div>
-            <div class="example-meta">
-              <span class="example-style example-style-brutal">Brutal</span>
-              <p class="example-roast">"Bro you look tired and ugly. That dead stare killed whatever vibe you had."</p>
-            </div>
-          </div>
+        <div id="example-photos-extra" class="hidden mt-5">
+          <p class="section-label mb-2">More roast photos</p>
+          <div class="example-photo-scroll" id="example-photo-scroll"></div>
         </div>
 
         <!-- Text testimonials -->
@@ -2875,6 +2780,80 @@ Rules:
       }
     }
 
+    function buildExampleCardHtml(item) {
+      const styleLabel = item.style === 'genz' ? 'Gen Z' : 'Brutal';
+      const styleClass = item.style === 'genz' ? 'example-style-genz' : 'example-style-brutal';
+      const base = '/assets/examples/';
+      const roastHtml = item.roast
+        ? `<p class="example-roast">"${item.roast}"</p>`
+        : '<p class="example-roast text-white/40">Tap to watch</p>';
+
+      if (item.type === 'image') {
+        return `
+          <div class="example-card example-card-image-only" data-example>
+            <div class="example-phone">
+              <img src="${base}${item.poster}" alt="${styleLabel} roast example" loading="lazy" decoding="async">
+            </div>
+            <div class="example-meta">
+              <span class="example-style ${styleClass}">${styleLabel}</span>
+              <p class="example-roast text-white/45">Photo example</p>
+            </div>
+          </div>`;
+      }
+
+      const posterAttr = item.poster ? ` poster="${base}${item.poster}"` : '';
+      return `
+        <div class="example-card" data-example>
+          <div class="example-phone" onclick="playExampleVideo(this)">
+            <video src="${base}${item.video}"${posterAttr} muted playsinline loop preload="metadata"></video>
+            <span class="example-play" aria-hidden="true">▶</span>
+          </div>
+          <div class="example-meta">
+            <span class="example-style ${styleClass}">${styleLabel}</span>
+            ${roastHtml}
+          </div>
+        </div>`;
+    }
+
+    async function loadLandingExamples() {
+      const mobile = document.getElementById('example-scroll-mobile');
+      const desktop = document.getElementById('example-grid-desktop');
+      const countEl = document.getElementById('examples-count');
+      const extraWrap = document.getElementById('example-photos-extra');
+      const photoScroll = document.getElementById('example-photo-scroll');
+      if (!mobile || !desktop) return;
+
+      let manifest = { videos: [], photos: [] };
+      try {
+        const res = await fetch('/assets/examples/manifest.json', { cache: 'no-store' });
+        if (res.ok) manifest = await res.json();
+      } catch (err) {
+        console.warn('[examples] manifest load failed', err);
+      }
+
+      const cards = (manifest.videos || []).map(buildExampleCardHtml).join('');
+      mobile.innerHTML = cards;
+      desktop.innerHTML = cards;
+
+      const vidCount = manifest.videos?.length || 0;
+      const picCount = manifest.photos?.length || 0;
+      if (countEl) {
+        countEl.textContent = picCount
+          ? `${vidCount} clips · ${picCount} photos`
+          : `${vidCount} clip${vidCount === 1 ? '' : 's'}`;
+      }
+
+      if (photoScroll && manifest.photos?.length) {
+        photoScroll.innerHTML = manifest.photos.map((p) => {
+          const label = p.style === 'genz' ? 'Gen Z' : 'Brutal';
+          return `<img class="example-photo-thumb" src="/assets/examples/${p.poster}" alt="${label} photo ${p.n}" loading="lazy" decoding="async" title="${label} #${p.n}">`;
+        }).join('');
+        extraWrap?.classList.remove('hidden');
+      } else {
+        extraWrap?.classList.add('hidden');
+      }
+    }
+
     function updateRoastCounter() {
       const total = document.getElementById('total-roasts');
       const todayEl = document.getElementById('live-today');
@@ -4660,6 +4639,7 @@ visibleLines.forEach((ln, i) => {
       initStylePillsLanding();
       setupDragAndDrop();
       initUpload();
+      loadLandingExamples();
       initFakeStats();
       updateRoastCounter();
       updateApiKeyUI();
