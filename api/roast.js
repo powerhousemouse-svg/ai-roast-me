@@ -60,7 +60,7 @@ module.exports = async function handler(req, res) {
       system: getRoastSystemPrompt(),
       userText: buildRoastPrompt(effectiveStyle, 'viral', policy),
       imageBase64,
-      temperature: 0.93,
+      temperature: 0.95,
       maxTokens: getMaxTokensForLength()
     });
 

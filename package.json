@@ -18,6 +18,7 @@
     "test:roasts": "node scripts/test-roast-format.js",
     "test:videos": "node scripts/generate-test-videos.js",
     "test:videos:music": "node scripts/generate-test-videos-music.js",
+    "test:videos:v6": "node scripts/generate-test-videos-v6.js",
     "vercel:dev": "vercel dev",
     "vercel:deploy": "vercel --prod"
   },

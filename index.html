@@ -442,7 +442,7 @@
       <div class="text-center mb-4">
         <div class="inline-block px-4 py-2 rounded-full border border-[#ffd700]/30 bg-[#ffd700]/5">
           <span class="text-[10px] font-bold tracking-[2px] text-[#ffd700]">TIKTOK VIRAL FORMAT</span>
-          <span class="block text-[10px] text-white/45 mt-0.5">max 16 words · text at 0s · 5 sec clip</span>
+          <span class="block text-[10px] text-white/45 mt-0.5">max 18 words · text at 0s · 5 sec clip</span>
         </div>
       </div>
 
@@ -1907,58 +1907,81 @@
     }
 
     // ==================== REAL AI ROAST GENERATOR (powered by advanced vision) ====================
+    const ROAST_WORD_MAX = 18;
+
     const TONE_STYLES = {
       normal: 'Witty, playful, savage — like a sharp comedian who actually looked at the photo.',
-      brutal: 'Short, direct, and savage — blunt insults only. Never clever, never wordy.',
+      brutal: 'Blunt, mean, and punchy — face-to-face insult energy. Savage + funny, never nice.',
       british: 'Dry British sarcasm, posh insults, understated devastation.',
-      genz: 'Playful Gen Z TikTok energy: no cap, rizz, aura, mid, cooked, delulu — chaotic, simple, and viral.',
+      genz: 'Savage Gen Z TikTok roast — natural slang, zero cringe, still brutal. Not wholesome.',
       dad: 'Dad-joke roasts with puns and "I\'m not saying, but..." energy.'
     };
 
     const HOOK_RULES = `HOOK RULES (mandatory — the opening IS the roast):
-- The FIRST 5 words must be a strong, punchy hook that grabs attention instantly.
-- Open blunt — no warm-up, no soft setup, no explaining yourself.
-- NEVER start with soft openings like: "You know...", "Honestly...", "Well,", "I have to say...", "It looks like...", "You seem...", "So basically...", "I mean..."
-- Brutal hooks: direct insults — "Bro your face...", "Your face is...", "Bro you look...", "You look stupid..."
-- Gen Z hooks: playful slang — "Not you posting...", "No cap your...", "The audacity of..."`;
+- The FIRST 5–7 words must be a savage, attention-grabbing hook. No warm-up.
+- Hook = blunt insult or savage slang callout. It must HIT immediately.
+- NEVER start with: "You know...", "Honestly...", "Well,", "I have to say...", "It looks like...", "You seem...", "So basically...", "I mean...", "Maybe", "Kind of"
+- Brutal hooks: direct face insults — "Bro your face looks...", "Your smirk is stupid...", "Bro you look ugly..."
+- Gen Z hooks: savage slang openers — "No cap your aura...", "Not you posting this...", "Bro your rizz is...", "The audacity posting..."
+- The hook must feel mean and funny — never supportive, never explanatory.`;
 
     const TIKTOK_FORMAT = `FORMAT (mandatory — every roast):
-- Maximum 16 words total. Never exceed 16 words.
-- 1–2 short, punchy sentences max. No filler, no wordy endings.
-- Easy to read aloud within a 4–5 second video.
-- No explanations, soft language, or extra details at the end.
-- Reference ONE specific detail from the photo (expression, hair, outfit, pose, vibe).`;
+- 10–18 words total. Never exceed 18 words. Shorter is better if it hits harder.
+- Exactly 1–2 short sentences. Period or comma between them — no rambling.
+- Must read aloud cleanly in 4–5 seconds on a TikTok roast video.
+- Reference ONE specific detail from the photo (expression, hair, outfit, pose, smirk, stare, vibe).
+- No filler endings ("honestly", "though", "if I'm being real", "just saying").
+- Prioritize savage + funny over being clever, nice, or wordy.`;
 
     function getBrutalStyleAddendum() {
       return `
 
-BRUTAL STYLE (mandatory — this is the priority):
-- Short, direct, and savage — like a blunt insult to someone's face.
-- Mean and funny. No soft language, no clever wordplay, no long setups.
-- NEVER be wordy or "trying too hard to be smart."
-- Good: "Bro your face looks ugly. That haircut made it worse, period."`;
+BRUTAL STYLE (mandatory — maximum savage, minimum words):
+- Mean, direct, punchy — like roasting someone's face with zero filter.
+- Short blunt insults. No metaphors, no wordplay, no "trying to be smart."
+- NEVER soft, polite, explanatory, or sympathetic. No "kind of" or "a little."
+- Second sentence doubles down on the insult using a photo detail.
+- BANNED: clever twists, long setups, therapy-speak, backhanded compliments.
+- GOOD: "Bro your smirk is stupid ugly. That face ruins the whole photo, period."
+- GOOD: "Your face looks ugly and weak. That pose screams loser energy, no excuses."
+- BAD: "You have an interesting expression that suggests confidence..." (too soft, too wordy)`;
+    }
+
+    function getGenZStyleAddendum() {
+      return `
+
+GEN Z STYLE (mandatory — savage TikTok, not wholesome):
+- Use 2–3 slang terms NATURALLY: no cap, cooked, mid, rizz, aura, delulu, NPC, bestie, giving, ate (negative).
+- Must still be SAVAGE and funny — Gen Z is not friendly banter. Roast them.
+- NEVER stack every slang word in one sentence. No cringe TikTok parody voice.
+- NEVER sound like a millennial imitating teens. Keep it simple and mean.
+- Hook opens with slang callout; second sentence lands the photo-specific burn.
+- BANNED: "slay", "yass", "periodt queen", wholesome praise, try-hard memes, over-explaining slang.
+- GOOD: "No cap your aura is cooked. That smile screams mid and zero rizz."
+- GOOD: "Not you posting this delulu pic. Your face is mid and giving NPC."
+- BAD: "Bestie you're doing amazing sweetie keep slaying..." (too soft)`;
     }
 
     function getRoastSystemPrompt() {
-      return `You are RoastLord — a savage TikTok-native roast writer.
+      return `You are RoastLord — the most savage TikTok roast writer alive.
 
-Every roast is a 4–5 second viral clip in text form:
-- Maximum 16 words total — never exceed 16 words
-- First 5 words = strong, punchy hook (not a gentle intro)
-- Short and punchy — avoid long or wordy roasts in every style
-- Brutal style: short, direct, savage — never clever or wordy
-- Gen Z style: playful TikTok slang, still tight and simple
-- No soft language, explanations, or extra details at the end
+Every roast is a 4–5 second viral clip:
+- 10–18 words total — never exceed 18 words
+- First 5–7 words = brutal hook that grabs attention instantly
+- Savage + funny beats nice, clever, or wordy EVERY time
+- Brutal: mean, direct, punchy insults — no clever wordplay
+- Gen Z: natural slang + savage burn — not wholesome, not try-hard
 
 Rules:
-- Match the requested tone style exactly.
+- Look at the photo. Roast ONE specific visible detail.
+- Match the requested tone exactly.
 - Output ONLY the roast text. No quotes, labels, or preamble.
 - NEVER be racist, sexist, homophobic, or attack protected traits. Roast style, choices, and vibe only.`;
     }
 
     function getStylePrompt(style) {
       const tone = TONE_STYLES[style] || TONE_STYLES.normal;
-      let prompt = `Write a roast for the person in this photo.
+      let prompt = `Write a savage roast for the person in this photo.
 
 Tone style: ${tone}
 
@@ -1966,6 +1989,7 @@ ${HOOK_RULES}
 
 ${TIKTOK_FORMAT}`;
       if (style === 'brutal') prompt += getBrutalStyleAddendum();
+      if (style === 'genz') prompt += getGenZStyleAddendum();
       prompt += `
 
 Output ONLY the roast text. No quotes, labels, or preamble.`;
@@ -1973,7 +1997,7 @@ Output ONLY the roast text. No quotes, labels, or preamble.`;
     }
 
     function getMaxTokensForLength() {
-      return 48;
+      return 56;
     }
 
     function enforceRoastFormat(roast) {
@@ -1983,8 +2007,8 @@ Output ONLY the roast text. No quotes, labels, or preamble.`;
         .replace(/\s+/g, ' ')
         .trim();
       const words = text.split(/\s+/).filter(Boolean);
-      if (words.length <= 16) return text;
-      return words.slice(0, 16).join(' ').replace(/[,;—-]\s*$/, '').trim();
+      if (words.length <= ROAST_WORD_MAX) return text;
+      return words.slice(0, ROAST_WORD_MAX).join(' ').replace(/[,;—-]\s*$/, '').trim();
     }
 
     const AGE_BLOCK_MESSAGE =
@@ -2330,7 +2354,7 @@ Rules:
             }
           ],
           max_completion_tokens: getMaxTokensForLength(),
-          temperature: 0.93
+          temperature: 0.95
         })
       });
 
@@ -2360,13 +2384,13 @@ Rules:
       return enforceRoastFormat(roast);
     }
 
-    // Fallback in case of no key / error (max 16 words, text at 0s)
+    // Fallback in case of no key / error (max 18 words, text at 0s)
     function getFallbackRoast(style) {
       const roasts = {
         normal: "Not you walking in looking cooked. Your haircut called security and your aura screams mid.",
-        brutal: "Bro your face looks ugly today. That smirk makes everything ten times worse, period.",
+        brutal: "Bro your smirk is stupid ugly. That face ruins the whole photo, period.",
         british: "Absolutely not, you look like that. Your mirror filed a complaint and won in court.",
-        genz: "No cap your aura is cooked, bestie. This pic screams mid and skipped you.",
+        genz: "No cap your aura is cooked. That smile screams mid and zero rizz.",
         dad: "I'm not saying you're mid, but wow. Your reflection filed paperwork and hesitated."
       };
       return roasts[style] || roasts.normal;

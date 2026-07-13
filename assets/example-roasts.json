@@ -1,0 +1,62 @@
+{
+  "version": "v6",
+  "description": "High-quality example roasts for Brutal and Gen Z styles (10–18 words, 5–7 word hooks)",
+  "examples": [
+    {
+      "style": "brutal",
+      "photo": "v5-brutal-1.jpg",
+      "roast": "Bro your smirk is stupid ugly. That face ruins the whole photo, period.",
+      "hook": "Bro your smirk is stupid",
+      "wordCount": 12
+    },
+    {
+      "style": "brutal",
+      "photo": "v5-brutal-2.jpg",
+      "roast": "Your face is genuinely embarrassing today. That grin makes you look even stupider.",
+      "hook": "Your face is genuinely embarrassing",
+      "wordCount": 12
+    },
+    {
+      "style": "brutal",
+      "photo": "music-brutal-1.jpg",
+      "roast": "Bro you look tired and ugly. That dead stare killed whatever vibe you had.",
+      "hook": "Bro you look tired and",
+      "wordCount": 13
+    },
+    {
+      "style": "brutal",
+      "photo": "portrait-3.jpg",
+      "roast": "Your face looks ugly and weak. That pose screams loser energy, no excuses.",
+      "hook": "Your face looks ugly and",
+      "wordCount": 12
+    },
+    {
+      "style": "genz",
+      "photo": "v5-genz-1.jpg",
+      "roast": "No cap your aura is cooked. That smile screams mid and zero rizz.",
+      "hook": "No cap your aura is",
+      "wordCount": 12
+    },
+    {
+      "style": "genz",
+      "photo": "v5-genz-2.jpg",
+      "roast": "Not you posting this delulu pic. Your face is mid and giving NPC.",
+      "hook": "Not you posting this delulu",
+      "wordCount": 12
+    },
+    {
+      "style": "genz",
+      "photo": "music-genz-2.jpg",
+      "roast": "Bro your rizz died on arrival. This fit is mid and you're cooked.",
+      "hook": "Bro your rizz died on",
+      "wordCount": 12
+    },
+    {
+      "style": "genz",
+      "photo": "music-genz-1.jpg",
+      "roast": "The audacity posting this mid selfie. Your aura is cooked, bestie, no cap.",
+      "hook": "The audacity posting this mid",
+      "wordCount": 12
+    }
+  ]
+}
