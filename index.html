@@ -2815,6 +2815,21 @@ Rules:
         </div>`;
     }
 
+    const LANDING_EXAMPLE_COUNT = 8;
+
+    function shuffleArray(items) {
+      const arr = items.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function pickLandingExamples(videos, limit = LANDING_EXAMPLE_COUNT) {
+      return shuffleArray(videos).slice(0, Math.min(limit, videos.length));
+    }
+
     async function loadLandingExamples() {
       const mobile = document.getElementById('example-scroll-mobile');
       const desktop = document.getElementById('example-grid-desktop');
@@ -2831,11 +2846,12 @@ Rules:
         console.warn('[examples] manifest load failed', err);
       }
 
-      const cards = (manifest.videos || []).map(buildExampleCardHtml).join('');
+      const shown = pickLandingExamples(manifest.videos || []);
+      const cards = shown.map(buildExampleCardHtml).join('');
       mobile.innerHTML = cards;
       desktop.innerHTML = cards;
 
-      const vidCount = manifest.videos?.length || 0;
+      const vidCount = shown.length;
       const picCount = manifest.photos?.length || 0;
       if (countEl) {
         countEl.textContent = picCount
