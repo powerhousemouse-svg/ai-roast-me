@@ -19,7 +19,7 @@ const FALLBACK_EXAMPLES = {
   normal: "Not you walking in looking cooked. Your haircut called security and your aura screams mid.",
   brutal: "Bro your hair is a complete disaster. Those messy spikes look electrocuted and fried.",
   british: "Absolutely not, you look like that. Your mirror filed a complaint and won in court.",
-  genz: "No cap your hair lost to a lawnmower. That spiky mess screaming zero effort, zero rizz.",
+  genz: "Bro that grin looks painfully rehearsed. Styled hair and plain tee giving LinkedIn energy.",
   dad: "I'm not saying you're mid, but wow. Your reflection filed paperwork and hesitated."
 };
 
@@ -46,7 +46,7 @@ assert('hook rules use 5–7 words', getHookRules().includes('5–7 words'));
 assert('brutal prompt includes BRUTAL STYLE addendum', brutalPrompt.includes('BRUTAL STYLE'));
 assert('genz prompt includes GEN Z STYLE addendum', genzPrompt.includes('GEN Z STYLE'));
 assert('brutal addendum bans lazy crutches', getBrutalStyleAddendum().includes('ruins the whole photo'));
-assert('genz addendum bans slang overload', getGenZStyleAddendum().includes('slang overload'));
+assert('genz addendum limits slang', getGenZStyleAddendum().includes('1–2 slang'));
 
 console.log('\nVideo timing:');
 const firstLine = getFirstLineStyle();
