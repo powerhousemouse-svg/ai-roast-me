@@ -307,6 +307,18 @@
     }
 
     .api-warn.show { display: block; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   </style>
 </head>
 <body>
@@ -336,11 +348,11 @@
       <button type="button" class="btn btn-danger" id="btn-clear">Clear All</button>
     </div>
 
-    <div class="dropzone" id="dropzone" tabindex="0">
+    <label class="dropzone" id="dropzone" tabindex="0" for="file-input">
       <p><strong>Drop up to 4 photos</strong> or click to browse</p>
-      <p>JPEG / PNG · parallel roast generation</p>
-    </div>
-    <input type="file" id="file-input" accept="image/*" multiple hidden>
+      <p>JPEG / PNG / HEIC · parallel roast generation</p>
+    </label>
+    <input type="file" id="file-input" accept="image/*,.heic,.heif" multiple class="sr-only">
 
     <div class="global-status" id="global-status"></div>
 
@@ -350,6 +362,12 @@
   <script src="/env-config.js"></script>
   <script src="/js/bulk-test.js"></script>
   <script>
+    const engine = window.BulkTestEngine;
+    if (!engine) {
+      document.body.innerHTML = '<p style="color:#ff4466;padding:24px;font-family:monospace">Bulk test engine failed to load. Hard refresh (Cmd+Shift+R).</p>';
+      throw new Error('BulkTestEngine missing');
+    }
+
     const MAX_SLOTS = 4;
     let mode = 'brutal';
     let renderedSessionCount = 0;
@@ -380,9 +398,15 @@
       modeGenz: document.getElementById('mode-genz')
     };
 
-    BulkTestEngine.setStatusCallback((msg) => {
+    engine.setStatusCallback((msg) => {
       els.globalStatus.textContent = msg || '';
     });
+
+    function isImageFile(file) {
+      if (!file) return false;
+      if (file.type && file.type.startsWith('image/')) return true;
+      return /\.(jpe?g|png|gif|webp|heic|heif|bmp)$/i.test(file.name || '');
+    }
 
     function setMode(next) {
       mode = next;
@@ -475,24 +499,35 @@
     }
 
     async function assignFiles(fileList) {
-      const files = Array.from(fileList).filter((f) => f.type.startsWith('image/')).slice(0, MAX_SLOTS);
-      if (!files.length) return;
+      const files = Array.from(fileList || []).filter(isImageFile).slice(0, MAX_SLOTS);
+      if (!files.length) {
+        els.globalStatus.textContent = 'No image files detected — try JPEG, PNG, or HEIC.';
+        return;
+      }
 
       for (let i = 0; i < MAX_SLOTS; i++) resetSlot(slots[i]);
+      renderGrid();
 
-      for (let i = 0; i < files.length; i++) {
-        const slot = slots[i];
-        slot.file = files[i];
-        slot.previewUrl = URL.createObjectURL(files[i]);
-        slot.status = 'idle';
-        slot.base64 = await BulkTestEngine.resizeImageToBase64(files[i]);
+      els.globalStatus.textContent = `Loading ${files.length} photo${files.length === 1 ? '' : 's'}…`;
+
+      try {
+        for (let i = 0; i < files.length; i++) {
+          const slot = slots[i];
+          slot.file = files[i];
+          slot.previewUrl = URL.createObjectURL(files[i]);
+          slot.status = 'idle';
+          slot.base64 = await engine.resizeImageToBase64(files[i]);
+        }
+        els.globalStatus.textContent = `${files.length} photo${files.length === 1 ? '' : 's'} ready — hit Generate All Roasts`;
+      } catch (err) {
+        els.globalStatus.textContent = err.message || 'Failed to load photos';
       }
 
       renderGrid();
     }
 
     async function generateAll() {
-      if (!BulkTestEngine.isApiProxyEnabled()) {
+      if (!engine.isApiProxyEnabled()) {
         els.apiWarn.classList.add('show');
         return;
       }
@@ -512,7 +547,7 @@
         renderGrid();
 
         try {
-          const result = await BulkTestEngine.fetchRoast(slot.base64, mode);
+          const result = await engine.fetchRoast(slot.base64, mode);
           slot.roast = result.roast;
           slot.style = result.style || mode;
           slot.status = 'ready';
@@ -541,7 +576,7 @@
       renderGrid();
 
       try {
-        const blob = await BulkTestEngine.generateRoastVideo(slot.previewUrl, slot.roast);
+        const blob = await engine.generateRoastVideo(slot.previewUrl, slot.roast);
         slot.videoBlob = blob;
         slot.videoUrl = URL.createObjectURL(blob);
         slot.status = 'done';
@@ -577,7 +612,6 @@
     els.btnGenerate.addEventListener('click', () => generateAll());
     els.btnClear.addEventListener('click', () => clearAll());
 
-    els.dropzone.addEventListener('click', () => els.fileInput.click());
     els.dropzone.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -602,6 +636,8 @@
       });
     });
     els.dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      els.dropzone.classList.remove('dragover');
       if (e.dataTransfer?.files?.length) assignFiles(e.dataTransfer.files);
     });
 
@@ -616,7 +652,7 @@
     });
 
     function initApiStatus() {
-      const ok = BulkTestEngine.isApiProxyEnabled();
+      const ok = engine.isApiProxyEnabled();
       els.apiStatus.textContent = ok ? 'API: proxy enabled' : 'API: proxy off';
       els.apiStatus.style.color = ok ? 'var(--accent)' : 'var(--gold)';
       if (!ok) els.apiWarn.classList.add('show');

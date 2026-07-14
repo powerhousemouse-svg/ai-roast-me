@@ -417,8 +417,38 @@ function loadImageFromUrl(url) {
 }
 
 async function resizeImageToBase64(file, maxSize = 1024) {
-  const bitmap = await createImageBitmap(file);
-  let { width, height } = bitmap;
+  if (typeof createImageBitmap === 'function') {
+    try {
+      const bitmap = await createImageBitmap(file);
+      let { width, height } = bitmap;
+      const scale = Math.min(1, maxSize / Math.max(width, height));
+      width = Math.round(width * scale);
+      height = Math.round(height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(bitmap, 0, 0, width, height);
+      bitmap.close?.();
+      return canvas.toDataURL('image/jpeg', 0.88).split(',')[1];
+    } catch (_) {}
+  }
+
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Failed to read image file'));
+    reader.readAsDataURL(file);
+  });
+
+  const img = await new Promise((resolve, reject) => {
+    const el = new Image();
+    el.onload = () => resolve(el);
+    el.onerror = () => reject(new Error('Failed to decode image'));
+    el.src = dataUrl;
+  });
+
+  let { width, height } = img;
   const scale = Math.min(1, maxSize / Math.max(width, height));
   width = Math.round(width * scale);
   height = Math.round(height * scale);
@@ -426,10 +456,8 @@ async function resizeImageToBase64(file, maxSize = 1024) {
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
-  ctx.drawImage(bitmap, 0, 0, width, height);
-  bitmap.close?.();
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
-  return dataUrl.split(',')[1];
+  ctx.drawImage(img, 0, 0, width, height);
+  return canvas.toDataURL('image/jpeg', 0.88).split(',')[1];
 }
 
 async function fetchRoast(imageBase64, style) {
@@ -503,10 +531,12 @@ async function generateRoastVideo(photoUrl, roastText) {
   throw new Error('Video encode failed');
 }
 
-window.BulkTestEngine = {
+const BulkTestEngine = {
   setStatusCallback,
   resizeImageToBase64,
   fetchRoast,
   generateRoastVideo,
   isApiProxyEnabled
 };
+
+window.BulkTestEngine = BulkTestEngine;

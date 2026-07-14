@@ -211,7 +211,7 @@ execSync(
   { cwd: root, stdio: 'inherit' }
 );
 execSync(
-  `npx esbuild src/bulk-test.js ${esbuildFlags} --global-name=BulkTestEngine --outfile=dist/js/bulk-test.js`,
+  `npx esbuild src/bulk-test.js ${esbuildFlags} --outfile=dist/js/bulk-test.js`,
   { cwd: root, stdio: 'inherit' }
 );
 
