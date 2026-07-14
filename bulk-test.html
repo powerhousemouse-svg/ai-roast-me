@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#000000">
+  <title>Bulk Test — RoastLord (internal)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --panel: #121218;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f2f2f4;
+      --muted: rgba(255, 255, 255, 0.45);
+      --accent: #22ff88;
+      --accent-dim: rgba(34, 255, 136, 0.15);
+      --danger: #ff4466;
+      --gold: #ffd700;
+      --genz: #a78bfa;
+      --brutal: #ff4466;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .top h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .top .sub {
+      margin: 4px 0 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-internal {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(255, 68, 102, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(255, 68, 102, 0.35);
+    }
+
+    .stats {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .stats strong { color: var(--accent); }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .mode-group {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 18px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .mode-btn.active[data-mode="brutal"] {
+      background: rgba(255, 68, 102, 0.2);
+      color: var(--brutal);
+    }
+
+    .mode-btn.active[data-mode="genz"] {
+      background: rgba(167, 139, 250, 0.2);
+      color: var(--genz);
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.2); }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      padding: 12px 22px;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      filter: brightness(1.05);
+    }
+
+    .btn-danger {
+      color: var(--danger);
+      border-color: rgba(255, 68, 102, 0.35);
+    }
+
+    .dropzone {
+      border: 2px dashed rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      background: var(--panel);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      margin-bottom: 20px;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .dropzone p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+    .dropzone strong { color: var(--text); }
+
+    .global-status {
+      min-height: 1.2em;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 280px;
+    }
+
+    .card.empty {
+      border-style: dashed;
+      opacity: 0.55;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .slot-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    .mode-pill {
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .mode-pill.brutal {
+      background: rgba(255, 68, 102, 0.15);
+      color: var(--brutal);
+    }
+
+    .mode-pill.genz {
+      background: rgba(167, 139, 250, 0.15);
+      color: var(--genz);
+    }
+
+    .thumb {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #000;
+      border: 1px solid var(--border);
+    }
+
+    .status-line {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    .status-line.error { color: var(--danger); }
+    .status-line.ok { color: var(--accent); }
+
+    .roast-edit {
+      width: 100%;
+      min-height: 72px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0d0d10;
+      color: var(--text);
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      font-family: Inter, sans-serif;
+      line-height: 1.4;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .card-actions .btn { flex: 1; min-width: 120px; }
+
+    .video-wrap video {
+      width: 100%;
+      border-radius: 8px;
+      background: #000;
+      border: 1px solid var(--border);
+    }
+
+    .api-warn {
+      background: rgba(255, 215, 0, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      color: var(--gold);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .api-warn.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div>
+        <span class="badge-internal">Internal only</span>
+        <h1>Bulk Test — Generate 4 Videos</h1>
+        <p class="sub">/bulk-test · not linked from public site</p>
+      </div>
+      <div class="stats">
+        <div>Rendered this session: <strong id="render-count">0</strong></div>
+        <div id="api-status">API: …</div>
+      </div>
+    </header>
+
+    <div id="api-warn" class="api-warn">
+      Server roast API unavailable. Run <code>vercel dev</code> with <code>XAI_API_KEY</code> or use production deploy.
+    </div>
+
+    <div class="toolbar">
+      <div class="mode-group" role="group" aria-label="Roast mode">
+        <button type="button" class="mode-btn active" data-mode="brutal" id="mode-brutal">Brutal</button>
+        <button type="button" class="mode-btn" data-mode="genz" id="mode-genz">Gen Z</button>
+      </div>
+      <button type="button" class="btn btn-primary" id="btn-generate" disabled>Generate All Roasts</button>
+      <button type="button" class="btn btn-danger" id="btn-clear">Clear All</button>
+    </div>
+
+    <div class="dropzone" id="dropzone" tabindex="0">
+      <p><strong>Drop up to 4 photos</strong> or click to browse</p>
+      <p>JPEG / PNG · parallel roast generation</p>
+    </div>
+    <input type="file" id="file-input" accept="image/*" multiple hidden>
+
+    <div class="global-status" id="global-status"></div>
+
+    <div class="grid" id="card-grid"></div>
+  </div>
+
+  <script src="/env-config.js"></script>
+  <script src="/js/bulk-test.js"></script>
+  <script>
+    const MAX_SLOTS = 4;
+    let mode = 'brutal';
+    let renderedSessionCount = 0;
+    const slots = Array.from({ length: MAX_SLOTS }, (_, i) => ({
+      index: i,
+      file: null,
+      previewUrl: null,
+      base64: null,
+      style: null,
+      roast: '',
+      status: 'empty',
+      error: '',
+      videoUrl: null,
+      videoBlob: null
+    }));
+
+    const els = {
+      grid: document.getElementById('card-grid'),
+      dropzone: document.getElementById('dropzone'),
+      fileInput: document.getElementById('file-input'),
+      btnGenerate: document.getElementById('btn-generate'),
+      btnClear: document.getElementById('btn-clear'),
+      globalStatus: document.getElementById('global-status'),
+      renderCount: document.getElementById('render-count'),
+      apiStatus: document.getElementById('api-status'),
+      apiWarn: document.getElementById('api-warn'),
+      modeBrutal: document.getElementById('mode-brutal'),
+      modeGenz: document.getElementById('mode-genz')
+    };
+
+    BulkTestEngine.setStatusCallback((msg) => {
+      els.globalStatus.textContent = msg || '';
+    });
+
+    function setMode(next) {
+      mode = next;
+      els.modeBrutal.classList.toggle('active', mode === 'brutal');
+      els.modeGenz.classList.toggle('active', mode === 'genz');
+    }
+
+    function revokeSlotMedia(slot) {
+      if (slot.previewUrl) URL.revokeObjectURL(slot.previewUrl);
+      if (slot.videoUrl) URL.revokeObjectURL(slot.videoUrl);
+      slot.previewUrl = null;
+      slot.videoUrl = null;
+      slot.videoBlob = null;
+    }
+
+    function resetSlot(slot) {
+      revokeSlotMedia(slot);
+      slot.file = null;
+      slot.base64 = null;
+      slot.style = null;
+      slot.roast = '';
+      slot.status = 'empty';
+      slot.error = '';
+    }
+
+    function hasPhotos() {
+      return slots.some((s) => s.file);
+    }
+
+    function updateGenerateButton() {
+      const busy = slots.some((s) => s.status === 'generating' || s.status === 'rendering');
+      els.btnGenerate.disabled = !hasPhotos() || busy;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderCard(slot) {
+      if (slot.status === 'empty') {
+        return `<div class="card empty" data-slot="${slot.index}">Slot ${slot.index + 1} — empty</div>`;
+      }
+
+      const modeClass = slot.style === 'genz' ? 'genz' : 'brutal';
+      const modeLabel = slot.style === 'genz' ? 'Gen Z' : 'Brutal';
+      let statusClass = '';
+      let statusText = slot.status;
+
+      if (slot.status === 'generating') statusText = 'Loading roast…';
+      if (slot.status === 'rendering') statusText = 'Rendering video…';
+      if (slot.status === 'ready') { statusText = 'Ready — edit roast or render'; statusClass = 'ok'; }
+      if (slot.status === 'done') { statusText = 'Video ready'; statusClass = 'ok'; }
+      if (slot.status === 'error') { statusText = slot.error || 'Error'; statusClass = 'error'; }
+
+      const roastArea = (slot.status === 'ready' || slot.status === 'done' || slot.status === 'rendering')
+        ? `<textarea class="roast-edit" data-roast-edit="${slot.index}" rows="3">${escapeHtml(slot.roast)}</textarea>`
+        : (slot.roast ? `<p class="status-line">${escapeHtml(slot.roast)}</p>` : '');
+
+      const videoBlock = slot.videoUrl
+        ? `<div class="video-wrap"><video src="${slot.videoUrl}" controls playsinline loop muted></video></div>`
+        : '';
+
+      const renderDisabled = slot.status === 'generating' || slot.status === 'rendering' || !slot.roast;
+      const downloadDisabled = !slot.videoBlob;
+
+      return `
+        <div class="card" data-slot="${slot.index}">
+          <div class="card-head">
+            <span class="slot-label">#${slot.index + 1}${slot.file ? ` · ${escapeHtml(slot.file.name)}` : ''}</span>
+            ${slot.style ? `<span class="mode-pill ${modeClass}">${modeLabel}</span>` : ''}
+          </div>
+          <img class="thumb" src="${slot.previewUrl}" alt="Slot ${slot.index + 1}">
+          <div class="status-line ${statusClass}">${escapeHtml(statusText)}</div>
+          ${roastArea}
+          ${videoBlock}
+          <div class="card-actions">
+            <button type="button" class="btn" data-render="${slot.index}" ${renderDisabled ? 'disabled' : ''}>Render Video</button>
+            <button type="button" class="btn" data-download="${slot.index}" ${downloadDisabled ? 'disabled' : ''}>Download MP4</button>
+          </div>
+        </div>`;
+    }
+
+    function renderGrid() {
+      els.grid.innerHTML = slots.map(renderCard).join('');
+      updateGenerateButton();
+    }
+
+    async function assignFiles(fileList) {
+      const files = Array.from(fileList).filter((f) => f.type.startsWith('image/')).slice(0, MAX_SLOTS);
+      if (!files.length) return;
+
+      for (let i = 0; i < MAX_SLOTS; i++) resetSlot(slots[i]);
+
+      for (let i = 0; i < files.length; i++) {
+        const slot = slots[i];
+        slot.file = files[i];
+        slot.previewUrl = URL.createObjectURL(files[i]);
+        slot.status = 'idle';
+        slot.base64 = await BulkTestEngine.resizeImageToBase64(files[i]);
+      }
+
+      renderGrid();
+    }
+
+    async function generateAll() {
+      if (!BulkTestEngine.isApiProxyEnabled()) {
+        els.apiWarn.classList.add('show');
+        return;
+      }
+
+      const targets = slots.filter((s) => s.file && s.base64);
+      if (!targets.length) return;
+
+      els.btnGenerate.disabled = true;
+      els.globalStatus.textContent = `Generating ${targets.length} roasts in parallel…`;
+
+      await Promise.all(targets.map(async (slot) => {
+        slot.status = 'generating';
+        slot.style = mode;
+        slot.error = '';
+        slot.roast = '';
+        revokeSlotMedia(slot);
+        renderGrid();
+
+        try {
+          const result = await BulkTestEngine.fetchRoast(slot.base64, mode);
+          slot.roast = result.roast;
+          slot.style = result.style || mode;
+          slot.status = 'ready';
+        } catch (err) {
+          slot.status = 'error';
+          slot.error = err.message || 'Roast failed';
+        }
+      }));
+
+      els.globalStatus.textContent = 'Done — edit roasts or render videos';
+      renderGrid();
+    }
+
+    async function renderSlot(index) {
+      const slot = slots[index];
+      if (!slot.previewUrl || !slot.roast) return;
+
+      const textarea = document.querySelector(`[data-roast-edit="${index}"]`);
+      if (textarea) slot.roast = textarea.value.trim();
+
+      slot.status = 'rendering';
+      slot.error = '';
+      if (slot.videoUrl) URL.revokeObjectURL(slot.videoUrl);
+      slot.videoUrl = null;
+      slot.videoBlob = null;
+      renderGrid();
+
+      try {
+        const blob = await BulkTestEngine.generateRoastVideo(slot.previewUrl, slot.roast);
+        slot.videoBlob = blob;
+        slot.videoUrl = URL.createObjectURL(blob);
+        slot.status = 'done';
+        renderedSessionCount += 1;
+        els.renderCount.textContent = String(renderedSessionCount);
+      } catch (err) {
+        slot.status = 'error';
+        slot.error = err.message || 'Render failed';
+      }
+
+      els.globalStatus.textContent = '';
+      renderGrid();
+    }
+
+    function downloadSlot(index) {
+      const slot = slots[index];
+      if (!slot.videoBlob) return;
+      const style = slot.style || 'roast';
+      const a = document.createElement('a');
+      a.href = slot.videoUrl;
+      a.download = `bulk-roastlord-vid-${style}-${index + 1}.mp4`;
+      a.click();
+    }
+
+    function clearAll() {
+      for (const slot of slots) resetSlot(slot);
+      els.globalStatus.textContent = '';
+      renderGrid();
+    }
+
+    els.modeBrutal.addEventListener('click', () => setMode('brutal'));
+    els.modeGenz.addEventListener('click', () => setMode('genz'));
+    els.btnGenerate.addEventListener('click', () => generateAll());
+    els.btnClear.addEventListener('click', () => clearAll());
+
+    els.dropzone.addEventListener('click', () => els.fileInput.click());
+    els.dropzone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        els.fileInput.click();
+      }
+    });
+    els.fileInput.addEventListener('change', (e) => {
+      if (e.target.files?.length) assignFiles(e.target.files);
+      e.target.value = '';
+    });
+
+    ['dragenter', 'dragover'].forEach((evt) => {
+      els.dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        els.dropzone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach((evt) => {
+      els.dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        els.dropzone.classList.remove('dragover');
+      });
+    });
+    els.dropzone.addEventListener('drop', (e) => {
+      if (e.dataTransfer?.files?.length) assignFiles(e.dataTransfer.files);
+    });
+
+    els.grid.addEventListener('click', (e) => {
+      const renderBtn = e.target.closest('[data-render]');
+      if (renderBtn) {
+        renderSlot(Number(renderBtn.dataset.render));
+        return;
+      }
+      const dlBtn = e.target.closest('[data-download]');
+      if (dlBtn) downloadSlot(Number(dlBtn.dataset.download));
+    });
+
+    function initApiStatus() {
+      const ok = BulkTestEngine.isApiProxyEnabled();
+      els.apiStatus.textContent = ok ? 'API: proxy enabled' : 'API: proxy off';
+      els.apiStatus.style.color = ok ? 'var(--accent)' : 'var(--gold)';
+      if (!ok) els.apiWarn.classList.add('show');
+    }
+
+    setMode('brutal');
+    initApiStatus();
+    renderGrid();
+  </script>
+</body>
+</html>

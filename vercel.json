@@ -38,7 +38,8 @@
     }
   ],
   "rewrites": [
-    { "source": "/privacy-policy", "destination": "/privacy-policy.html" }
+    { "source": "/privacy-policy", "destination": "/privacy-policy.html" },
+    { "source": "/bulk-test", "destination": "/bulk-test.html" }
   ],
   "functions": {
     "api/video/encode.js": {

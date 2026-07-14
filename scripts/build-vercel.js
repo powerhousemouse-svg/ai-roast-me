@@ -15,7 +15,7 @@ const BUILD_ID = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7)
   || process.env.VERCEL_DEPLOYMENT_ID?.slice(0, 8)
   || Date.now().toString(36);
 
-const staticFiles = ['index.html', 'privacy-policy.html'];
+const staticFiles = ['index.html', 'privacy-policy.html', 'bulk-test.html'];
 const copyDirs = ['icons'];
 
 function rmrf(dir) {
@@ -208,6 +208,10 @@ const esbuildFlags = '--bundle --format=iife --minify --platform=browser';
 execSync(`npx esbuild src/analytics.js ${esbuildFlags} --outfile=dist/js/analytics.js`, { cwd: root, stdio: 'inherit' });
 execSync(
   `npx esbuild src/capacitor-native.js ${esbuildFlags} --global-name=RoastLordNativeBundle --outfile=dist/js/capacitor-native.js`,
+  { cwd: root, stdio: 'inherit' }
+);
+execSync(
+  `npx esbuild src/bulk-test.js ${esbuildFlags} --global-name=BulkTestEngine --outfile=dist/js/bulk-test.js`,
   { cwd: root, stdio: 'inherit' }
 );
 
