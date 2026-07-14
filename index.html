@@ -941,7 +941,7 @@
       </div>
 
       <div class="text-center mt-8">
-        <button onclick="resetToLanding()" 
+        <button type="button" onclick="startNewVictim()" 
                 class="text-xs text-white/50 hover:text-white/70 underline underline-offset-2">
           Start over with a new victim
         </button>
@@ -2195,7 +2195,8 @@
     }
 
     // ==================== REAL AI ROAST GENERATOR (powered by advanced vision) ====================
-    const ROAST_WORD_MAX = 18;
+    const ROAST_WORD_MIN = 8;
+    const ROAST_WORD_MAX = 24;
 
     const TONE_STYLES = {
       normal: 'Witty, playful, savage — like a sharp comedian who actually looked at the photo.',
@@ -2214,56 +2215,65 @@
 - The hook must feel mean and funny — never supportive, never explanatory.`;
 
     const TIKTOK_FORMAT = `FORMAT (mandatory — every roast):
-- 10–18 words total. Never exceed 18 words. Shorter is better if it hits harder.
-- Exactly 1–2 short sentences. Period or comma between them — no rambling.
-- Must read aloud cleanly in 4–5 seconds on a TikTok roast video.
-- Reference ONE specific detail from the photo (expression, hair, outfit, pose, smirk, stare, vibe).
+- Maximum 2 lines. Ideally 8–18 words total; never exceed 24 words.
+- Line 1 = hardest hit on the most obvious roastable detail. Line 2 = escalation or second angle.
+- Must read aloud cleanly in 4–5 seconds on a TikTok/Reels roast video.
+- Be specific to THIS photo: hair, eyes, expression, smile, clothing, pose, room, accessories, vibe.
 - No filler endings ("honestly", "though", "if I'm being real", "just saying").
-- Prioritize savage + funny over being clever, nice, or wordy.`;
+- Savage and personal beats generic, nice, or wordy EVERY time.`;
+
+    const IMAGE_ANALYSIS = `IMAGE ANALYSIS (do this silently before writing):
+1. What is the single most roastable thing about this person's appearance or vibe?
+2. What secondary detail can you attack to make line 2 more damaging?
+3. Choose the most cutting phrasing for THIS person — vary structure across roasts.`;
 
     function getBrutalStyleAddendum() {
       return `
 
-BRUTAL STYLE (mandatory — maximum savage, minimum words):
-- Mean, direct, punchy — like roasting someone's face with zero filter.
-- Short blunt insults. No metaphors, no wordplay, no "trying to be smart."
-- NEVER soft, polite, explanatory, or sympathetic. No "kind of" or "a little."
-- Second sentence doubles down on the insult using a photo detail.
-- BANNED: clever twists, long setups, therapy-speak, backhanded compliments.
-- GOOD: "Bro your smirk is stupid ugly. That face ruins the whole photo, period."
-- GOOD: "Your face looks ugly and weak. That pose screams loser energy, no excuses."
+BRUTAL STYLE (mandatory — extremely savage, direct, cutting):
+- Maximum 2 lines. Short, sharp, mean. Plain brutal language — never soften the blow.
+- Line 1: strongest, most specific insult from the most obvious flaw in the photo.
+- Line 2: escalate or attack a second angle. NEVER repeat the same idea.
+- Analyze hair, face, eyes, expression, smile, clothing, pose, body language, overall vibe.
+- Personal to this exact person — avoid generic insults. Make it sting.
+- BANNED overused crutches: "ruins the whole photo", "weak as hell", "killed whatever vibe".
+- BANNED: clever twists, long setups, therapy-speak, backhanded compliments, being nice.
+- GOOD: "Bro your hair is a complete disaster. Those messy spikes make you look like you got electrocuted and gave up."
+- GOOD: "Bro that flex is pathetic. Your arm looks like it gave up halfway through puberty."
+- GOOD: "Your smile looks forced and desperate. That fake grin is doing you zero favors."
+- BAD: "Bro your hair looks ridiculous. Messy spikes ruin the whole photo." (lazy, banned phrase)
 - BAD: "You have an interesting expression that suggests confidence..." (too soft, too wordy)`;
     }
 
     function getGenZStyleAddendum() {
       return `
 
-GEN Z STYLE (mandatory — savage TikTok, not wholesome):
-- Use 2–3 slang terms NATURALLY: no cap, cooked, mid, rizz, aura, delulu, NPC, bestie, giving, ate (negative).
-- Must still be SAVAGE and funny — Gen Z is not friendly banter. Roast them.
-- NEVER stack every slang word in one sentence. No cringe TikTok parody voice.
-- NEVER sound like a millennial imitating teens. Keep it simple and mean.
-- Hook opens with slang callout; second sentence lands the photo-specific burn.
-- BANNED: "slay", "yass", "periodt queen", wholesome praise, try-hard memes, over-explaining slang.
-- GOOD: "No cap your aura is cooked. That smile screams mid and zero rizz."
-- GOOD: "Not you posting this delulu pic. Your face is mid and giving NPC."
-- BAD: "Bestie you're doing amazing sweetie keep slaying..." (too soft)`;
+GEN Z STYLE (mandatory — savage viral TikTok, not wholesome):
+- Maximum 2 lines. Ideally 8–18 words. Natural, mean, shareable when read aloud.
+- Line 1 hits hard on the most roastable feature. Line 2 = twist, escalation, second punch.
+- Use authentic slang naturally: no cap, cooked, fried, mid, zero aura, zero rizz, NPC energy, giving, screaming.
+- Never overuse the same phrases across roasts. Vary hooks and structure.
+- Photo-specific — never generic. Goal: people laugh and say "damn" or "this is too accurate."
+- BANNED: "slay", "yass", "periodt queen", wholesome praise, slang overload, cringe parody voice.
+- GOOD: "No cap your hair looks like it lost a fight with a lawnmower. That spiky shit screaming zero effort and zero rizz."
+- GOOD: "No cap your room is disgusting. That messy bed is giving full 'I peaked in high school' energy."
+- BAD: "No cap your hair is cooked. That spiky mess giving mid and zero aura." (generic, lazy)
+- BAD: "No cap your room is cooked. Messy beds giving full NPC energy." (weak, repetitive)`;
     }
 
     function getRoastSystemPrompt() {
-      return `You are RoastLord — the most savage TikTok roast writer alive.
+      return `You are RoastLord — expert at writing savage viral roasts for 4-second TikTok/Instagram Reels.
 
-Every roast is a 4–5 second viral clip:
-- 10–18 words total — never exceed 18 words
-- First 5–7 words = brutal hook that grabs attention instantly
-- Savage + funny beats nice, clever, or wordy EVERY time
-- Brutal: mean, direct, punchy insults — no clever wordplay
-- Gen Z: natural slang + savage burn — not wholesome, not try-hard
+Every roast is a 4–5 second vertical clip:
+- Maximum 2 lines. Ideally 8–18 words; never exceed 24 words.
+- Line 1 = hardest specific insult. Line 2 = escalation or second punch.
+- Savage, personal, and shareable — never soft, generic, or nice.
+- Brutal: direct, vicious, plain language that stings.
+- Gen Z: authentic slang + mean burn — not wholesome, not try-hard.
 
 Rules:
-- Look at the photo. Roast ONE specific visible detail.
-- Match the requested tone exactly.
-- Output ONLY the roast text. No quotes, labels, or preamble.
+- Study the photo before writing. Match the requested tone exactly.
+- Output ONLY the two-line roast. No quotes, labels, explanations, or preamble.
 - NEVER be racist, sexist, homophobic, or attack protected traits. Roast style, choices, and vibe only.`;
     }
 
@@ -2276,16 +2286,17 @@ Tone style: ${tone}
 ${HOOK_RULES}
 
 ${TIKTOK_FORMAT}`;
+      if (style === 'brutal' || style === 'genz') prompt += `\n\n${IMAGE_ANALYSIS}`;
       if (style === 'brutal') prompt += getBrutalStyleAddendum();
       if (style === 'genz') prompt += getGenZStyleAddendum();
       prompt += `
 
-Output ONLY the roast text. No quotes, labels, or preamble.`;
+Output ONLY the two-line roast. No quotes, labels, or preamble.`;
       return prompt;
     }
 
     function getMaxTokensForLength() {
-      return 56;
+      return 64;
     }
 
     function enforceRoastFormat(roast) {
@@ -2676,9 +2687,9 @@ Rules:
     function getFallbackRoast(style) {
       const roasts = {
         normal: "Not you walking in looking cooked. Your haircut called security and your aura screams mid.",
-        brutal: "Bro your smirk is stupid ugly. That face ruins the whole photo, period.",
+        brutal: "Bro your hair is a complete disaster. Those messy spikes look electrocuted and fried.",
         british: "Absolutely not, you look like that. Your mirror filed a complaint and won in court.",
-        genz: "No cap your aura is cooked. That smile screams mid and zero rizz.",
+        genz: "No cap your hair lost to a lawnmower. That spiky mess screaming zero effort, zero rizz.",
         dad: "I'm not saying you're mid, but wow. Your reflection filed paperwork and hesitated."
       };
       return roasts[style] || roasts.normal;
@@ -4614,7 +4625,7 @@ visibleLines.forEach((ln, i) => {
       await shareCard();
     }
 
-    function resetToLanding() {
+    function clearVictimState() {
       currentPhotoURL = null;
       currentPhotoFile = null;
       currentPhotoBase64 = null;
@@ -4623,10 +4634,23 @@ visibleLines.forEach((ln, i) => {
       clearPendingShare();
       hideSaveToPhotosModal();
       hideCopyFallback();
-      
+      hideShareInstructions();
+
       const input = document.getElementById('photo-input');
       if (input) input.value = '';
-      
+    }
+
+    function startNewVictim() {
+      hideSaveToPhotosModal();
+      hideCopyFallback();
+      hideShareInstructions();
+      const input = document.getElementById('photo-input');
+      if (input) input.value = '';
+      choosePhoto();
+    }
+
+    function resetToLanding() {
+      clearVictimState();
       showScreen('landing');
     }
 

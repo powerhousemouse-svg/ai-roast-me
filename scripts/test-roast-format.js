@@ -17,9 +17,9 @@ const SOFT_OPENINGS = /^(you know|honestly|well,|i have to say|it looks like|you
 
 const FALLBACK_EXAMPLES = {
   normal: "Not you walking in looking cooked. Your haircut called security and your aura screams mid.",
-  brutal: "Bro your smirk is stupid ugly. That face ruins the whole photo, period.",
+  brutal: "Bro your hair is a complete disaster. Those messy spikes look electrocuted and fried.",
   british: "Absolutely not, you look like that. Your mirror filed a complaint and won in court.",
-  genz: "No cap your aura is cooked. That smile screams mid and zero rizz.",
+  genz: "No cap your hair lost to a lawnmower. That spiky mess screaming zero effort, zero rizz.",
   dad: "I'm not saying you're mid, but wow. Your reflection filed paperwork and hesitated."
 };
 
@@ -41,12 +41,12 @@ console.log('RoastLord TikTok format tests\n');
 console.log('Prompt structure:');
 const brutalPrompt = buildRoastPrompt('brutal', null, { allowExplicit: true, ageTier: 'adult_18_plus' });
 const genzPrompt = buildRoastPrompt('genz', null, { allowExplicit: true, ageTier: 'adult_18_plus' });
-assert('system prompt mentions max 18 words', getRoastSystemPrompt().includes('18 words'));
+assert('system prompt mentions max 24 words', getRoastSystemPrompt().includes('24 words'));
 assert('hook rules use 5–7 words', getHookRules().includes('5–7 words'));
 assert('brutal prompt includes BRUTAL STYLE addendum', brutalPrompt.includes('BRUTAL STYLE'));
 assert('genz prompt includes GEN Z STYLE addendum', genzPrompt.includes('GEN Z STYLE'));
-assert('brutal addendum bans soft language', getBrutalStyleAddendum().includes('NEVER soft'));
-assert('genz addendum bans slang overload', getGenZStyleAddendum().includes('NEVER stack'));
+assert('brutal addendum bans lazy crutches', getBrutalStyleAddendum().includes('ruins the whole photo'));
+assert('genz addendum bans slang overload', getGenZStyleAddendum().includes('slang overload'));
 
 console.log('\nVideo timing:');
 const firstLine = getFirstLineStyle();
